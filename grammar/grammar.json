@@ -1,0 +1,36 @@
+[
+  {
+    "token":"if",
+    "type":"keyword",
+    "delimit": false
+  },
+
+  {
+    "token":"=",
+    "type":"assignment",
+    "delimit": true
+  },
+
+  {
+    "token": " ",
+    "type": "whitespace",
+    "delimit": true
+  },
+  {
+    "token": "\t",
+    "type": "whitespace",
+    "delimit": true
+  },
+
+  {
+    "token": "{",
+    "type": "open_bracket",
+    "delimit": true
+  },
+  {
+    "token": "}",
+    "type": "close_bracket",
+    "delimit": true
+  }
+
+]
