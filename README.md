@@ -4,6 +4,7 @@ Custom programming language for learning purposes. Written in C++.
 
 
 Syntax Rules (WIP):
+
 	Identifier (variable name, function name, etc.):
 
 	Integers:
