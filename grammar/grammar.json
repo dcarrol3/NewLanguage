@@ -4,6 +4,24 @@
     "type":"keyword",
     "delimit": false
   },
+  {
+    "token": "do",
+    "type": "keyword",
+    "delimit": false
+  },
+  {
+    "token": "when",
+    "type": "keyword",
+    "delimit": false
+  },
+
+
+  {
+    "token": "#",
+    "type": "comment",
+    "delimit": true
+  },
+
 
   {
     "token":"=",
@@ -12,13 +30,13 @@
   },
 
   {
-    "token": " ",
+    "token": "\t",
     "type": "whitespace",
     "delimit": true
   },
   {
-    "token": "\t",
-    "type": "whitespace",
+    "token": "\n",
+    "type": "new_line",
     "delimit": true
   },
 
@@ -30,6 +48,42 @@
   {
     "token": "}",
     "type": "close_bracket",
+    "delimit": true
+  },
+
+
+  {
+    "token": ",",
+    "type": "comma",
+    "delimit": true
+  },
+
+
+  {
+    "token": ";",
+    "type": "semi-colon",
+    "delimit": true
+  },
+
+
+  {
+    "token": "+",
+    "type": "operator",
+    "delimit": true
+  },
+  {
+    "token": "-",
+    "type": "operator",
+    "delimit": true
+  },
+  {
+    "token": "*",
+    "type": "operator",
+    "delimit": true
+  },
+  {
+    "token": "/",
+    "type": "operator",
     "delimit": true
   }
 

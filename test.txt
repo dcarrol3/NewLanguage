@@ -8,3 +8,22 @@ testVar=5
 if jamesMay {
 
 }
+
+x
+
+do i = 1,25 {
+    sum = sum + i; # test comment
+}
+
+helloifbye # if test
+# comment test first character
+hello #comment test no space
+testVar = 1#no space comment
+#commenttest
+
+when i == 5 {
+    # run in here
+}
+
+
+whenif
