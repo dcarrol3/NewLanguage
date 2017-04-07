@@ -1,31 +1,34 @@
 # New Language (Name TBD)
 
-Custom programming language for learning purposes. Written in C++.
+Custom programming language for learning purposes. Written in Java.
 
 
 Syntax Rules (WIP):
 
-	Identifier (variable name, function name, etc.):
+Identifier (variable name, function name, etc.):
 
-	Integers:
+Integers:
 
-	Keyword (if, else, etc):
-		if
-		for-loop:
-			do i = 1,25 {} // Loop until i == 25, starting at 1. I is automatically set to an integer
-		when
+Keyword (if, else, etc):
 
-	Whitespace (\t, spaces, \n):
+    if
+    for-loop:
+        do i = 1,25 {} // Loop until i == 25, starting at 1. I is automatically set to an integer
+    when
 
-	Paraenthesis (Open and closed are seperate syntax rules):
+Whitespace (\t, spaces, \n):
 
-	semi-colon OR new-line:
-		ends statement
-		new-line is hardcoded in
+Paraenthesis (Open and closed are seperate syntax rules):
 
-	Assignment:
+semi-colon OR new-line:
 
-	Operator rules
+    ends statement
+    new-line is hardcoded in
 
-	comment:
-		#
+Assignment:
+
+Operator rules
+
+comment:
+
+    #
