@@ -32,14 +32,21 @@ public class LexicalAnalyizer {
             if(token.getType().equals(GrammarDefs.COMMENT)){
                 comment_flag = true;
             }
+            else if(token.getType().equals(GrammarDefs.MULTI_LINE_COMMENT_S)){
+                multiLine_comment_flag = true;
+            }
             else if(token.getType().equals(GrammarDefs.NEW_LINE)){
                 comment_flag = false;
             }
 
             // Add to token list if it's not a comment
-            // Will also NOT add new lines
-            else if(!comment_flag){
+            if(!comment_flag && !multiLine_comment_flag){
                 vec.add(token);
+            }
+
+            // Check here so the end of multi-line comment is not added
+            if(token.getType().equals(GrammarDefs.MULTI_LINE_COMMENT_E)){
+                multiLine_comment_flag = false;
             }
         }
 
@@ -70,30 +77,49 @@ public class LexicalAnalyizer {
 
     private ArrayList<String> splitLineByDelimiter(String line){
         ArrayList<String> delimiters = getDelimitersFromJson();
-        String str = line;
+        String res_string = "";
+        int checks = 1;
+        int checksPassed = 0;
+        boolean delimiterFound = false;
+        ArrayList<String> possibleDelimiters = new ArrayList<>();
 
-        for (String delimiter : delimiters) {
-            int position = str.indexOf(delimiter);
-            int prev = 0;
-            String checked = str;
-            String afterSplit = "";
-            while(position >= 0){
-                int endPos = position + (delimiter.length() - 1);
-                String d = checked.substring(position, endPos + 1); // delimiter itself
-                String before = checked.substring(prev, position); // Get everything before the delimiter
-                checked = checked.substring(endPos + 1); // Set the line to everything after delimiter
-
-                afterSplit += before + " " + d + " "; // Split these delimiters by spaces
-
-                prev = endPos + 1; // Record ending position of last delimiter find
-                position = checked.indexOf(delimiter, prev); // look at position after that delimiter
-
+        for(int i = 0; i < line.length(); i++){
+            delimiterFound = false;
+            char currentChar = line.charAt(i);
+            for (String delimiter : delimiters) {
+                checksPassed = 0;
+                // Check based on size of delimiter
+                checks = delimiter.length();
+                int j;
+                for(j = 0; j < checks; j++){
+                    if((i + j < line.length())
+                            && line.charAt(i + j) == delimiter.charAt(j)){
+                        checksPassed++;
+                    }
+                }
+                // We have our delimiter, add it with a space
+                if(checks == checksPassed){
+                    delimiterFound = true;
+                    possibleDelimiters.add(delimiter);
+                }
             }
-            afterSplit += checked; // Add end of line
-            str = afterSplit;
+
+            String largest = getLargestDelimiter(possibleDelimiters);
+
+            if(delimiterFound && largest != null){
+                int len = largest.length();
+                res_string += " " + line.substring(i, i + len) + " ";
+                i = i + (len - 1); // Move to that spot in line
+            }
+            // If it's not a delimiter, just add it to the result with no space
+            else{
+                res_string += line.substring(i, i + 1);
+            }
+
+            possibleDelimiters.clear(); // Clear possible delimiters before moving on
         }
 
-        return new ArrayList<String>(Arrays.asList(str.split("\\s+"))); // Split by space
+        return new ArrayList<String>(Arrays.asList(res_string.split("\\s+"))); // Split by space
     }
 
     private Token matchTokenToType(String token) {
@@ -170,9 +196,17 @@ public class LexicalAnalyizer {
     private void removeEmptyStrings(ArrayList<String> list){
         list.removeAll(Arrays.asList(""));
     }
+    
+    private String getLargestDelimiter(ArrayList<String> delimiters){
+        String largest = null;
+        for (String delimiter : delimiters) {
+            int len = delimiter.length();
+            if(largest == null || len > largest.length()){
+                largest = delimiter;
+            }
+        }
 
-    private boolean isComment(String delimiter){
-        return delimiter.equals("#");
+        return largest;
     }
 
 }

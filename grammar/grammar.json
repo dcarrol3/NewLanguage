@@ -17,6 +17,16 @@
 
 
   {
+    "token": "#/",
+    "type": "ml_start_comment",
+    "delimit": true
+  },
+  {
+    "token": "/#",
+    "type": "ml_end_comment",
+    "delimit": true
+  },
+  {
     "token": "#",
     "type": "comment",
     "delimit": true
@@ -85,6 +95,11 @@
     "token": "/",
     "type": "operator",
     "delimit": true
+  },
+  {
+  "token": "==",
+  "type": "operator",
+  "delimit": true
   }
 
 ]

@@ -1,8 +1,11 @@
+x=4;
+testVar=5
+	afterTab
+
 Test if
 hello34 67
 hi
-testVar=5
-	afterTab
+
 56hello
 
 if jamesMay {
@@ -24,6 +27,7 @@ testVar = 1#no space comment
 when i == 5 {
     # run in here
 }
-
-
+#/ test
+multiline
+comments /#
 whenif
