@@ -14,6 +14,16 @@
     "type": "keyword",
     "delimit": false
   },
+  {
+    "token": "int",
+    "type": "data_type",
+    "delimit": false
+  },
+  {
+    "token": "bool",
+    "type": "data_type",
+    "delimit": false
+  },
 
 
   {

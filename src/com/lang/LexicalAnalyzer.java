@@ -12,16 +12,17 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-public class LexicalAnalyizer {
+public class LexicalAnalyzer {
 
     private final String GRAMMAR_FILE = "grammar/grammar.json";
 
+    // Creates tokens from the raw code file
     public ArrayList<Token> tokenizeString(String file_string){
         ArrayList<String> strVec;
         ArrayList<Token> vec = new ArrayList<>();
         ArrayList<String> delimiters = getDelimitersFromJson();
         boolean comment_flag = false;
-        boolean multiLine_comment_flag = false; // TODO - Handle multiline comments
+        boolean multiLine_comment_flag = false;
 
         strVec = splitByDelimiters(file_string, delimiters);
 
@@ -53,7 +54,7 @@ public class LexicalAnalyizer {
         return vec;
     }
 
-
+    // Splits entire code by the grammar delimiters
     private ArrayList<String> splitByDelimiters(String str, ArrayList<String> delimiters){
         ArrayList<String> strVec = new ArrayList<>();
         String line;
@@ -75,6 +76,7 @@ public class LexicalAnalyizer {
         return strVec;
     }
 
+    // Splits each line by the grammar delimiters
     private ArrayList<String> splitLineByDelimiter(String line){
         ArrayList<String> delimiters = getDelimitersFromJson();
         String res_string = "";
@@ -122,6 +124,7 @@ public class LexicalAnalyizer {
         return new ArrayList<String>(Arrays.asList(res_string.split("\\s+"))); // Split by space
     }
 
+    // Match each token to a type
     private Token matchTokenToType(String token) {
         Token res_token = new Token();
         String grammarStr = FileHandler.fileToString(GRAMMAR_FILE);
@@ -168,10 +171,12 @@ public class LexicalAnalyizer {
         return str.matches("^-?\\d+$");
     }
 
+    // If a token is a valid variable
     private boolean validIdentifier(String token){
         return !token.equals("") && !is_number(String.valueOf(token.charAt(0)));
     }
 
+    // Grab all delimiters from grammar.json
     private ArrayList<String> getDelimitersFromJson(){
         String grammarStr = FileHandler.fileToString(GRAMMAR_FILE);
         JSONParser parser = new JSONParser();
@@ -193,10 +198,12 @@ public class LexicalAnalyizer {
         return delimiters;
     }
 
+    // Remove redundant empty strings from the token list
     private void removeEmptyStrings(ArrayList<String> list){
         list.removeAll(Arrays.asList(""));
     }
-    
+
+    // Gets the largest delimiter, giving it higher priority
     private String getLargestDelimiter(ArrayList<String> delimiters){
         String largest = null;
         for (String delimiter : delimiters) {

@@ -11,10 +11,14 @@ Integers:
 
 Keyword (if, else, etc):
 
-    if
+    if:
+    
     for-loop:
         do i = 1,25 {} // Loop until i == 25, starting at 1. I is automatically set to an integer
-    when
+    
+    when:
+        when i == 5 {}
+
 
 Whitespace (\t, spaces, \n):
 
@@ -31,4 +35,10 @@ Operator rules
 
 comment:
 
-    #
+    Single line:
+        #
+        
+    Multi line:
+        #/ 
+        /#
+    

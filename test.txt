@@ -31,3 +31,12 @@ when i == 5 {
 multiline
 comments /#
 whenif
+
+bool boolTest = true;
+int count = 45;
+int sum = 0;
+when i == count {
+    do j = 1,5 {
+        sum = sum + 1;
+    }
+}
