@@ -40,3 +40,7 @@ when i == count {
         sum = sum + 1;
     }
 }
+
+if (not(3==5)) {
+
+}

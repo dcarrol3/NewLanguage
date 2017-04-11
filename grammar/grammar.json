@@ -5,17 +5,17 @@
     "delimit": false
   },
   {
-    "token": "do",
+    "token":"else",
+    "type":"keyword",
+    "delimit": false
+  },
+  {
+    "token": "loop",
     "type": "keyword",
     "delimit": false
   },
   {
-    "token": "when",
-    "type": "keyword",
-    "delimit": false
-  },
-  {
-    "token": "int",
+    "token": "number",
     "type": "data_type",
     "delimit": false
   },
@@ -117,9 +117,49 @@
     "delimit": true
   },
   {
-  "token": "==",
-  "type": "operator",
-  "delimit": true
+    "token": "%",
+    "type": "operator",
+    "delimit": true
+  },
+  {
+    "token": "==",
+    "type": "compares",
+    "delimit": true
+  },
+  {
+    "token": "not",
+    "type": "compares",
+    "delimit": false
+  },
+  {
+    "token": ">",
+    "type": "compares",
+    "delimit": true
+  },
+  {
+    "token": "<",
+    "type": "compares",
+    "delimit": true
+  },
+  {
+    "token": ">=",
+    "type": "compares",
+    "delimit": true
+  },
+  {
+    "token": "<=",
+    "type": "compares",
+    "delimit": true
+  },
+  {
+    "token": "true",
+    "type": "compares",
+    "delimit": false
+  },
+  {
+    "token": "false",
+    "type": "compares",
+    "delimit": false
   }
 
 ]
