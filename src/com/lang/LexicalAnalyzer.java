@@ -171,9 +171,13 @@ public class LexicalAnalyzer {
         return str.matches("^-?\\d+$");
     }
 
+    private boolean is_char(char val) {
+        return((val >= 'a' && val <= 'z') || (val >= 'A' && val <= 'Z'));
+    }
+
     // If a token is a valid variable
     private boolean validIdentifier(String token){
-        return !token.equals("") && !is_number(String.valueOf(token.charAt(0)));
+        return !token.equals("") && is_char(token.charAt(0));
     }
 
     // Grab all delimiters from grammar.json
