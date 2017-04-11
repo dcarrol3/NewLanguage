@@ -71,6 +71,16 @@
     "delimit": true
   },
 
+  {
+    "token": "(",
+    "type": "open_paren",
+    "delimit": true
+  },
+  {
+    "token": ")",
+    "type": "close_paren",
+    "delimit": true
+  },
 
   {
     "token": ",",
