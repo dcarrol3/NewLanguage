@@ -160,6 +160,15 @@
     "token": "false",
     "type": "compares",
     "delimit": false
+  },
+  {
+    "token": "and",
+    "type": "compares",
+    "delimit": false
+  },
+  {
+    "token": "or",
+    "type": "compares",
+    "delimit": false
   }
-
 ]

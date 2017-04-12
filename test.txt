@@ -41,7 +41,7 @@ when i == count {
     }
 }
 
-if (not(3==5)) {
+if (not(3==5) and true) {
 
 }
 
