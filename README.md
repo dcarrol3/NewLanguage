@@ -3,42 +3,35 @@
 Custom programming language for learning purposes. Written in Java.
 
 
-Syntax Rules (WIP):
-
-Identifier (variable name, function name, etc.):
-
-Integers:
-
-Keyword (if, else, etc):
-
-    if:
-    
-    for-loop:
-        do i = 1,25 {} // Loop until i == 25, starting at 1. I is automatically set to an integer
-    
-    when:
-        when i == 5 {}
+####Built on following systems
+* Linux
+* Mac OS
 
 
-Whitespace (\t, spaces, \n):
 
-Paraenthesis (Open and closed are seperate syntax rules):
+####Tools used
+* Java 1.8+
 
-semi-colon OR new-line:
 
-    ends statement
-    new-line is hardcoded in
 
-Assignment:
+#### How to install the language
 
-Operator rules
 
-comment:
 
-    Single line:
-        #
-        
-    Multi line:
-        #/ 
-        /#
-    
+
+#### How to build and run
+
+
+
+
+#### Bash scripts
+
+
+##### Compiler build
+
+
+##### Run the runtime
+
+
+
+#### Youtube video

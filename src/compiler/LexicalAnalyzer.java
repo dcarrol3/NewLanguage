@@ -1,4 +1,11 @@
-package com.lang;
+/*
+ * Purpose: Lexical Analysis of user code.
+ * Author(s): Doug Carroll and Jason Rice
+ * Version: 3
+ * Date: 4/12/2017
+ */
+
+package compiler;
 
 import java.io.BufferedReader;
 import java.io.IOException;

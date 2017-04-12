@@ -1,4 +1,11 @@
-package com.lang;
+/*
+ * Purpose: Token class to hold token type/value after lexical analysis.
+ * Author(s): Doug Carroll
+ * Version: 1
+ * Date: 4/6/2017
+ */
+
+package compiler;
 
 
 public class Token {
