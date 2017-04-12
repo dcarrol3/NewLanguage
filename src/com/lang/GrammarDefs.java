@@ -17,6 +17,8 @@ public final class GrammarDefs {
 
     // Comment
     public static final String COMMENT = "comment";
+    public static final String MULTI_LINE_COMMENT_S = "ml_start_comment";
+    public static final String MULTI_LINE_COMMENT_E = "ml_end_comment";
 
     // New Line
     public static final String NEW_LINE = "new_line";

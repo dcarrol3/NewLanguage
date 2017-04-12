@@ -5,17 +5,37 @@
     "delimit": false
   },
   {
-    "token": "do",
+    "token":"else",
+    "type":"keyword",
+    "delimit": false
+  },
+  {
+    "token": "loop",
     "type": "keyword",
     "delimit": false
   },
   {
-    "token": "when",
-    "type": "keyword",
+    "token": "number",
+    "type": "data_type",
+    "delimit": false
+  },
+  {
+    "token": "bool",
+    "type": "data_type",
     "delimit": false
   },
 
 
+  {
+    "token": "#/",
+    "type": "ml_start_comment",
+    "delimit": true
+  },
+  {
+    "token": "/#",
+    "type": "ml_end_comment",
+    "delimit": true
+  },
   {
     "token": "#",
     "type": "comment",
@@ -51,6 +71,16 @@
     "delimit": true
   },
 
+  {
+    "token": "(",
+    "type": "open_paren",
+    "delimit": true
+  },
+  {
+    "token": ")",
+    "type": "close_paren",
+    "delimit": true
+  },
 
   {
     "token": ",",
@@ -85,6 +115,60 @@
     "token": "/",
     "type": "operator",
     "delimit": true
+  },
+  {
+    "token": "%",
+    "type": "operator",
+    "delimit": true
+  },
+  {
+    "token": "==",
+    "type": "compares",
+    "delimit": true
+  },
+  {
+    "token": "not",
+    "type": "compares",
+    "delimit": false
+  },
+  {
+    "token": ">",
+    "type": "compares",
+    "delimit": true
+  },
+  {
+    "token": "<",
+    "type": "compares",
+    "delimit": true
+  },
+  {
+    "token": ">=",
+    "type": "compares",
+    "delimit": true
+  },
+  {
+    "token": "<=",
+    "type": "compares",
+    "delimit": true
+  },
+  {
+    "token": "true",
+    "type": "compares",
+    "delimit": false
+  },
+  {
+    "token": "false",
+    "type": "compares",
+    "delimit": false
+  },
+  {
+    "token": "and",
+    "type": "compares",
+    "delimit": false
+  },
+  {
+    "token": "or",
+    "type": "compares",
+    "delimit": false
   }
-
 ]

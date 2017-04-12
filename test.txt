@@ -1,11 +1,14 @@
+x=4;
+testVar=5
+	afterTab
+
 Test if
 hello34 67
 hi
-testVar=5
-	afterTab
+
 56hello
 
-if jamesMay {
+if (jamesMay) {
 
 }
 
@@ -24,6 +27,22 @@ testVar = 1#no space comment
 when i == 5 {
     # run in here
 }
-
-
+#/ test
+multiline
+comments /#
 whenif
+
+bool boolTest = true;
+int count = 45;
+int sum = 0;
+when i == count {
+    do j = 1,5 {
+        sum = sum + 1;
+    }
+}
+
+if (not(3==5) and true) {
+
+}
+
+!kfjdhf = 7

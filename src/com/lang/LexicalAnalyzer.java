@@ -12,16 +12,17 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-public class LexicalAnalyizer {
+public class LexicalAnalyzer {
 
     private final String GRAMMAR_FILE = "grammar/grammar.json";
 
+    // Creates tokens from the raw code file
     public ArrayList<Token> tokenizeString(String file_string){
         ArrayList<String> strVec;
         ArrayList<Token> vec = new ArrayList<>();
         ArrayList<String> delimiters = getDelimitersFromJson();
         boolean comment_flag = false;
-        boolean multiLine_comment_flag = false; // TODO - Handle multiline comments
+        boolean multiLine_comment_flag = false;
 
         strVec = splitByDelimiters(file_string, delimiters);
 
@@ -32,21 +33,28 @@ public class LexicalAnalyizer {
             if(token.getType().equals(GrammarDefs.COMMENT)){
                 comment_flag = true;
             }
+            else if(token.getType().equals(GrammarDefs.MULTI_LINE_COMMENT_S)){
+                multiLine_comment_flag = true;
+            }
             else if(token.getType().equals(GrammarDefs.NEW_LINE)){
                 comment_flag = false;
             }
 
             // Add to token list if it's not a comment
-            // Will also NOT add new lines
-            else if(!comment_flag){
+            if(!comment_flag && !multiLine_comment_flag){
                 vec.add(token);
+            }
+
+            // Check here so the end of multi-line comment is not added
+            if(token.getType().equals(GrammarDefs.MULTI_LINE_COMMENT_E)){
+                multiLine_comment_flag = false;
             }
         }
 
         return vec;
     }
 
-
+    // Splits entire code by the grammar delimiters
     private ArrayList<String> splitByDelimiters(String str, ArrayList<String> delimiters){
         ArrayList<String> strVec = new ArrayList<>();
         String line;
@@ -68,34 +76,55 @@ public class LexicalAnalyizer {
         return strVec;
     }
 
+    // Splits each line by the grammar delimiters
     private ArrayList<String> splitLineByDelimiter(String line){
         ArrayList<String> delimiters = getDelimitersFromJson();
-        String str = line;
+        String res_string = "";
+        int checks = 1;
+        int checksPassed = 0;
+        boolean delimiterFound = false;
+        ArrayList<String> possibleDelimiters = new ArrayList<>();
 
-        for (String delimiter : delimiters) {
-            int position = str.indexOf(delimiter);
-            int prev = 0;
-            String checked = str;
-            String afterSplit = "";
-            while(position >= 0){
-                int endPos = position + (delimiter.length() - 1);
-                String d = checked.substring(position, endPos + 1); // delimiter itself
-                String before = checked.substring(prev, position); // Get everything before the delimiter
-                checked = checked.substring(endPos + 1); // Set the line to everything after delimiter
-
-                afterSplit += before + " " + d + " "; // Split these delimiters by spaces
-
-                prev = endPos + 1; // Record ending position of last delimiter find
-                position = checked.indexOf(delimiter, prev); // look at position after that delimiter
-
+        for(int i = 0; i < line.length(); i++){
+            delimiterFound = false;
+            char currentChar = line.charAt(i);
+            for (String delimiter : delimiters) {
+                checksPassed = 0;
+                // Check based on size of delimiter
+                checks = delimiter.length();
+                int j;
+                for(j = 0; j < checks; j++){
+                    if((i + j < line.length())
+                            && line.charAt(i + j) == delimiter.charAt(j)){
+                        checksPassed++;
+                    }
+                }
+                // We have our delimiter, add it with a space
+                if(checks == checksPassed){
+                    delimiterFound = true;
+                    possibleDelimiters.add(delimiter);
+                }
             }
-            afterSplit += checked; // Add end of line
-            str = afterSplit;
+
+            String largest = getLargestDelimiter(possibleDelimiters);
+
+            if(delimiterFound && largest != null){
+                int len = largest.length();
+                res_string += " " + line.substring(i, i + len) + " ";
+                i = i + (len - 1); // Move to that spot in line
+            }
+            // If it's not a delimiter, just add it to the result with no space
+            else{
+                res_string += line.substring(i, i + 1);
+            }
+
+            possibleDelimiters.clear(); // Clear possible delimiters before moving on
         }
 
-        return new ArrayList<String>(Arrays.asList(str.split("\\s+"))); // Split by space
+        return new ArrayList<String>(Arrays.asList(res_string.split("\\s+"))); // Split by space
     }
 
+    // Match each token to a type
     private Token matchTokenToType(String token) {
         Token res_token = new Token();
         String grammarStr = FileHandler.fileToString(GRAMMAR_FILE);
@@ -142,10 +171,16 @@ public class LexicalAnalyizer {
         return str.matches("^-?\\d+$");
     }
 
-    private boolean validIdentifier(String token){
-        return !token.equals("") && !is_number(String.valueOf(token.charAt(0)));
+    private boolean is_char(char val) {
+        return((val >= 'a' && val <= 'z') || (val >= 'A' && val <= 'Z'));
     }
 
+    // If a token is a valid variable
+    private boolean validIdentifier(String token){
+        return !token.equals("") && is_char(token.charAt(0));
+    }
+
+    // Grab all delimiters from grammar.json
     private ArrayList<String> getDelimitersFromJson(){
         String grammarStr = FileHandler.fileToString(GRAMMAR_FILE);
         JSONParser parser = new JSONParser();
@@ -167,12 +202,22 @@ public class LexicalAnalyizer {
         return delimiters;
     }
 
+    // Remove redundant empty strings from the token list
     private void removeEmptyStrings(ArrayList<String> list){
         list.removeAll(Arrays.asList(""));
     }
 
-    private boolean isComment(String delimiter){
-        return delimiter.equals("#");
+    // Gets the largest delimiter, giving it higher priority
+    private String getLargestDelimiter(ArrayList<String> delimiters){
+        String largest = null;
+        for (String delimiter : delimiters) {
+            int len = delimiter.length();
+            if(largest == null || len > largest.length()){
+                largest = delimiter;
+            }
+        }
+
+        return largest;
     }
 
 }
