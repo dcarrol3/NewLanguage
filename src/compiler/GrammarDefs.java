@@ -1,4 +1,11 @@
-package com.lang;
+/*
+ * Purpose: Some common grammar definitions for the compiler.
+ * Author(s): Doug Carroll and Jason Rice
+ * Version: 3
+ * Date: 4/12/2017
+ */
+
+package compiler;
 
 public final class GrammarDefs {
 

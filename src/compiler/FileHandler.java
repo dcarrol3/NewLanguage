@@ -1,4 +1,11 @@
-package com.lang;
+/*
+ * Purpose: Handle file read/writes for the compiler.
+ * Author(s): Doug Carroll
+ * Version: 2
+ * Date: 4/6/2017
+ */
+
+package compiler;
 
 
 import java.io.IOException;
