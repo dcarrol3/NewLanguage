@@ -1,20 +1,21 @@
 Doug Carroll:
-
-
+    Prior: Lexical Analysis, Grammer, Defining intermediate language
+    Moving Forward: Parser
 
 
 
 Jeb Johnson:
-
-
+    Prior: Defining intermediate language
+    Moving Forward: Runtime/Parser
 
 
 
 Isidro Perez:
-
-
-
+    Prior: Defining intermediate language
+    Moving Forward: Runtime
 
 
 
 Jason Rice:
+    Prior: Updated lexical analysis, Grammer, Defining intermediate language
+    Moving Forward: Parser
