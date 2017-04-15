@@ -30,4 +30,13 @@ public final class GrammarDefs {
     // New Line
     public static final String NEW_LINE = "new_line";
 
+    // Conditional tokens
+    public static final String AND_TOKEN = "and";
+    public static final String OR_TOKEN = "or";
+    public static final String NOT_EQUAL_TOKEN = "!=";
+    public static final String TRUE_TOKEN = "true";
+    public static final String FALSE_TOKEN = "false";
+
+
+
 }
