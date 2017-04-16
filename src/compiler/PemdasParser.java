@@ -204,8 +204,10 @@ public class PemdasParser {
                 break;
             case EXPR_TRUE:
                 op = Operation.OperationType.TRUE;
+                break;
             case EXPR_FALSE:
                 op = Operation.OperationType.FALSE;
+                break;
             default:
                 op = Operation.OperationType.ERROR;
         }
