@@ -1,47 +1,41 @@
+
 x=4;
 testVar=5
-	afterTab
 
-Test if
-hello34 67
-hi
 
-56hello
-
-if (jamesMay) {
-
+if (testVar == 5) {
+  x=5;
 }
-
-x
 
 do i = 1,25 {
-    sum = sum + i; # test comment
+    x = x + 1; # test comment
 }
 
-helloifbye # if test
-# comment test first character
-hello #comment test no space
-testVar = 1#no space comment
-#commenttest
+do i = 1,2 {
+    if(3 == 3){
+        if(1+2 == 3){
+            if(2-1 == 2){
 
-when i == 5 {
-    # run in here
+            } else{
+                number al = 2
+            }
+        }
+    }
 }
-#/ test
-multiline
-comments /#
-whenif
 
 bool boolTest = true;
 int count = 45;
 int sum = 0;
-when i == count {
-    do j = 1,5 {
-        sum = sum + 1;
-    }
+
+if (3!=5 and true) {
+    sum = 2
+} else {
+
 }
 
-if (not(3==5) and true) {
+if(1 == 2){
 
+}else{
+  sum = 1
 }
 

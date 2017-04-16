@@ -7,20 +7,39 @@
 
 package main;
 
-import compiler.FileHandler;
-import compiler.LexicalAnalyzer;
-import compiler.Token;
+import compiler.*;
 
 import java.util.ArrayList;
 
 public class Main {
 
     public static void main(String[] args) {
+        PemdasParser pem = new PemdasParser();
         LexicalAnalyzer la = new LexicalAnalyzer();
 
-        ArrayList<Token> tokens = la.tokenizeString(FileHandler.fileToString("test.txt"));
+        ArrayList<Token> tokens = la.tokenizeString(FileHandler.fileToString("exprTest.txt"));
+
+        System.out.println("\n\n /////////////////LEXICAL////////////////////");
+        ArrayList<Token> expr = new ArrayList<>();
         for (Token token: tokens) {
             System.out.println("<" + token.getType() + ", " + token.getKey() + ">");
+            if(!token.getType().equals(GrammarDefs.NEW_LINE)){
+                expr.add(token);
+            }
         }
+
+        System.out.println("\n\n /////////////////PARSER////////////////////");
+        TokenParser tk = new TokenParser(tokens);
+
+        System.out.println("\n\n /////////////////INTERMEDIATE////////////////////");
+        ArrayList<Operation> ops = pem.parseExpression(tokens);
+        for (Operation op: ops) {
+            System.out.println(op.getType() + " "
+                    + op.getVariable() + " "
+                    + op.getValue1() + " "
+                    + op.getValue2());
+        }
+
+
     }
 }

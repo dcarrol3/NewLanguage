@@ -127,9 +127,9 @@
     "delimit": true
   },
   {
-    "token": "not",
+    "token": "!=",
     "type": "compares",
-    "delimit": false
+    "delimit": true
   },
   {
     "token": ">",
