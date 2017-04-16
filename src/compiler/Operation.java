@@ -27,6 +27,8 @@ public class Operation {
         OR,
         TRUE,
         FALSE,
+        PRINT,
+        JUMP,
         ERROR
     }
 
@@ -34,6 +36,26 @@ public class Operation {
     private String variable;
     private String value1;
     private String value2;
+
+    public Operation(){};
+
+    public Operation(OperationType type, String variable){
+        this.type = type;
+        this.variable = variable;
+    }
+
+    public Operation(OperationType type, String variable, String value1){
+        this.type = type;
+        this.variable = variable;
+        this.value1 = value1;
+    }
+
+    public Operation(OperationType type, String variable, String value1, String value2){
+        this.type = type;
+        this.variable = variable;
+        this.value1 = value1;
+        this.value2 = value2;
+    }
 
     public OperationType getType() {
         return type;
