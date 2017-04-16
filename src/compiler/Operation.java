@@ -22,13 +22,18 @@ public class Operation {
         GREATER_THAN,
         LESS_THAN,
         GREATER_THAN_EQUAL_TO,
-        LESS_THAN_EQUAL_TO
+        LESS_THAN_EQUAL_TO,
+        AND,
+        OR,
+        TRUE,
+        FALSE,
+        ERROR
     }
 
     private OperationType type;
     private String variable;
-    private int value1;
-    private int value2;
+    private String value1;
+    private String value2;
 
     public OperationType getType() {
         return type;
@@ -38,19 +43,19 @@ public class Operation {
         this.type = type;
     }
 
-    public int getValue1() {
+    public String getValue1() {
         return value1;
     }
 
-    public void setValue1(int value1) {
+    public void setValue1(String value1) {
         this.value1 = value1;
     }
 
-    public int getValue2() {
+    public String getValue2() {
         return value2;
     }
 
-    public void setValue2(int value2) {
+    public void setValue2(String value2) {
         this.value2 = value2;
     }
 

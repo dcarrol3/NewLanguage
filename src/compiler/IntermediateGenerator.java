@@ -21,6 +21,7 @@ public class IntermediateGenerator {
             switch(operation.getType()){
                 case ASSIGNMENT:
                     assemblyOp = getAssignmentLine(operation.getVariable(), operation.getValue1());
+                    break;
                 case IF:
                 case LOOP:
                 case ADDITION:
@@ -34,6 +35,9 @@ public class IntermediateGenerator {
                 case LESS_THAN:
                 case GREATER_THAN_EQUAL_TO:
                 case LESS_THAN_EQUAL_TO:
+                case TRUE:
+                case FALSE:
+                case AND:
                 default:
             }
             intermCode.append(assemblyOp);
@@ -42,7 +46,7 @@ public class IntermediateGenerator {
         FileHandler.stringToFile(INTER_CODE_DIR + filename, intermCode.toString());
     }
 
-    private String getAssignmentLine(String variable, int value){
+    private String getAssignmentLine(String variable, String value){
         // TODO - make "add" a constant once isidro uploads runtime defs
         return "add" + "," + variable + ",0," + value;
     }

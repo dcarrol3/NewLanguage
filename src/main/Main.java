@@ -26,7 +26,13 @@ public class Main {
             }
         }
 
-        System.out.println(pem.expressionAsPostfix(expr));
+        ArrayList<Operation> ops = pem.parseExpression(tokens);
+        for (Operation op: ops) {
+            System.out.println(op.getType() + " "
+                    + op.getVariable() + " "
+                    + op.getValue1() + " "
+                    + op.getValue2());
+        }
 
     }
 }

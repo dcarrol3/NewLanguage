@@ -36,6 +36,23 @@ public final class GrammarDefs {
     public static final String NOT_EQUAL_TOKEN = "!=";
     public static final String TRUE_TOKEN = "true";
     public static final String FALSE_TOKEN = "false";
+    public static final String EQUALS_TOKEN = "==";
+    public static final String GT_TOKEN = ">";
+    public static final String LT_TOKEN = "<";
+    public static final String GTE_TOKEN = ">=";
+    public static final String LTE_TOKEN = "<=";
+
+    // Operations
+    public static final String ADD_TOKEN = "+";
+    public static final String SUB_TOKEN = "-";
+    public static final String MULTI_TOKEN = "*";
+    public static final String DIV_TOKEN = "/";
+    public static final String MOD_TOKEN = "%";
+
+
+
+
+
 
 
 
