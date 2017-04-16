@@ -1,27 +1,79 @@
 package compiler;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /*
-    Before this can be complete we need to change the words in the lexer and discuss approach to reading.
-    The idea is to go through erasing tokens as they have been verified and returning true if 0 tokens
-    remain at the end. We may want to keep a count of statements so we can return which line number the mistake is on
-    similar we may want to add statement lists to another array for the intermediate part.
+ * Purpose: Holds information about each operation for use by the intermediate code generator.
+ * Author(s): Jason Rice
+ * Version: 2
+ * Date: 4/14/2017
  */
+
 public class TokenParser {
     private int statementLine = 0;
+    private String labelStat = "label-0";
+    ArrayList<ArrayList<ArrayList<Token>>> parsedTokens;
 
     public TokenParser(ArrayList<Token> tokens){
-        System.out.println(Program(tokens));
+       ArrayList<ArrayList<Token>> temp = makeList(tokens);
+
+        //This is just for testing.
+        for(ArrayList<Token> tok: temp){
+            for(Token tek: tok){
+                System.out.print(tek.getKey()+" ");
+            }
+            System.out.print("\n<---end statement--->\n");
+        }
     }
 
     //Program --> StatementLst
     public boolean Program(ArrayList<Token> tokens){
-        if(StatementLst(tokens).size() == 0){
-            return true;
-        } else{
-            return false;
+        return StatementLst(tokens).size() == 0;
+    }
+
+    //Break up the tokens into a statement list
+    public ArrayList<ArrayList<Token>> makeList(ArrayList<Token> tokens){
+        ArrayList<ArrayList<Token>> statementList = new ArrayList<>();
+        ArrayList<Token> statement = new ArrayList<>();
+        int brackCount = 0;
+        boolean openBrack = false;
+        ArrayList<String> checkTypes = new ArrayList<>(
+                Arrays.asList("close_bracket","open_bracket","new_line","semi-colon"));
+
+        //loop through the tokens making a list of statements for further checking.
+        for(Token token: tokens){
+            String tmp = token.getType();
+
+            if(!checkTypes.contains(tmp)){
+                statement.add(token);
+            } else{
+                if(tmp.equals("open_bracket")){
+                    openBrack = true;
+                    brackCount++;
+                    statement.add(token);
+                } else if(tmp.equals("close_bracket")){
+                    brackCount--;
+                    if(brackCount == 0){
+                        openBrack = false;
+                    }else if(brackCount < 0){
+                        brackCount = 0;
+                    }
+                    statement.add(token);
+                } else{
+                    if(openBrack){
+                        statement.add(token);
+                    } else{
+                        statementList.add(statement);
+                        statement = new ArrayList<>();
+                        openBrack = false;
+                        brackCount = 0;
+                    }
+                }
+            }
+
         }
+        return statementList;
     }
 
     //StatementLst --> Statement | Statement StatementLst
@@ -33,16 +85,28 @@ public class TokenParser {
             if(StatementLst(tokens).size() == 0){
                 return tokens;
             } else{
-                System.out.println("Error - Not a proper statement. Line:"+statementLine);
+                System.out.println("Error - Not a proper statement. Line:"+(statementLine-1));
             }
         }
         return tokens;
     }
 
-    //Statement --> “” | Assignment | If | Loop
+    //Statement --> “new_line” | Assignment | If | Loop
     public ArrayList<Token> Statement(ArrayList<Token> tokens){
+        ArrayList<Token> tok = tokens;
+        switch (tok.get(0).getType()){
+            case("new_line"):
+                tok.remove(0);
+                return tokens;
+            case("identifier"):
+                if(tok.get(1).getType() == "assignment"){
 
-        return tokens;
+                } else{
+                    System.out.println("Error - Identifier "+tok.get(0).getKey()+" has no assignment.");
+                }
+            default:
+                return tokens;
+        }
     }
 
     //Number --> Digit | Digit Number
@@ -109,5 +173,12 @@ public class TokenParser {
      */
     public ArrayList<Token> Expression(ArrayList<Token> tokens){
         return tokens;
+    }
+
+    //increment the statement list label
+    public void incLabel(){
+        int temp = Integer.parseInt(this.labelStat.substring(6))+1;
+        this.labelStat = this.labelStat.substring(0,6)+temp;
+        System.out.println(this.labelStat);
     }
 }

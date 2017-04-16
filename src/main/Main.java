@@ -18,6 +18,8 @@ public class Main {
         LexicalAnalyzer la = new LexicalAnalyzer();
 
         ArrayList<Token> tokens = la.tokenizeString(FileHandler.fileToString("exprTest.txt"));
+
+        System.out.println("\n\n /////////////////LEXICAL////////////////////");
         ArrayList<Token> expr = new ArrayList<>();
         for (Token token: tokens) {
             System.out.println("<" + token.getType() + ", " + token.getKey() + ">");
@@ -26,6 +28,10 @@ public class Main {
             }
         }
 
+        System.out.println("\n\n /////////////////PARSER////////////////////");
+        TokenParser tk = new TokenParser(tokens);
+
+        System.out.println("\n\n /////////////////INTERMEDIATE////////////////////");
         ArrayList<Operation> ops = pem.parseExpression(tokens);
         for (Operation op: ops) {
             System.out.println(op.getType() + " "
@@ -33,6 +39,7 @@ public class Main {
                     + op.getValue1() + " "
                     + op.getValue2());
         }
+
 
     }
 }
