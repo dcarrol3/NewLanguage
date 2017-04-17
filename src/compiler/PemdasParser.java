@@ -16,7 +16,7 @@ import java.util.Stack;
 public class PemdasParser {
 
     // Temp variable for operations
-    public static final String TEMP = "t";
+    public static final String TEMP = "$t";
 
 
     // ----Syntax specific to the expression lib----
