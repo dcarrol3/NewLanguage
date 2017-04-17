@@ -9,11 +9,12 @@ package main;
 
 import compiler.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         PemdasParser pem = new PemdasParser();
         LexicalAnalyzer la = new LexicalAnalyzer();
 
@@ -39,7 +40,5 @@ public class Main {
                     + op.getValue1() + " "
                     + op.getValue2());
         }
-
-
     }
 }
