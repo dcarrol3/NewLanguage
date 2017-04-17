@@ -19,7 +19,8 @@ public class Main {
         PemdasParser pem = new PemdasParser();
         LexicalAnalyzer la = new LexicalAnalyzer();
 
-        ArrayList<Token> tokens = la.tokenizeString(FileHandler.fileToString("exprTest.txt"));
+        //ArrayList<Token> tokens = la.tokenizeString(FileHandler.fileToString("exprTest.txt"));
+        ArrayList<Token> tokens = la.tokenizeString(FileHandler.fileToString("test.txt"));
 
         System.out.println("\n\n /////////////////LEXICAL////////////////////");
         ArrayList<Token> expr = new ArrayList<>();

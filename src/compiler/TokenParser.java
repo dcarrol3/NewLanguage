@@ -2,78 +2,144 @@ package compiler;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Stack;
+import java.util.Optional;
 
 /*
  * Purpose: Holds information about each operation for use by the intermediate code generator.
  * Author(s): Jason Rice
- * Version: 2
- * Date: 4/14/2017
+ * Version: 3
+ * Date: 4/17/2017
  */
-
 public class TokenParser {
-    private int statementLine = 0;
-    private String labelStat = "label-0";
-    ArrayList<ArrayList<ArrayList<Token>>> parsedTokens;
+    private int statementLine;
+    private String labelStat;
+    private HashMap<String,ArrayList<ArrayList<Token>>> program;
+    private HashMap<Integer,Integer> embed;
+    private ArrayList<Token> tokensRef;
 
     public TokenParser(ArrayList<Token> tokens){
-       ArrayList<ArrayList<Token>> temp = makeList(tokens);
+        labelStat = "label-0";
+        statementLine = 0;
+        program = new HashMap<>();
+        embed = new HashMap<>();
+        tokensRef = tokens;
+        init(tokens);
+    }
 
-        //This is just for testing.
-        for(ArrayList<Token> tok: temp){
-            for(Token tek: tok){
-                System.out.print(tek.getKey()+" ");
+    private void init(ArrayList<Token> tokens){
+        embed = bracketFinder(tokens);
+        System.out.println("\n<---------------First Pass---------------->");
+        for(int key : embed.keySet()){
+            System.out.println("Brackets at: "+key+", "+embed.get(key));
+        }
+
+        System.out.println("\n<--------------Second Pass--------------->");
+        makeList(-1,-1);
+       for(String tl:program.keySet()){
+           System.out.print(tl + " [");
+            ArrayList<ArrayList<Token>> tStart = program.get(tl);
+            for(ArrayList<Token> tok: tStart){
+                for(Token tek: tok){
+                    System.out.print(tek.getKey()+" ");
+                }
             }
-            System.out.print("\n<---end statement--->\n");
+           System.out.print(" ] "+tl+"\n\n");
         }
     }
+
+    //Runs through the tokens getting the locations of the brackets
+    public HashMap<Integer,Integer> bracketFinder(ArrayList<Token> tokens){
+        ArrayList<String> flags = new ArrayList<>(Arrays.asList("close_bracket","open_bracket"));
+        HashMap<Integer,Integer> ret = new HashMap<>();
+        Stack<Integer> openBrack = new Stack<>();
+        int tokenNum = 0;
+        for(Token token: tokens){
+            if(flags.contains(token.getType())){
+                if(token.getType().equals("open_bracket")){
+                    openBrack.push(tokenNum);
+                } else{
+                    if(openBrack.size() > 0){
+                        ret.put(openBrack.pop(),tokenNum);
+                    } else{
+                        //returns the same if singular close bracket.
+                        ret.put(tokenNum,tokenNum);
+                    }
+                }
+            }
+            tokenNum++;
+        }
+        if(openBrack.size() > 0){
+            System.out.println("Error: Bracket opened, with no close bracket");
+        }
+        for(int t : ret.keySet()){
+            if(t == ret.get(t)){
+                ret.remove(t);
+                System.out.println("Error: Bracket closed, with no open bracket");
+            }
+        }
+        return ret;
+    }
+
+    //Break up the tokens into a statement list
+    public void makeList(int start, int end){
+        String currLabel = labelStat;
+        ArrayList<ArrayList<Token>> statementList = new ArrayList<>();
+        ArrayList<Token> statement = new ArrayList<>();
+        ArrayList<String> flags = new ArrayList<>(Arrays.asList("close_bracket","open_bracket",
+                "new_line","semi-colon"));
+        int tokenCount = 0;
+        if(start == -1){
+            start = 0;
+        } else{
+            tokenCount = start;
+        }
+        if(end == -1){
+            end = tokensRef.size();
+        }
+        if(start == end){System.out.println("DEBUG: Error at line 102");}
+        else{
+            boolean openBrack = false;
+            for(int y = start; y<end; y++){
+                String tokenType = tokensRef.get(y).getType();
+                if(flags.contains(tokenType)){
+                    if(tokenType.equals("open_bracket")){
+                        statement.add(tokensRef.get(y));
+                        Token tok = new Token();
+                        tok.setType("label");
+                        incLabel();
+                        tok.setKey(labelStat);
+                        openBrack = true;
+                        makeList(tokenCount+1,embed.get(tokenCount)-1);
+                        statement.add(tok);
+                    } else if(tokenType.equals("close_bracket")){
+                        statement.add(tokensRef.get(y));
+                        openBrack = false;
+                    } else{
+                        if(!openBrack){
+                            statement.add(tokensRef.get(y));
+                            statementList.add(statement);
+                        }
+                    }
+                } else{
+                    if(!openBrack){
+                        statement.add(tokensRef.get(y));
+                    }
+                }
+                tokenCount++;
+            }
+            program.put(currLabel,statementList);
+        }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///                                         GRAMMAR CHECKING                                                ///
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     //Program --> StatementLst
     public boolean Program(ArrayList<Token> tokens){
         return StatementLst(tokens).size() == 0;
-    }
-
-    //Break up the tokens into a statement list
-    public ArrayList<ArrayList<Token>> makeList(ArrayList<Token> tokens){
-        ArrayList<ArrayList<Token>> statementList = new ArrayList<>();
-        ArrayList<Token> statement = new ArrayList<>();
-        int brackCount = 0;
-        boolean openBrack = false;
-        ArrayList<String> checkTypes = new ArrayList<>(
-                Arrays.asList("close_bracket","open_bracket","new_line","semi-colon"));
-
-        //loop through the tokens making a list of statements for further checking.
-        for(Token token: tokens){
-            String tmp = token.getType();
-
-            if(!checkTypes.contains(tmp)){
-                statement.add(token);
-            } else{
-                if(tmp.equals("open_bracket")){
-                    openBrack = true;
-                    brackCount++;
-                    statement.add(token);
-                } else if(tmp.equals("close_bracket")){
-                    brackCount--;
-                    if(brackCount == 0){
-                        openBrack = false;
-                    }else if(brackCount < 0){
-                        brackCount = 0;
-                    }
-                    statement.add(token);
-                } else{
-                    if(openBrack){
-                        statement.add(token);
-                    } else{
-                        statementList.add(statement);
-                        statement = new ArrayList<>();
-                        openBrack = false;
-                        brackCount = 0;
-                    }
-                }
-            }
-
-        }
-        return statementList;
     }
 
     //StatementLst --> Statement | Statement StatementLst
@@ -175,10 +241,17 @@ public class TokenParser {
         return tokens;
     }
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///                                         HELPER FUNCTION                                                 ///
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     //increment the statement list label
     public void incLabel(){
-        int temp = Integer.parseInt(this.labelStat.substring(6))+1;
-        this.labelStat = this.labelStat.substring(0,6)+temp;
-        System.out.println(this.labelStat);
+        String num, tmp;
+        int numb;
+        tmp = labelStat.substring(0,labelStat.indexOf('-')+1);
+        num = labelStat.substring(labelStat.indexOf('-')+1,labelStat.length());
+        numb = Integer.parseInt(num)+1;
+        labelStat = tmp+numb;
     }
 }

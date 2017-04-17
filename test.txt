@@ -29,9 +29,7 @@ int sum = 0;
 
 if (3!=5 and true) {
     sum = 2
-} else {
-
-}
+} else {}
 
 if(1 == 2){
 
