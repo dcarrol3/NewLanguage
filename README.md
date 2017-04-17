@@ -1,4 +1,4 @@
-# New Language (Name TBD)
+# The Javier Language
 
 Custom programming language for learning purposes. Written in Java.
 
