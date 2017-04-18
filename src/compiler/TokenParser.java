@@ -67,6 +67,13 @@ public class TokenParser {
             }
            System.out.print("\n ]\n\n");
         }
+
+        //compiler method test area.
+        //Token top = new Token(); Token tip = new Token();
+        //top.setType("identifier"); tip.setType("identifier");
+        //top.setKey("a4hkj"); tip.setKey("h=kj");
+        //top = Identifier(top); tip = Identifier(tip);
+        //System.out.print("CORRECT: ["+top.getKey()+"] INCORRECT: ["+tip.getKey()+"]");
     }
 
     //Runs through the tokens getting the locations of the brackets
@@ -98,7 +105,7 @@ public class TokenParser {
         return ret;
     }
 
-    //Break up the tokens into a statement list
+    //Break up the tokens into a map of statement lists
     private void makeList(int start, int end, String lab){
         int tokenCount = 0;
         String currLabel = labelStat;
@@ -148,7 +155,7 @@ public class TokenParser {
     ///                                         GRAMMAR CHECKING                                                ///
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    //Program --> StatementLst
+    //Program --> StatementLst ////////////////////WORKING
     private boolean Program(){
         boolean isGC = true;
         if(program.size() > 0){
@@ -167,7 +174,7 @@ public class TokenParser {
         return isGC;
     }
 
-    //StatementLst --> Statement | Statement StatementLst
+    //StatementLst --> Statement | Statement StatementLst ////////////////////WORKING
     private ArrayList<ArrayList<Token>> StatementLst(ArrayList<ArrayList<Token>> sl){
         ArrayList<ArrayList<Token>> ret = new ArrayList<>();
         if(sl.size() > 0) {
@@ -181,7 +188,7 @@ public class TokenParser {
         return ret;
     }
 
-    //Statement --> “new_line” | Assignment | If | Loop
+    //Statement --> “new_line” | Assignment | If | Loop ///////////////////WORKING
     private ArrayList<Token> Statement(ArrayList<Token> tokens){
         ArrayList<Token> ret = new ArrayList<>();
         if(tokens.size() > 0){
@@ -204,12 +211,14 @@ public class TokenParser {
                         ret = Loop(tokens);
                     }
                     break;
+                default:
+                    return tokens;
             }
         }
         return ret;
     }
 
-    //Number --> Digit | Digit Number
+    //Number --> Digit | Digit Number ///////////////////////WORKING
     private Token Number(Token token){
         Token tek = new Token();
         if(token.getKey().length() > 1){
@@ -219,6 +228,8 @@ public class TokenParser {
                 tok.setType("number");
                 tok.setKey(next);
                 tek = Number(tok);
+            } else{
+                return token;
             }
         } else if (token.getKey().length() == 1){
             if (!Digit(token.getKey().charAt(0))){
@@ -228,14 +239,13 @@ public class TokenParser {
         return tek;
     }
 
-    //Identifier --> Letter | Letter Number | Letter Identifier
+    //Identifier --> Letter | Letter Number | Letter Identifier /////////////////WORKING
     private Token Identifier(Token token){
         Token tek = new Token();
-        if(token.getKey().length() <= 1){
-            if(!Letter(token.getKey().charAt(0))){
-                return token;
-            }
-        } else{
+        if(!Letter(token.getKey().charAt(0))){
+            return token;
+        }
+        if(!(token.getKey().length() <= 1)){
             Token pas = new Token();
             pas.setType(token.getType());
             pas.setKey(token.getKey().substring(1,token.getKey().length()));
@@ -293,14 +303,14 @@ public class TokenParser {
         return tokens;
     }
 
-    //Digit --> ‘0’ | ‘1’ | ‘2’ | ‘3’ | ‘4’ | ‘5’ | ‘6’ | ‘7’ | ‘8’ | ‘9’
+    //Digit --> ‘0’ | ‘1’ | ‘2’ | ‘3’ | ‘4’ | ‘5’ | ‘6’ | ‘7’ | ‘8’ | ‘9’  /////////////////WORKING
     private boolean Digit(char ch){
         return ch >= 48 && ch <= 57;
     }
 
     //Letter --> ‘a’..’z’ | ‘A’..’Z’
     private boolean Letter(char ch){
-        return (ch >= 65 && ch <= 90) || (ch >= 97 && ch <= 122);
+        return ((ch >= 65 && ch <= 90) || (ch >= 97 && ch <= 122));
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
