@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Stack;
-import java.util.Optional;
 
 /*
  * Purpose: Holds information about each operation for use by the intermediate code generator.
@@ -36,7 +35,7 @@ public class TokenParser {
         }
 
         System.out.println("\n<--------------Second Pass--------------->");
-        makeList(-1,-1);
+        makeList(-1,-1, "program");
        for(String tl:program.keySet()){
            System.out.print(tl + " [");
             ArrayList<ArrayList<Token>> tStart = program.get(tl);
@@ -45,7 +44,7 @@ public class TokenParser {
                     System.out.print(tek.getKey()+" ");
                 }
             }
-           System.out.print(" ] "+tl+"\n\n");
+           System.out.print("\n ]\n\n");
         }
     }
 
@@ -83,13 +82,11 @@ public class TokenParser {
     }
 
     //Break up the tokens into a statement list
-    public void makeList(int start, int end){
+    public void makeList(int start, int end, String lab){
+        int tokenCount = 0;
         String currLabel = labelStat;
         ArrayList<ArrayList<Token>> statementList = new ArrayList<>();
         ArrayList<Token> statement = new ArrayList<>();
-        ArrayList<String> flags = new ArrayList<>(Arrays.asList("close_bracket","open_bracket",
-                "new_line","semi-colon"));
-        int tokenCount = 0;
         if(start == -1){
             start = 0;
         } else{
@@ -98,39 +95,36 @@ public class TokenParser {
         if(end == -1){
             end = tokensRef.size();
         }
-        if(start == end){System.out.println("DEBUG: Error at line 102");}
-        else{
-            boolean openBrack = false;
-            for(int y = start; y<end; y++){
-                String tokenType = tokensRef.get(y).getType();
-                if(flags.contains(tokenType)){
-                    if(tokenType.equals("open_bracket")){
-                        statement.add(tokensRef.get(y));
-                        Token tok = new Token();
-                        tok.setType("label");
-                        incLabel();
-                        tok.setKey(labelStat);
-                        openBrack = true;
-                        makeList(tokenCount+1,embed.get(tokenCount)-1);
-                        statement.add(tok);
-                    } else if(tokenType.equals("close_bracket")){
-                        statement.add(tokensRef.get(y));
-                        openBrack = false;
-                    } else{
-                        if(!openBrack){
-                            statement.add(tokensRef.get(y));
-                            statementList.add(statement);
-                        }
-                    }
-                } else{
-                    if(!openBrack){
-                        statement.add(tokensRef.get(y));
-                    }
-                }
-                tokenCount++;
-            }
-            program.put(currLabel,statementList);
+        if(lab != null){
+            currLabel = lab;
         }
+
+        for(int y = start; y < end; y++){
+
+            String tokenType = tokensRef.get(y).getType();
+
+                if(tokenType.equals("open_bracket")){
+                    statement.add(tokensRef.get(y));
+                    Token tok = new Token();
+                    tok.setType("label");
+                    incLabel();
+                    tok.setKey(labelStat);
+                    statement.add(tok);
+                    makeList(tokenCount+1,embed.get(tokenCount), null);
+                    y = embed.get(tokenCount)-1;
+                    tokenCount += (embed.get(tokenCount)-tokenCount)-1;
+                } else if(tokenType.equals("semi-colon") || tokenType.equals("new_line")){
+                    statement.add(tokensRef.get(y));
+                    statementList.add(statement);
+                    statement = new ArrayList<>();
+                } else{
+                    statement.add(tokensRef.get(y));
+                }
+            tokenCount++;
+
+        }
+        program.put(currLabel,statementList);
+
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
