@@ -7,11 +7,11 @@ if (testVar == 5) {
   x=5;
 }
 
-do i = 1,25 {
+loop i = 1,25 {
     x = x + 1; # test comment
 }
 
-do i = 1,2 {
+loop i = 1,2 {
     if(3 == 3){
         if(1+2 == 3){
             if(2-1 == 2){

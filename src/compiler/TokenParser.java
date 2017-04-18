@@ -18,6 +18,7 @@ public class TokenParser {
     private HashMap<Integer,Integer> embed;
     private ArrayList<Token> tokensRef;
 
+    //Constructor given a set of tokens
     public TokenParser(ArrayList<Token> tokens){
         labelStat = "label-0";
         statementLine = 0;
@@ -27,6 +28,27 @@ public class TokenParser {
         init(tokens);
     }
 
+    //Default constructor
+    public TokenParser(){
+        labelStat = "label-0";
+        statementLine = 0;
+        program = new HashMap<>();
+        embed = new HashMap<>();
+    }
+
+    //Get the final output of the program.
+    public HashMap<String,ArrayList<ArrayList<Token>>> getResults(){
+        return this.program;
+    }
+
+    //give the output of the program given a set of tokens.
+    public HashMap<String,ArrayList<ArrayList<Token>>> parseTokens(ArrayList<Token> tokens){
+        tokensRef = tokens;
+        init(tokens);
+        return this.program;
+    }
+
+    //Controller for the program
     private void init(ArrayList<Token> tokens){
         embed = bracketFinder(tokens);
         System.out.println("\n<---------------First Pass---------------->");
@@ -49,22 +71,18 @@ public class TokenParser {
     }
 
     //Runs through the tokens getting the locations of the brackets
-    public HashMap<Integer,Integer> bracketFinder(ArrayList<Token> tokens){
-        ArrayList<String> flags = new ArrayList<>(Arrays.asList("close_bracket","open_bracket"));
+    private HashMap<Integer,Integer> bracketFinder(ArrayList<Token> tokens){
         HashMap<Integer,Integer> ret = new HashMap<>();
         Stack<Integer> openBrack = new Stack<>();
         int tokenNum = 0;
         for(Token token: tokens){
-            if(flags.contains(token.getType())){
-                if(token.getType().equals("open_bracket")){
-                    openBrack.push(tokenNum);
+            if(token.getType().equals("open_bracket")){
+                openBrack.push(tokenNum);
+            } else if(token.getType().equals("close_bracket")){
+                if(openBrack.size() > 0){
+                    ret.put(openBrack.pop(),tokenNum);
                 } else{
-                    if(openBrack.size() > 0){
-                        ret.put(openBrack.pop(),tokenNum);
-                    } else{
-                        //returns the same if singular close bracket.
-                        ret.put(tokenNum,tokenNum);
-                    }
+                    ret.put(tokenNum,tokenNum);
                 }
             }
             tokenNum++;
@@ -82,7 +100,7 @@ public class TokenParser {
     }
 
     //Break up the tokens into a statement list
-    public void makeList(int start, int end, String lab){
+    private void makeList(int start, int end, String lab){
         int tokenCount = 0;
         String currLabel = labelStat;
         ArrayList<ArrayList<Token>> statementList = new ArrayList<>();
@@ -132,75 +150,110 @@ public class TokenParser {
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     //Program --> StatementLst
-    public boolean Program(ArrayList<Token> tokens){
-        return StatementLst(tokens).size() == 0;
+    private boolean Program(){
+        boolean isGC = true;
+        if(program.size() > 0){
+            for(String tl:program.keySet()){
+                ArrayList<ArrayList<Token>> al = program.get(tl);
+                ArrayList<ArrayList<Token>> ret = StatementLst(al);
+                if(ret.size() != 0){
+                    isGC = false;
+                    printList(ret);
+                }
+            }
+
+        } else{
+            isGC = false;
+        }
+        return isGC;
     }
 
     //StatementLst --> Statement | Statement StatementLst
-    public ArrayList<Token> StatementLst(ArrayList<Token> tokens){
-        if(Statement(tokens).size() == 0){
-            return tokens;
-        } else{
-            statementLine++;
-            if(StatementLst(tokens).size() == 0){
-                return tokens;
-            } else{
-                System.out.println("Error - Not a proper statement. Line:"+(statementLine-1));
+    private ArrayList<ArrayList<Token>> StatementLst(ArrayList<ArrayList<Token>> sl){
+        ArrayList<ArrayList<Token>> ret = new ArrayList<>();
+        if(sl.size() > 0) {
+            for (ArrayList<Token> statement : sl) {
+                ArrayList<Token> hold = Statement(statement);
+                if (hold.size() != 0) {
+                    ret.add(hold);
+                }
             }
         }
-        return tokens;
+        return ret;
     }
 
     //Statement --> “new_line” | Assignment | If | Loop
-    public ArrayList<Token> Statement(ArrayList<Token> tokens){
-        ArrayList<Token> tok = tokens;
-        switch (tok.get(0).getType()){
-            case("new_line"):
-                tok.remove(0);
-                return tokens;
-            case("identifier"):
-                if(tok.get(1).getType() == "assignment"){
-
-                } else{
-                    System.out.println("Error - Identifier "+tok.get(0).getKey()+" has no assignment.");
-                }
-            default:
-                return tokens;
+    private ArrayList<Token> Statement(ArrayList<Token> tokens){
+        ArrayList<Token> ret = new ArrayList<>();
+        if(tokens.size() > 0){
+            Token tok = tokens.get(0);
+            String tt = tok.getType();
+            switch(tt){
+                case "data_type":
+                    ret = Assignment(tokens);
+                    break;
+                case "identifier":
+                    ret = Assignment(tokens);
+                    break;
+                case "new_line":
+                    break;
+                case "keyword":
+                    String val = tok.getKey();
+                    if(val.equals("if")){
+                        ret = If(tokens);
+                    } else if(val.equals("loop")){
+                        ret = Loop(tokens);
+                    }
+                    break;
+            }
         }
+        return ret;
     }
 
     //Number --> Digit | Digit Number
-    public Token Number(Token token){
-        return token;
+    private Token Number(Token token){
+        try{
+            int t = Integer.parseInt(token.getKey());
+            if(token.getKey().length() > 1){
+                for(int y = 0; y < token.getKey().length(); y++){
+                    if(!Digit(token.getKey().charAt(y))){
+                        return token;
+                    }
+                }
+            }
+        } catch(Exception ex){
+            return token;
+        }
+        return new Token();
     }
 
     //Digit --> ‘0’ | ‘1’ | ‘2’ | ‘3’ | ‘4’ | ‘5’ | ‘6’ | ‘7’ | ‘8’ | ‘9’
-    public Token Digit(Token token){
-        return token;
+    private boolean Digit(char ch){
+        return ch >= 48 && ch <= 57;
     }
 
     //Letter --> ‘a’..’z’ | ‘A’..’Z’
-    public Token Letter(Token token){
-        return token;
+    private boolean Letter(char ch){
+        return (ch >= 65 && ch <= 90) || (ch >= 97 && ch <= 122);
     }
 
     //Identifier --> Letter | Letter Number | Letter Identifier
-    public Token Identifier(Token token){
+    private Token Identifier(Token token){
         return token;
     }
 
     //Assignment --> Identifier “=” Expr
-    public ArrayList<Token> Assignment(ArrayList<Token> tokens){
+    private ArrayList<Token> Assignment(ArrayList<Token> tokens){
         return tokens;
     }
 
     //If --> “if” Condition “{“ Statement-Lst “}” | If Else
-    public ArrayList<Token> If(ArrayList<Token> tokens){
+    private ArrayList<Token> If(ArrayList<Token> tokens){
         return tokens;
     }
 
     //Else --> “else” “{“ Statement-Lst “}”
-    public ArrayList<Token> Else(ArrayList<Token> tokens){
+    private ArrayList<Token> Else(ArrayList<Token> tokens){
         return tokens;
     }
 
@@ -208,22 +261,22 @@ public class TokenParser {
     Condition --> Expr “==” Expr | Expr “>=” Expr | Expr “<=” Expr | Expr “>” Expr
         | Expr “<” Expr | Condition “and” Condition | Condition “or” Condition | “true” | “false”
      */
-    public ArrayList<Token> Condition(ArrayList<Token> tokens){
+    private ArrayList<Token> Condition(ArrayList<Token> tokens){
         return tokens;
     }
 
     //Iterator --> Expr “,” Expr
-    public ArrayList<Token> Iterator(ArrayList<Token> tokens){
+    private ArrayList<Token> Iterator(ArrayList<Token> tokens){
         return tokens;
     }
 
     //Loop --> “loop” Loop-Assignment “{“ Statement-Lst “}”
-    public ArrayList<Token> Loop(ArrayList<Token> tokens){
+    private ArrayList<Token> Loop(ArrayList<Token> tokens){
         return tokens;
     }
 
     //Loop-Assignment --> Identifier “=” Iterator
-    public ArrayList<Token> LoopAssignment(ArrayList<Token> tokens){
+    private ArrayList<Token> LoopAssignment(ArrayList<Token> tokens){
         return tokens;
     }
 
@@ -231,7 +284,7 @@ public class TokenParser {
     Expression --> Expression “+” Expression | Expression “-” Expression | Expression “*” Expression |
         Expression “/” Expression | Expression “%” Expression | “(“ Expression “)” | Number
      */
-    public ArrayList<Token> Expression(ArrayList<Token> tokens){
+    private ArrayList<Token> Expression(ArrayList<Token> tokens){
         return tokens;
     }
 
@@ -240,12 +293,22 @@ public class TokenParser {
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     //increment the statement list label
-    public void incLabel(){
+    private void incLabel(){
         String num, tmp;
         int numb;
         tmp = labelStat.substring(0,labelStat.indexOf('-')+1);
         num = labelStat.substring(labelStat.indexOf('-')+1,labelStat.length());
         numb = Integer.parseInt(num)+1;
         labelStat = tmp+numb;
+    }
+
+    //print the statement out
+    private void printList(ArrayList<ArrayList<Token>> pl){
+        for(ArrayList<Token> one: pl){
+            System.out.print("Error: ");
+            for(Token two: one){
+                System.out.print(two.getKey() + " ");
+            }
+        }
     }
 }
