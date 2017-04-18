@@ -1,7 +1,6 @@
 package compiler;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Stack;
 
@@ -212,19 +211,86 @@ public class TokenParser {
 
     //Number --> Digit | Digit Number
     private Token Number(Token token){
-        try{
-            int t = Integer.parseInt(token.getKey());
-            if(token.getKey().length() > 1){
-                for(int y = 0; y < token.getKey().length(); y++){
-                    if(!Digit(token.getKey().charAt(y))){
-                        return token;
-                    }
-                }
+        Token tek = new Token();
+        if(token.getKey().length() > 1){
+            if(Digit(token.getKey().charAt(0))){
+                String next = token.getKey().substring(1,token.getKey().length());
+                Token tok = new Token();
+                tok.setType("number");
+                tok.setKey(next);
+                tek = Number(tok);
             }
-        } catch(Exception ex){
-            return token;
+        } else if (token.getKey().length() == 1){
+            if (!Digit(token.getKey().charAt(0))){
+                return token;
+            }
         }
-        return new Token();
+        return tek;
+    }
+
+    //Identifier --> Letter | Letter Number | Letter Identifier
+    private Token Identifier(Token token){
+        Token tek = new Token();
+        if(token.getKey().length() <= 1){
+            if(!Letter(token.getKey().charAt(0))){
+                return token;
+            }
+        } else{
+            Token pas = new Token();
+            pas.setType(token.getType());
+            pas.setKey(token.getKey().substring(1,token.getKey().length()));
+            Token tmp = Number(pas);
+            if(!tmp.isEmpty()){
+                tek = Identifier(tmp);
+            }
+        }
+        return tek;
+    }
+
+    //Assignment --> Identifier “=” Expr   //////////////////////////////////////////NEED TO DO
+    private ArrayList<Token> Assignment(ArrayList<Token> tokens){
+        return tokens;
+    }
+
+    //If --> “if” Condition “{“ Statement-Lst “}” | If Else    //////////////////////////////////////////NEED TO DO
+    private ArrayList<Token> If(ArrayList<Token> tokens){
+        return tokens;
+    }
+
+    //Else --> “else” “{“ Statement-Lst “}”    //////////////////////////////////////////NEED TO DO
+    private ArrayList<Token> Else(ArrayList<Token> tokens){
+        return tokens;
+    }
+
+    /*
+    Condition --> Expr “==” Expr | Expr “>=” Expr | Expr “<=” Expr | Expr “>” Expr
+        | Expr “<” Expr | Condition “and” Condition | Condition “or” Condition | “true” | “false”
+     */                                                       //////////////////////////////////////////NEED TO DO
+    private ArrayList<Token> Condition(ArrayList<Token> tokens){
+        return tokens;
+    }
+
+    //Iterator --> Expr “,” Expr    //////////////////////////////////////////NEED TO DO
+    private ArrayList<Token> Iterator(ArrayList<Token> tokens){
+        return tokens;
+    }
+
+    //Loop --> “loop” Loop-Assignment “{“ Statement-Lst “}”     //////////////////////////////////////////NEED TO DO
+    private ArrayList<Token> Loop(ArrayList<Token> tokens){
+        return tokens;
+    }
+
+    //Loop-Assignment --> Identifier “=” Iterator    //////////////////////////////////////////NEED TO DO
+    private ArrayList<Token> LoopAssignment(ArrayList<Token> tokens){
+        return tokens;
+    }
+
+    /*
+    Expression --> Expression “+” Expression | Expression “-” Expression | Expression “*” Expression |
+        Expression “/” Expression | Expression “%” Expression | “(“ Expression “)” | Number
+     */                                                  //////////////////////////////////////////NEED TO DO
+    private ArrayList<Token> Expression(ArrayList<Token> tokens){
+        return tokens;
     }
 
     //Digit --> ‘0’ | ‘1’ | ‘2’ | ‘3’ | ‘4’ | ‘5’ | ‘6’ | ‘7’ | ‘8’ | ‘9’
@@ -235,57 +301,6 @@ public class TokenParser {
     //Letter --> ‘a’..’z’ | ‘A’..’Z’
     private boolean Letter(char ch){
         return (ch >= 65 && ch <= 90) || (ch >= 97 && ch <= 122);
-    }
-
-    //Identifier --> Letter | Letter Number | Letter Identifier
-    private Token Identifier(Token token){
-        return token;
-    }
-
-    //Assignment --> Identifier “=” Expr
-    private ArrayList<Token> Assignment(ArrayList<Token> tokens){
-        return tokens;
-    }
-
-    //If --> “if” Condition “{“ Statement-Lst “}” | If Else
-    private ArrayList<Token> If(ArrayList<Token> tokens){
-        return tokens;
-    }
-
-    //Else --> “else” “{“ Statement-Lst “}”
-    private ArrayList<Token> Else(ArrayList<Token> tokens){
-        return tokens;
-    }
-
-    /*
-    Condition --> Expr “==” Expr | Expr “>=” Expr | Expr “<=” Expr | Expr “>” Expr
-        | Expr “<” Expr | Condition “and” Condition | Condition “or” Condition | “true” | “false”
-     */
-    private ArrayList<Token> Condition(ArrayList<Token> tokens){
-        return tokens;
-    }
-
-    //Iterator --> Expr “,” Expr
-    private ArrayList<Token> Iterator(ArrayList<Token> tokens){
-        return tokens;
-    }
-
-    //Loop --> “loop” Loop-Assignment “{“ Statement-Lst “}”
-    private ArrayList<Token> Loop(ArrayList<Token> tokens){
-        return tokens;
-    }
-
-    //Loop-Assignment --> Identifier “=” Iterator
-    private ArrayList<Token> LoopAssignment(ArrayList<Token> tokens){
-        return tokens;
-    }
-
-    /*
-    Expression --> Expression “+” Expression | Expression “-” Expression | Expression “*” Expression |
-        Expression “/” Expression | Expression “%” Expression | “(“ Expression “)” | Number
-     */
-    private ArrayList<Token> Expression(ArrayList<Token> tokens){
-        return tokens;
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
