@@ -23,8 +23,8 @@ public class StatementToOperation {
             Token token = statement.iterator().next();
             switch(token.getType()) {
                 case GrammarDefs.ASSIGNMENT:
-                    typeFound = true;
                     ops = parseAssignment(statement);
+                    typeFound = true;
                     break;
                 case GrammarDefs.IF:
                     ops = parseIf(statement);
@@ -48,7 +48,8 @@ public class StatementToOperation {
         ArrayList<Operation> ops = new ArrayList<>();
         PemdasParser pem = new PemdasParser();
         // Get the conditional inside the if statement
-        ArrayList<Token> expression = new ArrayList<>(statement.subList(1, statement.size() - 1));
+        // TODO - This assumes the terminating newline/semi-colon is not included
+        ArrayList<Token> expression = new ArrayList<>(statement.subList(1, statement.size() - 2));
         ops.addAll(pem.parseExpression(expression)); // Get operations for the expression
 
         // Get the last variable used in the conditional
