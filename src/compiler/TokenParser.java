@@ -1,10 +1,6 @@
 package compiler;
 
-import com.sun.tools.classfile.Synthetic_attribute;
-import compiler.lib.Expression;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Stack;
 
@@ -352,8 +348,15 @@ public class TokenParser {
         return tokens;
     }
 
-    //Loop-Assignment --> Identifier “=” Iterator    //////////////////////////////////////////NEED TO DO
+    //Loop-Assignment --> Identifier “=” Iterator
     private ArrayList<Token> LoopAssignment(ArrayList<Token> tokens){
+        if(tokens.size() > 4 && Identifier(tokens.get(0)).isEmpty()){
+            if(tokens.get(1).getType().equals("assignment")){
+                if(Iterator((ArrayList<Token>) tokens.subList(2,tokens.size())).isEmpty()){
+                    return new ArrayList<>();
+                }
+            }
+        }
         return tokens;
     }
 
