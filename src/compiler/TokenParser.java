@@ -1,6 +1,10 @@
 package compiler;
 
+import com.sun.tools.classfile.Synthetic_attribute;
+import compiler.lib.Expression;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Stack;
 
@@ -69,11 +73,7 @@ public class TokenParser {
         }
 
         //compiler method test area.
-        //Token top = new Token(); Token tip = new Token();
-        //top.setType("identifier"); tip.setType("identifier");
-        //top.setKey("a4hkj"); tip.setKey("h=kj");
-        //top = Identifier(top); tip = Identifier(tip);
-        //System.out.print("CORRECT: ["+top.getKey()+"] INCORRECT: ["+tip.getKey()+"]");
+
     }
 
     //Runs through the tokens getting the locations of the brackets
@@ -155,7 +155,7 @@ public class TokenParser {
     ///                                         GRAMMAR CHECKING                                                ///
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    //Program --> StatementLst ////////////////////WORKING
+    //Program --> StatementLst
     private boolean Program(){
         boolean isGC = true;
         if(program.size() > 0){
@@ -174,12 +174,15 @@ public class TokenParser {
         return isGC;
     }
 
-    //StatementLst --> Statement | Statement StatementLst ////////////////////WORKING
+    //StatementLst --> Statement | Statement StatementLst
     private ArrayList<ArrayList<Token>> StatementLst(ArrayList<ArrayList<Token>> sl){
         ArrayList<ArrayList<Token>> ret = new ArrayList<>();
         if(sl.size() > 0) {
             for (ArrayList<Token> statement : sl) {
                 ArrayList<Token> hold = Statement(statement);
+                if(hold.size() > 0 && hold.get(0).getType().equals("semi-colon")){
+                    hold.remove(0);
+                }
                 if (hold.size() != 0) {
                     ret.add(hold);
                 }
@@ -188,7 +191,7 @@ public class TokenParser {
         return ret;
     }
 
-    //Statement --> “new_line” | Assignment | If | Loop ///////////////////WORKING
+    //Statement --> “new_line” | Assignment | If | Loop
     private ArrayList<Token> Statement(ArrayList<Token> tokens){
         ArrayList<Token> ret = new ArrayList<>();
         if(tokens.size() > 0){
@@ -218,7 +221,7 @@ public class TokenParser {
         return ret;
     }
 
-    //Number --> Digit | Digit Number ///////////////////////WORKING
+    //Number --> Digit | Digit Number
     private Token Number(Token token){
         Token tek = new Token();
         if(token.getKey().length() > 1){
@@ -239,7 +242,7 @@ public class TokenParser {
         return tek;
     }
 
-    //Identifier --> Letter | Letter Number | Letter Identifier /////////////////WORKING
+    //Identifier --> Letter | Letter Number | Letter Identifier
     private Token Identifier(Token token){
         Token tek = new Token();
         if(!Letter(token.getKey().charAt(0))){
@@ -257,8 +260,27 @@ public class TokenParser {
         return tek;
     }
 
-    //Assignment --> Identifier “=” Expr   //////////////////////////////////////////NEED TO DO
+    //Assignment --> Type Identifier “=” Expression
     private ArrayList<Token> Assignment(ArrayList<Token> tokens){
+        ArrayList<Token> tok = tokens;
+        if(Type(tok.get(0).getKey())){
+            tok.remove(0);
+            if(Identifier(tok.get(0)).isEmpty()){
+                tok.remove(0);
+                if(tokens.get(0).getType().equals("assignment")){
+                    tok.remove(0);
+                    if (tok.size()>0 && Expression(tok).size() == 0){
+                        return new ArrayList<>();
+                    } else{
+                        return tok;
+                    }
+                } else{
+                    return tok;
+                }
+            }
+        } else{
+            return tok;
+        }
         return tokens;
     }
 
@@ -274,15 +296,55 @@ public class TokenParser {
 
     /*
     Condition --> Expr “==” Expr | Expr “>=” Expr | Expr “<=” Expr | Expr “>” Expr
-        | Expr “<” Expr | Condition “and” Condition | Condition “or” Condition | “true” | “false”
-     */                                                       //////////////////////////////////////////NEED TO DO
+        | Expr “<” Expr | Condition “and” Condition | Condition “or” Condition
+     */
     private ArrayList<Token> Condition(ArrayList<Token> tokens){
-        return tokens;
+        String conds = " == , >= , <= , > , < ";
+        String comb = " and , or ";
+        for(int g = 0; g < tokens.size(); g++){
+            if(tokens.get(g).getType().equals("compares") && comb.indexOf(tokens.get(g).getKey()) != 0){
+                if(!Condition((ArrayList<Token>) tokens.subList(0,g-1)).isEmpty()){
+                    return tokens;
+                } else{
+                    if(!Condition((ArrayList<Token>) tokens.subList(g+1,tokens.size())).isEmpty()){
+                        return tokens;
+                    }
+                }
+            } else if(tokens.get(g).getType().equals("compares") && conds.indexOf(tokens.get(g).getKey()) != 0){
+                if(!Expression((ArrayList<Token>) tokens.subList(0,g-1)).isEmpty()){
+                    return tokens;
+                } else{
+                    if(!Expression((ArrayList<Token>) tokens.subList(g+1,tokens.size())).isEmpty()){
+                        return tokens;
+                    }
+                }
+            } else{
+                return tokens;
+            }
+        }
+        return new ArrayList<>();
     }
 
-    //Iterator --> Expr “,” Expr    //////////////////////////////////////////NEED TO DO
+    //Iterator --> Expr “,” Expr
     private ArrayList<Token> Iterator(ArrayList<Token> tokens){
-        return tokens;
+        boolean notHandled = true;
+        for(int g = 0; g < tokens.size(); g++){
+            if(tokens.get(g).getType().equals("comma")){
+                if(!Expression((ArrayList<Token>) tokens.subList(0,g-1)).isEmpty()){
+                    if(!Expression((ArrayList<Token>) tokens.subList(g+1,tokens.size())).isEmpty()){
+                        return tokens;
+                    } else{
+                        notHandled = false;
+                    }
+                }
+            }
+        }
+        if(notHandled){
+            return tokens;
+        } else{
+            return new ArrayList<>();
+        }
+
     }
 
     //Loop --> “loop” Loop-Assignment “{“ Statement-Lst “}”     //////////////////////////////////////////NEED TO DO
@@ -298,12 +360,50 @@ public class TokenParser {
     /*
     Expression --> Expression “+” Expression | Expression “-” Expression | Expression “*” Expression |
         Expression “/” Expression | Expression “%” Expression | “(“ Expression “)” | Number
-     */                                                  //////////////////////////////////////////NEED TO DO
+     */
     private ArrayList<Token> Expression(ArrayList<Token> tokens){
-        return tokens;
+        ArrayList<Token> toks = tokens;
+        int openCount = 0, closeCount = 0;
+        if(toks.size() > 0 && Number(toks.get(0)).isEmpty()) {
+            toks.remove(0);
+            if(toks.size() > 1){
+                if(toks.get(0).getType().equals("operator")){
+                    toks.remove(0);
+                    toks = Expression(toks);
+                } else{
+                    return toks;
+                }
+            } else{
+                return tokens;
+            }
+        } else if (toks.get(0).getType().equals("open_paren")){
+            boolean parenChk = false;
+            for(Token tok:toks){
+                if(tok.getType().equals("open_paren")){
+                    openCount++;
+                } else if(tok.getType().equals("close_paren")){
+                    closeCount++;
+                }
+            }
+            if(openCount == closeCount){
+                for(int a = 0; a<toks.size(); a++){
+                    String typ = toks.get(a).getType();
+                    if(typ.equals("open_paren") || typ.equals("close_paren")){
+                        toks.remove(a);
+                    }
+                }
+                toks = Expression(toks);
+            } else{
+                return tokens;
+            }
+        } else{
+            return tokens;
+        }
+
+        return toks;
     }
 
-    //Digit --> ‘0’ | ‘1’ | ‘2’ | ‘3’ | ‘4’ | ‘5’ | ‘6’ | ‘7’ | ‘8’ | ‘9’  /////////////////WORKING
+    //Digit --> ‘0’ | ‘1’ | ‘2’ | ‘3’ | ‘4’ | ‘5’ | ‘6’ | ‘7’ | ‘8’ | ‘9’
     private boolean Digit(char ch){
         return ch >= 48 && ch <= 57;
     }
@@ -311,6 +411,16 @@ public class TokenParser {
     //Letter --> ‘a’..’z’ | ‘A’..’Z’
     private boolean Letter(char ch){
         return ((ch >= 65 && ch <= 90) || (ch >= 97 && ch <= 122));
+    }
+
+    //Bool --> "true" | "false"
+    private boolean Bool(String str){
+        return (str.equals("true") || str.equals("false"));
+    }
+
+    //Type --> "number"
+    private boolean Type(String str) {
+        return str.equals("number");
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
