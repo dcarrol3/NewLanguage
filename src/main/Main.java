@@ -58,10 +58,6 @@ public class Main {
         System.out.println("Output:");
 
         JavierRuntime runtime = new JavierRuntime("./data/test.txt");
-        try {
-            runtime.run();
-        }catch(IOException e){
-            e.printStackTrace();
-        }
+        runtime.run();
     }
 }
