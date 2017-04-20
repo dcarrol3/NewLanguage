@@ -8,8 +8,9 @@
 package main;
 
 import compiler.*;
-
+import runtime.Runtime;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Main {
@@ -18,7 +19,8 @@ public class Main {
         PemdasParser pem = new PemdasParser();
         LexicalAnalyzer la = new LexicalAnalyzer();
 
-        ArrayList<Token> tokens = la.tokenizeString(FileHandler.fileToString("exprTest.txt"));
+        //ArrayList<Token> tokens = la.tokenizeString(FileHandler.fileToString("exprTest.txt"));
+        ArrayList<Token> tokens = la.tokenizeString(FileHandler.fileToString("test.txt"));
 
         System.out.println("\n\n /////////////////LEXICAL////////////////////");
         ArrayList<Token> expr = new ArrayList<>();
@@ -31,14 +33,35 @@ public class Main {
 
         System.out.println("\n\n /////////////////PARSER////////////////////");
         TokenParser tk = new TokenParser(tokens);
+        StatementToOperation sto = new StatementToOperation();
+
+
 
         System.out.println("\n\n /////////////////INTERMEDIATE////////////////////");
-        ArrayList<Operation> ops = pem.parseExpression(tokens);
+        ArrayList<Operation> ops = sto.convertProgram(tk.getResults());
         for (Operation op: ops) {
             System.out.println(op.getType() + " "
                     + op.getVariable() + " "
                     + op.getValue1() + " "
                     + op.getValue2());
         }
+
+        IntermediateGenerator icg = new IntermediateGenerator();
+
+        // Create runtime file
+        icg.generateCode(ops, "test.txt");
+
+
+
+        System.out.println("\n\n /////////////////RUNTIME////////////////////");
+        System.out.println(FileHandler.fileToString("./data/test.txt") + "\n");
+       /* System.out.println("Output:");
+        Runtime runtime = new Runtime("./data/test.txt");
+        try {
+            runtime.run();
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+        */
     }
 }

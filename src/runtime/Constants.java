@@ -12,6 +12,7 @@ public class Constants {
     public static final String SUBTRACT = "sub";
     public static final String DIVIDE = "div";
     public static final String MULTIPLY = "multi";
+    public static final String MODULUS = "mod";
     public static final String EQUALS = "eq";
     public static final String NOT_EQUAL = "neq";
     public static final String GREATER_THAN = "gt";
@@ -23,5 +24,8 @@ public class Constants {
     public static final String PRINT = "print";
     public static final String IF = "if";
     public static final String JUMP = "jump";
+    public static final String JUMP_RETURN = "jr";
+    public static final String END = "end";
     public static final String MOD = "mod";
+
 }

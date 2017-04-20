@@ -16,7 +16,9 @@ import java.util.Stack;
 public class PemdasParser {
 
     // Temp variable for operations
-    public static final String TEMP = "t";
+    public static final String TEMP = "$t";
+    public static final String ASSIGN = "$a";
+    private static int assignNum = 0;
 
 
     // ----Syntax specific to the expression lib----
@@ -44,9 +46,15 @@ public class PemdasParser {
 
     // Simplifies and orders a (potentially complex) mathematical/conditional expression
     public ArrayList<Operation> parseExpression(ArrayList<Token> expr){
-        ArrayList<Operation> ops;
-        Expression expression = buildExpression(expr);
-        ops = postfixToOperations(expression.toRPN());
+        ArrayList<Operation> ops = new ArrayList<>();
+        if(expr.size() > 1) {
+            Expression expression = buildExpression(expr);
+            ops = postfixToOperations(expression.toRPN());
+        }
+        else{
+            ops.add(new Operation(Operation.OperationType.ASSIGNMENT, ASSIGN + assignNum, expr.get(0).getKey()));
+            assignNum++;
+        }
         return ops;
     }
 

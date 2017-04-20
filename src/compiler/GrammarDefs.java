@@ -30,6 +30,25 @@ public final class GrammarDefs {
     // New Line
     public static final String NEW_LINE = "new_line";
 
+    // Other
+    public static final String COMMA = "comma";
+    public static final String OPEN_BRACKET = "open_bracket";
+    public static final String CLOSE_BRACKET = "close_bracket";
+
+    // Label
+    public static final String LABEL = "label";
+
+    // Assignment
+    public static final String ASSIGNMENT = "assignment";
+    public static final String ASSIGNMENT_VAL = "=";
+
+    // Keywords
+    public static final String IF = "if";
+    public static final String LOOP = "loop";
+    public static final String PRINT = "print";
+
+
+
     // Conditional tokens
     public static final String AND_TOKEN = "and";
     public static final String OR_TOKEN = "or";
