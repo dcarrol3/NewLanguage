@@ -8,21 +8,48 @@
 package compiler;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
 
 public class StatementToOperation {
+
+    public ArrayList<Operation> convertProgram(HashMap<String,ArrayList<ArrayList<Token>>> program){
+        ArrayList<ArrayList<Token>> mainStatementList = program.get("program");
+        ArrayList<Operation> ops = new ArrayList<>();
+
+
+        for(ArrayList<Token> statement: mainStatementList){
+            ops.addAll(convertToOperation(statement));
+        }
+        ops.add(new Operation(Operation.OperationType.END)); // End of program
+
+        // Add all labeled blocks
+        Iterator it = program.entrySet().iterator();
+        while (it.hasNext()) {
+            HashMap.Entry labeledStatements = (HashMap.Entry)it.next();
+            if(!labeledStatements.getKey().toString().equals("program")) {
+                ops.add(new Operation(Operation.OperationType.LABEL, labeledStatements.getKey().toString()));
+                for (ArrayList<Token> labeledStatement : (ArrayList<ArrayList<Token>>) labeledStatements.getValue()) {
+                    ops.addAll(convertToOperation(labeledStatement));
+                }
+                ops.add(new Operation(Operation.OperationType.JUMP_RETURN));
+            }
+        }
+
+        return ops;
+    }
 
     // Converts a statement made of tokens to series of operations
     private ArrayList<Operation> convertToOperation(ArrayList<Token> statement){
         ArrayList<Operation> ops = new ArrayList<>();
-        String type;
         boolean typeFound = false;
 
         // Get statement type
-        while(!typeFound && statement.iterator().hasNext()) {
-            Token token = statement.iterator().next();
-            switch(token.getType()) {
-                case GrammarDefs.ASSIGNMENT:
+        Iterator<Token> it = statement.iterator();
+        while(!typeFound && it.hasNext()) {
+            Token token = it.next();
+            switch(token.getKey()) {
+                case GrammarDefs.ASSIGNMENT_VAL:
                     ops = parseAssignment(statement);
                     typeFound = true;
                     break;
@@ -31,9 +58,11 @@ public class StatementToOperation {
                     typeFound = true;
                     break;
                 case GrammarDefs.LOOP:
+                    ops = parseLoop(statement);
                     typeFound = true;
                     break;
                 case GrammarDefs.PRINT:
+                    ops = parsePrint(statement);
                     typeFound = true;
                     break;
                 default:
@@ -44,20 +73,92 @@ public class StatementToOperation {
         return ops;
     }
 
+    private ArrayList<Operation> parsePrint(ArrayList<Token> statement){
+        ArrayList<Operation> ops = new ArrayList<>();
+        PemdasParser pem = new PemdasParser();
+        ArrayList<Token> expression = new ArrayList<>(statement.subList(1, statement.size() - 1));
+
+        ops.addAll(pem.parseExpression(expression));
+        String exprVar = ops.get(ops.size() - 1).getVariable();
+        ops.add(new Operation(Operation.OperationType.PRINT, exprVar));
+
+        return ops;
+
+    }
+
+    // Parse a loop statement into operations
+    private ArrayList<Operation> parseLoop(ArrayList<Token> statement){
+        ArrayList<Operation> ops = new ArrayList<>();
+        PemdasParser pem = new PemdasParser();
+
+        // Get the comma position
+        int comma = 0;
+        int bracket = 0;
+        for(int i = 0; i < statement.size(); i++){
+            if(statement.get(i).getType().equals(GrammarDefs.COMMA)){
+                comma = i;
+            }
+            else if(statement.get(i).getType().equals(GrammarDefs.OPEN_BRACKET)){
+                bracket = i;
+            }
+        }
+
+        ArrayList<Token> expression1 = new ArrayList<>(statement.subList(3, comma));
+        ArrayList<Token> expression2 = new ArrayList<>(statement.subList(comma + 1, bracket));
+
+        String variable = statement.get(1).getKey();
+
+        // Start iterator
+        ops.addAll(pem.parseExpression(expression1));
+        String exprVar1 = ops.get(ops.size() - 1).getVariable();
+
+        // End iterator
+        ops.addAll(pem.parseExpression(expression2));
+        String exprVar2 = ops.get(ops.size() - 1).getVariable();
+
+        String label = statement.get(bracket + 1).getKey();
+
+        // Add the LOOP operation
+        ops.add(new Operation(Operation.OperationType.LOOP, variable, exprVar1, exprVar2, label));
+
+        return ops;
+
+    }
+
+    // Parse an if statement into operations
     private ArrayList<Operation> parseIf(ArrayList<Token> statement){
         ArrayList<Operation> ops = new ArrayList<>();
         PemdasParser pem = new PemdasParser();
         // Get the conditional inside the if statement
-        // TODO - This assumes the terminating newline/semi-colon is not included
-        ArrayList<Token> expression = new ArrayList<>(statement.subList(1, statement.size() - 2));
-        ops.addAll(pem.parseExpression(expression)); // Get operations for the expression
+
+        // Get the first open_bracket position
+        int bracket = -1;
+        int elseBracket = -1;
+        for(int i = 0; i < statement.size(); i++){
+            if(statement.get(i).getType().equals(GrammarDefs.OPEN_BRACKET)){
+                if(bracket == -1){
+                    bracket = i;
+                } else {
+                    elseBracket = i;
+                }
+
+            }
+
+        }
+
+        ArrayList<Token> condition = new ArrayList<>(statement.subList(1, bracket));
+        ops.addAll(pem.parseExpression(condition)); // Get operations for the condition
 
         // Get the last variable used in the conditional
         String exprVar = ops.get(ops.size() - 1).getVariable();
-        String label = "labelTest"; //TODO - Get label from parser
+        // Get the labels
+        String ifLabel = statement.get(bracket + 1).getKey();
+        String elseLabel = null;
+        if(elseBracket != -1)
+            elseLabel = statement.get(elseBracket + 1).getKey();
 
         // Add the IF operation
-        ops.add(new Operation(Operation.OperationType.IF, label, exprVar));
+        ops.add(new Operation(Operation.OperationType.IF, ifLabel, exprVar, elseLabel));
 
         return ops;
 
@@ -67,7 +168,7 @@ public class StatementToOperation {
     private ArrayList<Operation> parseAssignment(ArrayList<Token> statement){
         ArrayList<Operation> ops = new ArrayList<>();
         PemdasParser pem = new PemdasParser();
-        // TODO - This assumes the terminating newline/semi-colon is not included
+
         ArrayList<Token> expression = new ArrayList<>(statement.subList(2, statement.size() - 1));
         String variable = statement.get(0).getKey(); // Get the identifier
         ops.addAll(pem.parseExpression(expression)); // Get operations for the expression

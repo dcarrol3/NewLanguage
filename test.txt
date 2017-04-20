@@ -1,4 +1,22 @@
 
+x = 5
+y = 2
+z = x + y
+
+if x == y {
+    print z
+} else {
+    print y
+}
+
+print x
+
+loop i = 1,25 {
+    print z
+}
+
+
+#/
 x=4;
 testVar=5
 
@@ -23,9 +41,9 @@ loop i = 1,2 {
     }
 }
 
-bool boolTest = true;
-int count = 45;
-int sum = 0;
+boolTest = true;
+count = 45;
+sum = 0;
 
 if (3!=5 and true) {
     sum = 2
@@ -36,4 +54,4 @@ if(1 == 2){
 }else{
   sum = 1
 }
-
+/#

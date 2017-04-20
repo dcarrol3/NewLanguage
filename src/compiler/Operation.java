@@ -29,6 +29,9 @@ public class Operation {
         FALSE,
         PRINT,
         JUMP,
+        JUMP_RETURN,
+        END,
+        LABEL,
         ERROR
     }
 
@@ -37,7 +40,21 @@ public class Operation {
     private String value1;
     private String value2;
 
+    public String getLoopLabel() {
+        return loopLabel;
+    }
+
+    public void setLoopLabel(String loopLabel) {
+        this.loopLabel = loopLabel;
+    }
+
+    private String loopLabel;
+
     public Operation(){};
+
+    public Operation(OperationType type){
+        this.type = type;
+    }
 
     public Operation(OperationType type, String variable){
         this.type = type;
@@ -55,6 +72,14 @@ public class Operation {
         this.variable = variable;
         this.value1 = value1;
         this.value2 = value2;
+    }
+
+    public Operation(OperationType type, String variable, String value1, String value2, String loopLabel){
+        this.type = type;
+        this.variable = variable;
+        this.value1 = value1;
+        this.value2 = value2;
+        this.loopLabel = loopLabel;
     }
 
     public OperationType getType() {

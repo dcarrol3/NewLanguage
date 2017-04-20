@@ -126,7 +126,7 @@ public class TokenParser {
                 if(tokenType.equals("open_bracket")){
                     statement.add(tokensRef.get(y));
                     Token tok = new Token();
-                    tok.setType("label");
+                    tok.setType(GrammarDefs.LABEL);
                     incLabel();
                     tok.setKey(labelStat);
                     statement.add(tok);

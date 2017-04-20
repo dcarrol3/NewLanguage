@@ -11,6 +11,7 @@ import compiler.*;
 import runtime.Runtime;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Main {
@@ -33,11 +34,12 @@ public class Main {
 
         System.out.println("\n\n /////////////////PARSER////////////////////");
         TokenParser tk = new TokenParser(tokens);
+        StatementToOperation sto = new StatementToOperation();
 
 
 
         System.out.println("\n\n /////////////////INTERMEDIATE////////////////////");
-        ArrayList<Operation> ops = pem.parseExpression(tokens);
+        ArrayList<Operation> ops = sto.convertProgram(tk.getResults());
         for (Operation op: ops) {
             System.out.println(op.getType() + " "
                     + op.getVariable() + " "
@@ -47,20 +49,19 @@ public class Main {
         IntermediateGenerator icg = new IntermediateGenerator();
 
         // Create runtime file
-        String lastVar = ops.get(ops.size() - 1).getVariable(); // Get last variable for printing
-        ops.add(new Operation(Operation.OperationType.PRINT, lastVar));
         icg.generateCode(ops, "test.txt");
 
 
 
         System.out.println("\n\n /////////////////RUNTIME////////////////////");
         System.out.println(FileHandler.fileToString("./data/test.txt") + "\n");
-        System.out.println("Output:");
+       /* System.out.println("Output:");
         Runtime runtime = new Runtime("./data/test.txt");
         try {
             runtime.run();
         }catch(IOException e){
             e.printStackTrace();
         }
+        */
     }
 }

@@ -13,6 +13,8 @@ import java.util.ArrayList;
 
 public class IntermediateGenerator {
     public final String INTER_CODE_DIR = "data/";
+    public final String LOOP_VAR = "$l";
+    private int loopNum = 0;
 
     // Generate intermediate code from parsed code
     public void generateCode(ArrayList<Operation> operations, String filename){
@@ -24,7 +26,12 @@ public class IntermediateGenerator {
                     assemblyOp = assignmentOp(operation.getVariable(), operation.getValue1());
                     break;
                 case IF:
+                    assemblyOp = ifOp(operation.getVariable(), operation.getValue1(), operation.getValue2());
+                    break;
                 case LOOP:
+                    assemblyOp = loopOp(operation.getVariable(), operation.getValue1(), operation.getValue2(), operation.getLoopLabel());
+                    loopNum++;
+                    break;
                 case ADDITION:
                     assemblyOp = addOp(operation.getVariable(), operation.getValue1(), operation.getValue2());
                     break;
@@ -58,8 +65,6 @@ public class IntermediateGenerator {
                 case LESS_THAN_EQUAL_TO:
                     assemblyOp = lteOp(operation.getVariable(), operation.getValue1(), operation.getValue2());
                     break;
-                case TRUE: // TODO - Is this an operation?
-                case FALSE: // TODO - Is this an operation?
                 case AND:
                     assemblyOp = andOp(operation.getVariable(), operation.getValue1(), operation.getValue2());
                     break;
@@ -70,7 +75,16 @@ public class IntermediateGenerator {
                     assemblyOp = printOp(operation.getVariable());
                     break;
                 case JUMP:
-                    assemblyOp = jumpOp(operation.getVariable(), operation.getValue1());
+                    assemblyOp = jumpOp(operation.getVariable());
+                    break;
+                case JUMP_RETURN:
+                    assemblyOp = jumpReturnOp();
+                    break;
+                case LABEL:
+                    assemblyOp = labelOp(operation.getVariable());
+                    break;
+                case END:
+                    assemblyOp = endOp();
                     break;
                 default:
             }
@@ -78,6 +92,42 @@ public class IntermediateGenerator {
             intermCode.append("\n"); // Every operation must be on a new line
         }
         FileHandler.stringToFile(INTER_CODE_DIR + filename, intermCode.toString());
+    }
+
+    private String endOp() {
+        return Constants.END;
+    }
+
+    private String labelOp(String variable) {
+        return variable;
+    }
+
+    private String jumpReturnOp() {
+        return Constants.JUMP_RETURN;
+    }
+
+    private String loopOp(String variable, String value1, String value2, String label) {
+        String loop = "";
+        loop += assignmentOp(variable, value1) + "\n";
+        loop += labelOp("looplabel" + loopNum) + "\n";
+        loop += gteOp(LOOP_VAR + loopNum, variable, value2) + "\n";
+        loop += ifOp(label, LOOP_VAR + loopNum, "leaveloop" + loopNum) + "\n";
+        loop += addOp(variable, variable, "1") + "\n";
+        loop += jumpOp("looplabel" + loopNum) + "\n";
+        loop += labelOp("leaveloop" + loopNum);
+        return loop;
+    }
+
+    // if,$t0,truelabel,falselabel
+    private String ifOp(String ifLabel, String exprVar, String elseLabel) {
+        String ifCode;
+
+        if(elseLabel != null && !elseLabel.equals(""))
+            ifCode = Constants.IF + "," + exprVar + "," + ifLabel + "," + elseLabel;
+        else
+            ifCode = Constants.IF + "," + exprVar + "," + ifLabel;
+
+        return ifCode;
     }
 
     private String assignmentOp(String variable, String value){
@@ -140,7 +190,7 @@ public class IntermediateGenerator {
         return Constants.PRINT + "," + variable;
     }
 
-    private String jumpOp(String variable, String label){
-        return Constants.JUMP + "," + variable + "," + label;
+    private String jumpOp(String label){
+        return Constants.JUMP + "," + label;
     }
 }
