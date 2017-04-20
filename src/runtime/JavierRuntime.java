@@ -7,26 +7,31 @@
 
 package runtime;
 
+import com.sun.tools.internal.jxc.ap.Const;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Stack;
 
 public class JavierRuntime {
     private HashMap<String, String> symbolTable;
+    private Stack<Integer> jumpStack;
     private String fileName;
 
     // set the symbol table to be empty when runtime is instantiated
     public JavierRuntime(String fileName) {
         this.fileName = fileName;
         this.symbolTable = new HashMap<>();
+        this.jumpStack = new Stack<>();
     }
 
     // add all labels and their line number to the Symbol Table
     private void addLinesStatements(String[] lines) {
         for(int i = 0; i < lines.length; i++) {
             // a label will not have a ',' character in it
-            if(lines[i].indexOf(',') == -1) {
+            if(lines[i].indexOf(',') == -1 && !lines[i].equals(Constants.END) && !lines[i].equals(Constants.JUMP_RETURN)) {
                 symbolTable.put(lines[i], String.valueOf(i));
             }
         }
@@ -83,16 +88,28 @@ public class JavierRuntime {
                     or(statements);
                     break;
                 case Constants.IF:
-                    if(!Boolean.valueOf(symbolTable.get(statements[1]))) {
+                    if(Boolean.valueOf(symbolTable.get(statements[1]))) {
+                        jumpStack.push(i);
                         i = Integer.valueOf(symbolTable.get(statements[2]));
+                    } else {
+                        if(statements.length > 3) {
+                            jumpStack.push(i);
+                            i = Integer.valueOf(symbolTable.get(statements[3]));
+                        }
                     }
                     break;
                 case Constants.JUMP:
-                        i = Integer.valueOf(symbolTable.get(statements[1]));
+                    jumpStack.push(i);
+                    i = Integer.valueOf(symbolTable.get(statements[1]));
                     break;
                 case Constants.MOD:
                     mod(statements);
                     break;
+                case Constants.END:
+                    i = lines.length;
+                    break;
+                case Constants.JUMP_RETURN:
+                    i = jumpStack.pop();
                 default:
                     break;
             }

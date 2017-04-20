@@ -1,17 +1,7 @@
 
-x = 5
-y = 2
-z = x + y
+z = 8
 
-if x == y {
-    print z
-} else {
-    print y
-}
-
-print x
-
-loop i = 1,25 {
+loop i = 1,5 {
     print z
 }
 

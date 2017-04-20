@@ -55,13 +55,13 @@ public class Main {
 
         System.out.println("\n\n /////////////////RUNTIME////////////////////");
         System.out.println(FileHandler.fileToString("./data/test.txt") + "\n");
-       /* System.out.println("Output:");
-        JavierRuntime runtime = new JavierRuntime("./data/test.txt");
+        System.out.println("Output:");
+
+        JavierRuntime runtime = new JavierRuntime("./src/runtime/parsed.txt");
         try {
             runtime.run();
         }catch(IOException e){
             e.printStackTrace();
         }
-        */
     }
 }
