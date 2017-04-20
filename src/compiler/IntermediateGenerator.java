@@ -151,7 +151,7 @@ public class IntermediateGenerator {
     }
 
     private String modOp(String variable, String value1, String value2){
-        return Constants.MODULUS + "," + variable + "," + value1 + "," + value2;
+        return Constants.MOD + "," + variable + "," + value1 + "," + value2;
     }
 
     private String equalsOp(String variable, String value1, String value2){

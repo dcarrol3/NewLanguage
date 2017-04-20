@@ -8,7 +8,7 @@
 package main;
 
 import compiler.*;
-import runtime.Runtime;
+import runtime.JavierRuntime;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -56,7 +56,7 @@ public class Main {
         System.out.println("\n\n /////////////////RUNTIME////////////////////");
         System.out.println(FileHandler.fileToString("./data/test.txt") + "\n");
        /* System.out.println("Output:");
-        Runtime runtime = new Runtime("./data/test.txt");
+        JavierRuntime runtime = new JavierRuntime("./data/test.txt");
         try {
             runtime.run();
         }catch(IOException e){
