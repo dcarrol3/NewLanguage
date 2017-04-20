@@ -12,12 +12,12 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 
-public class Runtime {
+public class JavierRuntime {
     private HashMap<String, String> symbolTable;
     private String fileName;
 
     // set the symbol table to be empty when runtime is instantiated
-    public Runtime(String fileName) {
+    public JavierRuntime(String fileName) {
         this.fileName = fileName;
         this.symbolTable = new HashMap<>();
     }
@@ -90,60 +90,71 @@ public class Runtime {
                 case Constants.JUMP:
                         i = Integer.valueOf(symbolTable.get(statements[1]));
                     break;
+                case Constants.MOD:
+                    mod(statements);
+                    break;
                 default:
                     break;
             }
         }
     }
 
+    // % modulus
+    private void mod(String[] statements) {
+        symbolTable.put(statements[1],
+                String.valueOf(Integer.parseInt(contains(statements[2])) % Integer.parseInt(contains(statements[3]))));
+    }
+
+    // and
     private void and(String[] statements) {
         symbolTable.put(statements[1],
                 String.valueOf(Boolean.parseBoolean(contains(statements[2])) && Boolean.parseBoolean(contains(statements[3]))));
     }
 
+    // or
     private void or(String[] statements) {
         symbolTable.put(statements[1],
                 String.valueOf(Boolean.parseBoolean(contains(statements[2])) || Boolean.parseBoolean(contains(statements[3]))));
     }
 
-    // <=
+    // <= greater than or equal to
     private void greaterThanEqualTo(String[] statements) {
         symbolTable.put(statements[1],
                 String.valueOf(Integer.parseInt(contains(statements[2])) >= Integer.parseInt(contains(statements[3]))));
     }
 
-    // >=
+    // >= less than or equal to
     private void lessThanEqualTo(String[] statements) {
         symbolTable.put(statements[1],
                 String.valueOf(Integer.parseInt(contains(statements[2])) <= Integer.parseInt(contains(statements[3]))));
 
     }
 
-    // !=
+    // != not equals
     private void notEquals(String[] statements) {
         symbolTable.put(statements[1],
                 String.valueOf(Integer.parseInt(contains(statements[2])) != Integer.parseInt(contains(statements[3]))));
     }
 
-    // ==
+    // == equals
     private void equals(String[] statements) {
         symbolTable.put(statements[1],
                 String.valueOf(Integer.parseInt(contains(statements[2])) == Integer.parseInt(contains(statements[3]))));
     }
 
-    // <
+    // < less than
     private void lessThan(String[] statements) {
         symbolTable.put(statements[1],
                 String.valueOf(Integer.parseInt(contains(statements[2])) < Integer.parseInt(contains(statements[3]))));
     }
 
-    // >
+    // > grater than
     private void greaterThan(String[] statements) {
         symbolTable.put(statements[1],
                 String.valueOf(Integer.parseInt(contains(statements[2])) > Integer.parseInt(contains(statements[3]))));
     }
 
-    // /
+    // / integer division
     private void div(String[] statements) {
         symbolTable.put(statements[1],
                 String.valueOf(Integer.parseInt(contains(statements[2])) / Integer.parseInt(contains(statements[3]))));
@@ -155,19 +166,19 @@ public class Runtime {
         System.out.println(value);
     }
 
-    // *
+    // * multiplication
     private void multi(String[] statements) {
         symbolTable.put(statements[1],
                 String.valueOf(Integer.parseInt(contains(statements[2])) * Integer.parseInt(contains(statements[3]))));
     }
 
-    // -
+    // - subtraction
     private void sub(String[] statements) {
         symbolTable.put(statements[1],
                 String.valueOf(Integer.parseInt(contains(statements[2])) - Integer.parseInt(contains(statements[3]))));
     }
 
-    // +
+    // + addition
     private void add(String[] statements) {
         symbolTable.put(statements[1],
                 String.valueOf(Integer.parseInt(contains(statements[2])) + Integer.parseInt( contains(statements[3]))));

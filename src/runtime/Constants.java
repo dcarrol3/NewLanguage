@@ -26,4 +26,6 @@ public class Constants {
     public static final String JUMP = "jump";
     public static final String JUMP_RETURN = "jr";
     public static final String END = "end";
+    public static final String MOD = "mod";
+
 }
