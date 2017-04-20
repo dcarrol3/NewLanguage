@@ -110,7 +110,7 @@ public class IntermediateGenerator {
         String loop = "";
         loop += assignmentOp(variable, value1) + "\n";
         loop += labelOp("looplabel" + loopNum) + "\n";
-        loop += gteOp(LOOP_VAR + loopNum, variable, value2) + "\n";
+        loop += lteOp(LOOP_VAR + loopNum, variable, value2) + "\n";
         loop += ifOp(label, LOOP_VAR + loopNum, "leaveloop" + loopNum) + "\n";
         loop += addOp(variable, variable, "1") + "\n";
         loop += jumpOp("looplabel" + loopNum) + "\n";

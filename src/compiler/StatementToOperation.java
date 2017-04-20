@@ -1,8 +1,8 @@
 /*
  * Purpose: Breaks down statements to each of its operations
  * Author(s): Doug Carroll
- * Version: 1
- * Date: 4/17/2017
+ * Version: 2
+ * Date: 4/19/2017
  */
 
 package compiler;

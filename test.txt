@@ -1,10 +1,17 @@
+x = 0
 
-z = 8
-
-loop i = 1,5 {
-    print z
+loop i = 1,5{
+    x = x + 1
+    print x
+    if(x == 2){
+        print x
+        if(5 + 4 == 4) {
+            print 99
+        } else {
+            print 100
+        }
+    }
 }
-
 
 #/
 x=4;
