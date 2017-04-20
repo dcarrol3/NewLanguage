@@ -79,7 +79,9 @@ public class StatementToOperation {
         ArrayList<Token> expression = new ArrayList<>(statement.subList(1, statement.size() - 1));
 
         ops.addAll(pem.parseExpression(expression));
-        String exprVar = ops.get(ops.size() - 1).getVariable();
+        String exprVar = statement.get(1).getKey(); // Get the straight value if no ops are needed
+        if(!ops.isEmpty())
+            exprVar = ops.get(ops.size() - 1).getVariable();
         ops.add(new Operation(Operation.OperationType.PRINT, exprVar));
 
         return ops;
@@ -110,11 +112,15 @@ public class StatementToOperation {
 
         // Start iterator
         ops.addAll(pem.parseExpression(expression1));
-        String exprVar1 = ops.get(ops.size() - 1).getVariable();
+        String exprVar1 = statement.get(3).getKey(); // Get the straight value if no ops are needed
+        if(!ops.isEmpty())
+            exprVar1 = ops.get(ops.size() - 1).getVariable();
 
         // End iterator
         ops.addAll(pem.parseExpression(expression2));
-        String exprVar2 = ops.get(ops.size() - 1).getVariable();
+        String exprVar2 = statement.get(comma + 1).getKey();
+        if(expression2.size() != 1 && !ops.isEmpty())
+            exprVar2 = ops.get(ops.size() - 1).getVariable();
 
         String label = statement.get(bracket + 1).getKey();
 
@@ -174,7 +180,9 @@ public class StatementToOperation {
         ops.addAll(pem.parseExpression(expression)); // Get operations for the expression
 
         // Get the last variable used in the expression
-        String exprVar = ops.get(ops.size() - 1).getVariable();
+        String exprVar = statement.get(2).getKey(); // If a single value
+        if(!ops.isEmpty())
+            exprVar = ops.get(ops.size() - 1).getVariable();
 
         // Add the assignment operation
         ops.add(new Operation(Operation.OperationType.ASSIGNMENT, variable, exprVar));

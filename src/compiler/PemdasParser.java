@@ -17,8 +17,7 @@ public class PemdasParser {
 
     // Temp variable for operations
     public static final String TEMP = "$t";
-    public static final String ASSIGN = "$a";
-    private static int assignNum = 0;
+    private static int tempCount = 0;
 
 
     // ----Syntax specific to the expression lib----
@@ -50,10 +49,6 @@ public class PemdasParser {
         if(expr.size() > 1) {
             Expression expression = buildExpression(expr);
             ops = postfixToOperations(expression.toRPN());
-        }
-        else{
-            ops.add(new Operation(Operation.OperationType.ASSIGNMENT, ASSIGN + assignNum, expr.get(0).getKey()));
-            assignNum++;
         }
         return ops;
     }
@@ -141,7 +136,6 @@ public class PemdasParser {
         String[] postfixArr = postfix.split(" ");
         ArrayList<Operation> ops = new ArrayList<>();
         Stack<String> stack = new Stack<>();
-        int tempCount = 0;
 
         for(int i = 0; i < postfixArr.length; i++){
             // If number or variable, add it to the stack

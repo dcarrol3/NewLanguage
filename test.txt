@@ -1,6 +1,12 @@
-x = 0
+x = 1
 
-loop i = 1,5{
+loop hello = 1,25 {
+    hello = hello + 1
+    print hello
+}
+
+#/
+loop i = 1, x{
     x = x + 1
     print x
     if(x == 2){
@@ -11,44 +17,5 @@ loop i = 1,5{
             print 100
         }
     }
-}
-
-#/
-x=4;
-testVar=5
-
-
-if (testVar == 5) {
-  x=5;
-}
-
-loop i = 1,25 {
-    x = x + 1; # test comment
-}
-
-loop i = 1,2 {
-    if(3 == 3){
-        if(1+2 == 3){
-            if(2-1 == 2){
-
-            } else{
-                number al = 2
-            }
-        }
-    }
-}
-
-boolTest = true;
-count = 45;
-sum = 0;
-
-if (3!=5 and true) {
-    sum = 2
-} else {}
-
-if(1 == 2){
-
-}else{
-  sum = 1
 }
 /#
