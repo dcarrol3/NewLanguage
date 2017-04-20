@@ -36,8 +36,12 @@ public class JavierRuntime {
     }
 
     // read the file that was parsed
-    public void run() throws IOException {
-        readFile();
+    public void run() {
+        try {
+            readFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     // go through each line of the file
@@ -132,13 +136,13 @@ public class JavierRuntime {
                 String.valueOf(Boolean.parseBoolean(contains(statements[2])) || Boolean.parseBoolean(contains(statements[3]))));
     }
 
-    // <= greater than or equal to
+    // >= greater than or equal to
     private void greaterThanEqualTo(String[] statements) {
         symbolTable.put(statements[1],
                 String.valueOf(Integer.parseInt(contains(statements[2])) >= Integer.parseInt(contains(statements[3]))));
     }
 
-    // >= less than or equal to
+    // <= less than or equal to
     private void lessThanEqualTo(String[] statements) {
         symbolTable.put(statements[1],
                 String.valueOf(Integer.parseInt(contains(statements[2])) <= Integer.parseInt(contains(statements[3]))));
