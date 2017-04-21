@@ -110,8 +110,8 @@ public class IntermediateGenerator {
         String loop = "";
         loop += assignmentOp(variable, value1) + "\n";
         loop += labelOp("looplabel" + loopNum) + "\n";
-        loop += gteOp(LOOP_VAR + loopNum, variable, value2) + "\n";
-        loop += ifOp(label, LOOP_VAR + loopNum, "leaveloop" + loopNum) + "\n";
+        loop += lteOp(LOOP_VAR + loopNum, variable, value2) + "\n";
+        loop += Constants.LOOP + "," + (LOOP_VAR + loopNum) + "," + label + "," + ("leaveloop" + loopNum) + "\n";
         loop += addOp(variable, variable, "1") + "\n";
         loop += jumpOp("looplabel" + loopNum) + "\n";
         loop += labelOp("leaveloop" + loopNum);
@@ -151,7 +151,7 @@ public class IntermediateGenerator {
     }
 
     private String modOp(String variable, String value1, String value2){
-        return Constants.MODULUS + "," + variable + "," + value1 + "," + value2;
+        return Constants.MOD + "," + variable + "," + value1 + "," + value2;
     }
 
     private String equalsOp(String variable, String value1, String value2){

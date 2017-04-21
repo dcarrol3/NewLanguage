@@ -46,6 +46,7 @@ public final class GrammarDefs {
     public static final String IF = "if";
     public static final String LOOP = "loop";
     public static final String PRINT = "print";
+    public static final String ELSE = "else";
 
 
 
