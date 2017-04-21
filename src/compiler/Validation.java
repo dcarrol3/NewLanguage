@@ -163,6 +163,40 @@ public class Validation {
         return flag;
     }
 
+    /*
+    =============================================================
+    =============================================================
+    */
+
+    private boolean is_loop(String token) {
+
+        boolean flag = false;
+
+        if (token == definitions.LOOP) {
+
+            flag = true;
+        }
+
+        return flag;
+    }
+
+    /*
+    =============================================================
+    =============================================================
+    */
+
+    private boolean is_print(String token) {
+
+        boolean flag = false;
+
+        if (token == definitions.PRINT) {
+
+            flag = true;
+        }
+
+        return flag;
+    }
+
 
 
 }
