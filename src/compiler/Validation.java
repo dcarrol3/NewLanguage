@@ -66,6 +66,19 @@ public class Validation {
     =============================================================
     */
 
+    public boolean is_open_bracket(String token) {
+
+        boolean flag = false;
+
+        if (token == definitions.OPEN_BRACKET) {
+
+            flag = true;
+
+        }
+
+        return flag;
+    }
+
 
 
 
