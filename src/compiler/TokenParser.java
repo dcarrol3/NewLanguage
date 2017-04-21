@@ -176,7 +176,7 @@ public class TokenParser {
         if(sl.size() > 0) {
             for (ArrayList<Token> statement : sl) {
                 ArrayList<Token> hold = Statement(statement);
-                if(hold.size() > 0 && hold.get(0).getType().equals("semi-colon")){
+                if(hold.size() > 0 && (hold.get(0).getType().equals("semi-colon"))){
                     hold.remove(0);
                 }
                 if (hold.size() != 0) {

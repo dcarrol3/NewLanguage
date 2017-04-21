@@ -111,7 +111,7 @@ public class IntermediateGenerator {
         loop += assignmentOp(variable, value1) + "\n";
         loop += labelOp("looplabel" + loopNum) + "\n";
         loop += lteOp(LOOP_VAR + loopNum, variable, value2) + "\n";
-        loop += ifOp(label, LOOP_VAR + loopNum, "leaveloop" + loopNum) + "\n";
+        loop += Constants.LOOP + "," + (LOOP_VAR + loopNum) + "," + label + "," + ("leaveloop" + loopNum) + "\n";
         loop += addOp(variable, variable, "1") + "\n";
         loop += jumpOp("looplabel" + loopNum) + "\n";
         loop += labelOp("leaveloop" + loopNum);

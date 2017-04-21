@@ -100,8 +100,18 @@ public class JavierRuntime {
                         }
                     }
                     break;
+                case Constants.LOOP:
+                    if(Boolean.valueOf(symbolTable.get(statements[1]))) {
+                        jumpStack.push(i);
+                        i = Integer.valueOf(symbolTable.get(statements[2]));
+                    } else {
+                        if(statements.length > 3) {
+                            // Dont add the else to the jump stack
+                            i = Integer.valueOf(symbolTable.get(statements[3]));
+                        }
+                    }
+                    break;
                 case Constants.JUMP:
-                    jumpStack.push(i);
                     i = Integer.valueOf(symbolTable.get(statements[1]));
                     break;
                 case Constants.MOD:
