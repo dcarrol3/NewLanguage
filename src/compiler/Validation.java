@@ -459,9 +459,17 @@ public class Validation {
 
     private boolean is_expression_token(String[] token) {
 
-        boolean flag = true;
+        boolean flag;
         String prev_token = token[0];
         int i = 1;
+
+        flag = is_valid_paren_count(token);
+
+        //checks expression does not start or end with an operator
+        if (flag && (!is_numerical_token(token[0]) || !is_numerical_token(token[token.length]))) {
+
+            flag = false;
+        }
 
         //checks expression for invalid combinations
        while (flag && i < token.length) {
@@ -474,17 +482,19 @@ public class Validation {
 
                flag = false;
 
+           } else if (is_open_paren_token(prev_token) && !is_numerical_token(token[i])) {
+
+               flag = false;
+
+           } else if (is_closed_paren_token(prev_token) && !is_operation(token[i])) {
+
+               flag = false;
+
            }
            
            prev_token = token[i];
            i++;
        }
-        
-       //checks expression does not start or end with an operator
-        if (flag && (!is_numerical_token(token[0]) || !is_numerical_token(token[token.length]))) {
-
-            flag = false;
-        }
 
         return flag;
     }
@@ -499,6 +509,72 @@ public class Validation {
         boolean flag = false;
 
         if(is_number(token) || is_identifier(token)) {
+
+            flag = true;
+        }
+
+        return flag;
+    }
+
+     /*
+    =============================================================
+    =============================================================
+    */
+
+    private boolean is_valid_paren_count(String[] token) {
+
+        int open_count = 0;
+        int closed_count = 0;
+        boolean flag = false;
+
+        for (int i = 0; i < token.length; i++) {
+
+            if (token[i].equals(GrammarDefs.OPEN_PAREN)) {
+
+                open_count++;
+
+            } else if (token[i].equals(GrammarDefs.CLOSED_PAREN)) {
+
+                closed_count++;
+
+            }
+        }
+
+        if (closed_count == open_count) {
+
+            flag = true;
+        }
+
+        return flag;
+    }
+
+     /*
+    =============================================================
+    =============================================================
+    */
+
+    private boolean is_closed_paren_token(String token) {
+
+        boolean flag = false;
+
+        if(token.equals(GrammarDefs.CLOSED_PAREN)) {
+
+            flag = true;
+        }
+
+        return flag;
+    }
+
+    /*
+    =============================================================
+    =============================================================
+    */
+
+    private boolean is_open_paren_token(String token) {
+
+        boolean flag = false;
+
+        if(token.equals(GrammarDefs.OPEN_PAREN)) {
 
             flag = true;
         }
