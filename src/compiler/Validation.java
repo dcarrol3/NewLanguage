@@ -452,33 +452,31 @@ public class Validation {
 
 
     /*
-    =============================================================
-    Determines if an array is a valid mathematical expression
-    =============================================================
+    =================================================================
+    Determines if token sequence is a valid mathematical expression
+    =================================================================
     */
 
-    private boolean is_expression_token(String[] token) {
+    private boolean is_valid_expression(String[] token) {
 
         boolean flag;
         String prev_token = token[0];
         int i = 1;
 
+        //check to ensure there are the same number of open and closed parenthesis
         flag = is_valid_paren_count(token);
 
         //checks expression does not start or end with an operator
-        if (flag && (!is_numerical_token(token[0]) || !is_numerical_token(token[token.length]))) {
-
-            flag = false;
-        }
+        flag = flag && (!is_numerical_token(token[0]) || !is_numerical_token(token[token.length]));
 
         //checks expression for invalid combinations
        while (flag && i < token.length) {
 
-           if (is_numerical_token(prev_token) && !is_operation(token[i])){
+           if (is_numerical_token(prev_token) && !is_valid_numerical_successor(token[i])){
 
                flag = false;
 
-           } else if (is_operation(prev_token) && !is_numerical_token(token[i])) {
+           } else if (is_operation(prev_token) && !is_valid_operator_successor(token[i])) {
 
                flag = false;
 
@@ -495,6 +493,86 @@ public class Validation {
            prev_token = token[i];
            i++;
        }
+
+        return flag;
+    }
+
+    /*
+    =============================================================
+    =============================================================
+    */
+
+    private boolean is_valid_numerical_successor(String token) {
+
+        boolean flag = false;
+
+        switch (token) {
+
+            case GrammarDefs.OPEN_PAREN:
+                flag = true;
+                break;
+
+            case GrammarDefs.CLOSED_PAREN:
+                flag = true;
+                break;
+
+            case GrammarDefs.ADD_TOKEN:
+                flag = true;
+                break;
+
+            case GrammarDefs.SUB_TOKEN:
+                flag = true;
+                break;
+
+            case GrammarDefs.DIV_TOKEN:
+                flag = true;
+                break;
+
+            case GrammarDefs.MULTI_TOKEN:
+                flag = true;
+                break;
+
+            case GrammarDefs.MOD_TOKEN:
+                flag = true;
+                break;
+
+            default:
+                break;
+        }
+
+        return flag;
+    }
+
+    /*
+    =============================================================
+    =============================================================
+    */
+
+    private boolean is_valid_operator_successor(String token) {
+
+        boolean flag = false;
+
+        switch (token) {
+
+            case GrammarDefs.OPEN_PAREN:
+                flag = true;
+                break;
+
+            case GrammarDefs.CLOSED_PAREN:
+                flag = true;
+                break;
+
+            case GrammarDefs.IDENTIFIER:
+                flag = true;
+                break;
+
+            case GrammarDefs.WHOLE_NUMBER:
+                flag = true;
+                break;
+
+            default:
+                break;
+        }
 
         return flag;
     }
