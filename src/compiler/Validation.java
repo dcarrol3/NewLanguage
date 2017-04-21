@@ -197,10 +197,77 @@ public class Validation {
         return flag;
     }
 
+    /*
+    =============================================================
+    =============================================================
+    */
+
+    private boolean is_and_token(String token) {
+
+        boolean flag = false;
+
+        if (token == definitions.AND_TOKEN) {
+
+            flag = true;
+        }
+
+        return flag;
+    }
+
+    /*
+    =============================================================
+    =============================================================
+    */
+
+    private boolean is_or_token(String token) {
+
+        boolean flag = false;
+
+        if (token == definitions.OR_TOKEN) {
+
+            flag = true;
+        }
+
+        return flag;
+    }
+
+    /*
+    =============================================================
+    =============================================================
+    */
+
+    private boolean is_not_equal_token(String token) {
+
+        boolean flag = false;
+
+        if (token == definitions.NOT_EQUAL_TOKEN) {
+
+            flag = true;
+        }
+
+        return flag;
+    }
+
+    /*
+    =============================================================
+    =============================================================
+    */
+
+    private boolean is_true_token(String token) {
+
+        boolean flag = false;
+
+        if (token == definitions.TRUE_TOKEN) {
+
+            flag = true;
+        }
+
+        return flag;
+    }
+
 
 
 }
-
 
 
 
