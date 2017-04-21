@@ -22,7 +22,7 @@ public class Constants {
     public static final String OR = "or";
     public static final String PRINT = "print";
     public static final String IF = "if";
-    public static final String LOOP = "loopif";
+    public static final String LOOP = "lif";
     public static final String JUMP = "jump";
     public static final String JUMP_RETURN = "jr";
     public static final String END = "end";
