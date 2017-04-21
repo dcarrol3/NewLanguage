@@ -1,9 +1,6 @@
 x = 1
 
-loop hello = 1,25 {
-    hello = hello + 1
-    print hello
-}
+if x == 1 {print x}
 
 #/
 loop i = 1, x{

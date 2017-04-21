@@ -265,8 +265,191 @@ public class Validation {
         return flag;
     }
 
+    /*
+    =============================================================
+    =============================================================
+    */
 
+    private boolean is_false_token(String token) {
 
+        boolean flag = false;
+
+        if (token == definitions.FALSE_TOKEN) {
+
+            flag = true;
+        }
+        return flag;
+    }
+
+    /*
+    =============================================================
+    =============================================================
+    */
+
+    private boolean is_equals_token(String token) {
+
+        boolean flag = false;
+
+        if(token == definitions.EQUALS_TOKEN) {
+
+            flag = true;
+        }
+
+        return flag;
+    }
+
+    /*
+    =============================================================
+    =============================================================
+    */
+
+    private boolean is_gt_token(String token) {
+
+        boolean flag = false;
+
+        if(token == definitions.GT_TOKEN) {
+
+            flag = true;
+        }
+
+        return flag;
+    }
+
+    /*
+    =============================================================
+    =============================================================
+    */
+
+    private boolean is_gte_token(String token) {
+
+        boolean flag = false;
+
+        if(token == definitions.GTE_TOKEN) {
+
+            flag = true;
+        }
+
+        return flag;
+    }
+
+    /*
+    =============================================================
+    =============================================================
+    */
+
+    private boolean is_lt_token(String token) {
+
+        boolean flag = false;
+
+        if(token == definitions.LT_TOKEN) {
+
+            flag = true;
+        }
+
+        return flag;
+    }
+
+    /*
+    =============================================================
+    =============================================================
+    */
+
+    private boolean is_lte_token(String token) {
+
+        boolean flag = false;
+
+        if(token == definitions.LTE_TOKEN) {
+
+            flag = true;
+        }
+
+        return flag;
+    }
+
+    /*
+    =============================================================
+    =============================================================
+    */
+
+    private boolean is_add_token(String token) {
+
+        boolean flag = false;
+
+        if(token == definitions.ADD_TOKEN) {
+
+            flag = true;
+        }
+
+        return flag;
+    }
+
+    /*
+    =============================================================
+    =============================================================
+    */
+
+    private boolean is_sub_token(String token) {
+
+        boolean flag = false;
+
+        if(token == definitions.SUB_TOKEN) {
+
+            flag = true;
+        }
+
+        return flag;
+    }
+
+    /*
+    =============================================================
+    =============================================================
+    */
+
+    private boolean is_multi_token(String token) {
+
+        boolean flag = false;
+
+        if(token == definitions.MULTI_TOKEN) {
+
+            flag = true;
+        }
+
+        return flag;
+    }
+
+    /*
+    =============================================================
+    =============================================================
+    */
+
+    private boolean is_div_token(String token) {
+
+        boolean flag = false;
+
+        if(token == definitions.DIV_TOKEN) {
+
+            flag = true;
+        }
+
+        return flag;
+    }
+
+    /*
+    =============================================================
+    =============================================================
+    */
+
+    private boolean is_mod_token(String token) {
+
+        boolean flag = false;
+
+        if(token == definitions.MOD_TOKEN) {
+
+            flag = true;
+        }
+
+        return flag;
+    }
 }
 
 
