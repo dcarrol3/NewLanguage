@@ -6,19 +6,18 @@ package compiler;
 public class Validation {
 
 
-    GrammarDefs definitions = new GrammarDefs();
-
-
     private int line_counter;
+
     /*
     =============================================================
     =============================================================
     */
+
     private boolean is_newline(String token){
 
         boolean flag = false;
 
-        if (token == definitions.NEW_LINE){
+        if (token.equals(GrammarDefs.NEW_LINE)) {
 
             flag = true;
             line_counter += 1;
@@ -36,7 +35,7 @@ public class Validation {
 
         boolean flag = false;
 
-        if (token == definitions.IDENTIFIER) {
+        if (token.equals(GrammarDefs.IDENTIFIER)) {
 
             flag = true;
         }
@@ -53,7 +52,7 @@ public class Validation {
 
         boolean flag = false;
 
-        if (token == definitions.WHOLE_NUMBER) {
+        if (token.equals(GrammarDefs.WHOLE_NUMBER)) {
 
             flag = true;
         }
@@ -70,7 +69,7 @@ public class Validation {
 
         boolean flag = false;
 
-        if (token == definitions.OPEN_BRACKET) {
+        if (token.equals(GrammarDefs.OPEN_BRACKET)) {
 
             flag = true;
 
@@ -88,7 +87,7 @@ public class Validation {
 
         boolean flag = false;
 
-        if (token == definitions.CLOSE_BRACKET) {
+        if (token.equals(GrammarDefs.CLOSE_BRACKET)) {
 
             flag = true;
         }
@@ -104,7 +103,7 @@ public class Validation {
 
         boolean flag = false;
 
-        if (token == definitions.LABEL) {
+        if (token.equals(GrammarDefs.LABEL)) {
 
             flag = true;
         }
@@ -121,7 +120,7 @@ public class Validation {
 
         boolean flag = false;
 
-        if (token == definitions.ASSIGNMENT) {
+        if (token.equals(GrammarDefs.ASSIGNMENT)) {
 
             flag = true;
         }
@@ -138,7 +137,7 @@ public class Validation {
 
         boolean flag = false;
 
-        if (token == definitions.ASSIGNMENT_VAL) {
+        if (token.equals(GrammarDefs.ASSIGNMENT_VAL)) {
 
             flag = true;
         }
@@ -155,7 +154,7 @@ public class Validation {
 
         boolean flag = false;
 
-        if (token == definitions.IF) {
+        if (token.equals(GrammarDefs.IF)) {
 
             flag = true;
         }
@@ -172,7 +171,7 @@ public class Validation {
 
         boolean flag = false;
 
-        if (token == definitions.LOOP) {
+        if (token.equals(GrammarDefs.LOOP)) {
 
             flag = true;
         }
@@ -189,7 +188,7 @@ public class Validation {
 
         boolean flag = false;
 
-        if (token == definitions.PRINT) {
+        if (token.equals(GrammarDefs.PRINT)) {
 
             flag = true;
         }
@@ -206,7 +205,7 @@ public class Validation {
 
         boolean flag = false;
 
-        if (token == definitions.AND_TOKEN) {
+        if (token.equals(GrammarDefs.AND_TOKEN)) {
 
             flag = true;
         }
@@ -223,7 +222,7 @@ public class Validation {
 
         boolean flag = false;
 
-        if (token == definitions.OR_TOKEN) {
+        if (token.equals(GrammarDefs.OR_TOKEN)) {
 
             flag = true;
         }
@@ -240,7 +239,7 @@ public class Validation {
 
         boolean flag = false;
 
-        if (token == definitions.NOT_EQUAL_TOKEN) {
+        if (token.equals(GrammarDefs.NOT_EQUAL_TOKEN)) {
 
             flag = true;
         }
@@ -257,7 +256,7 @@ public class Validation {
 
         boolean flag = false;
 
-        if (token == definitions.TRUE_TOKEN) {
+        if (token.equals(GrammarDefs.TRUE_TOKEN)) {
 
             flag = true;
         }
@@ -274,7 +273,7 @@ public class Validation {
 
         boolean flag = false;
 
-        if (token == definitions.FALSE_TOKEN) {
+        if (token.equals(GrammarDefs.FALSE_TOKEN)) {
 
             flag = true;
         }
@@ -290,7 +289,7 @@ public class Validation {
 
         boolean flag = false;
 
-        if(token == definitions.EQUALS_TOKEN) {
+        if(token.equals(GrammarDefs.EQUALS_TOKEN)) {
 
             flag = true;
         }
@@ -307,7 +306,7 @@ public class Validation {
 
         boolean flag = false;
 
-        if(token == definitions.GT_TOKEN) {
+        if(token.equals(GrammarDefs.GT_TOKEN)) {
 
             flag = true;
         }
@@ -324,7 +323,7 @@ public class Validation {
 
         boolean flag = false;
 
-        if(token == definitions.GTE_TOKEN) {
+        if(token.equals(GrammarDefs.GTE_TOKEN)) {
 
             flag = true;
         }
@@ -341,7 +340,7 @@ public class Validation {
 
         boolean flag = false;
 
-        if(token == definitions.LT_TOKEN) {
+        if(token.equals(GrammarDefs.LT_TOKEN)) {
 
             flag = true;
         }
@@ -358,7 +357,7 @@ public class Validation {
 
         boolean flag = false;
 
-        if(token == definitions.LTE_TOKEN) {
+        if(token.equals(GrammarDefs.LTE_TOKEN)) {
 
             flag = true;
         }
@@ -375,7 +374,7 @@ public class Validation {
 
         boolean flag = false;
 
-        if(token == definitions.ADD_TOKEN) {
+        if(token.equals(GrammarDefs.ADD_TOKEN)) {
 
             flag = true;
         }
@@ -392,7 +391,7 @@ public class Validation {
 
         boolean flag = false;
 
-        if(token == definitions.SUB_TOKEN) {
+        if(token.equals(GrammarDefs.SUB_TOKEN)) {
 
             flag = true;
         }
@@ -409,7 +408,7 @@ public class Validation {
 
         boolean flag = false;
 
-        if(token == definitions.MULTI_TOKEN) {
+        if(token.equals(GrammarDefs.MULTI_TOKEN)) {
 
             flag = true;
         }
@@ -426,7 +425,7 @@ public class Validation {
 
         boolean flag = false;
 
-        if(token == definitions.DIV_TOKEN) {
+        if(token.equals(GrammarDefs.DIV_TOKEN)) {
 
             flag = true;
         }
@@ -443,11 +442,104 @@ public class Validation {
 
         boolean flag = false;
 
-        if(token == definitions.MOD_TOKEN) {
+        if(token.equals(GrammarDefs.MOD_TOKEN)) {
 
             flag = true;
         }
 
+        return flag;
+    }
+
+
+    /*
+    =============================================================
+    Determines if an array is a valid mathematical expression
+    =============================================================
+    */
+
+    private boolean is_expression_token(String[] token) {
+
+        boolean flag = true;
+        String prev_token = token[0];
+        int i = 1;
+
+        //checks expression for invalid combinations
+       while (flag && i < token.length) {
+
+           if (is_numerical_token(prev_token) && !is_operation(token[i])){
+
+               flag = false;
+
+           } else if (is_operation(prev_token) && !is_numerical_token(token[i])) {
+
+               flag = false;
+
+           }
+           
+           prev_token = token[i];
+           i++;
+       }
+        
+       //checks expression does not start or end with an operator
+        if (flag && (!is_numerical_token(token[0]) || !is_numerical_token(token[token.length]))) {
+
+            flag = false;
+        }
+
+        return flag;
+    }
+
+    /*
+    =============================================================
+    =============================================================
+    */
+
+    private boolean is_numerical_token(String token) {
+
+        boolean flag = false;
+
+        if(is_number(token) || is_identifier(token)) {
+
+            flag = true;
+        }
+
+        return flag;
+    }
+
+    /*
+    =============================================================
+    =============================================================
+    */
+
+    private boolean is_operation(String token) {
+
+        boolean flag = false;
+
+        switch (token) {
+
+            case GrammarDefs.ADD_TOKEN:
+                flag = true;
+                break;
+
+            case GrammarDefs.SUB_TOKEN:
+                flag = true;
+                break;
+
+            case GrammarDefs.DIV_TOKEN:
+                flag = true;
+                break;
+
+            case GrammarDefs.MULTI_TOKEN:
+                flag = true;
+                break;
+
+            case GrammarDefs.MOD_TOKEN:
+                flag = true;
+                break;
+                
+            default:
+                break;
+        }
         return flag;
     }
 }
