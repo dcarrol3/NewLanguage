@@ -34,6 +34,8 @@ public final class GrammarDefs {
     public static final String COMMA = "comma";
     public static final String OPEN_BRACKET = "open_bracket";
     public static final String CLOSE_BRACKET = "close_bracket";
+    public static final String OPEN_PAREN = "open_paren";
+    public static final String CLOSED_PAREN = "close_paren";
 
     // Label
     public static final String LABEL = "label";
