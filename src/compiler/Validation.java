@@ -66,7 +66,7 @@ public class Validation {
     =============================================================
     */
 
-    public boolean is_open_bracket(String token) {
+    private boolean is_open_bracket(String token) {
 
         boolean flag = false;
 
@@ -79,8 +79,89 @@ public class Validation {
         return flag;
     }
 
+    /*
+    =============================================================
+    =============================================================
+    */
 
+    private boolean is_closed_brackets(String token) {
 
+        boolean flag = false;
+
+        if (token == definitions.CLOSE_BRACKET) {
+
+            flag = true;
+        }
+        return flag;
+    }
+
+    /*
+    =============================================================
+    =============================================================
+    */
+
+    private boolean is_label(String token) {
+
+        boolean flag = false;
+
+        if (token == definitions.LABEL) {
+
+            flag = true;
+        }
+
+        return flag;
+    }
+
+    /*
+    =============================================================
+    =============================================================
+    */
+
+    private boolean is_assignment(String token) {
+
+        boolean flag = false;
+
+        if (token == definitions.ASSIGNMENT) {
+
+            flag = true;
+        }
+
+        return flag;
+    }
+
+    /*
+    =============================================================
+    =============================================================
+    */
+
+    private boolean is_assignment_val(String token) {
+
+        boolean flag = false;
+
+        if (token == definitions.ASSIGNMENT_VAL) {
+
+            flag = true;
+        }
+
+        return flag;
+    }
+
+    /*
+    =============================================================
+    =============================================================
+    */
+
+    private boolean is_if(String token) {
+
+        boolean flag = false;
+
+        if (token == definitions.IF) {
+
+            flag = true;
+        }
+
+        return flag;
+    }
 
 
 
