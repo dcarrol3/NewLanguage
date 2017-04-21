@@ -1,15 +1,9 @@
 add,x,0,1
-add,hello,0,1
-looplabel0
-ltq,$l0,hello,25
-if,$l0,label-1,leaveloop0
-add,hello,hello,1
-jump,looplabel0
-leaveloop0
+add,y,0,2
+eq,$t0,x,1
+if,$t0,label-1
 end
 label-1
-add,$t0,hello,1
-add,hello,0,$t0
-print,hello
+print,y
 jr
 

@@ -7,6 +7,7 @@
 
 package compiler;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -16,10 +17,23 @@ public class StatementToOperation {
     public ArrayList<Operation> convertProgram(HashMap<String,ArrayList<ArrayList<Token>>> program){
         ArrayList<ArrayList<Token>> mainStatementList = program.get("program");
         ArrayList<Operation> ops = new ArrayList<>();
+        boolean statementFinished = true;
+        ArrayList<Token> tempStatement = new ArrayList<>();
 
-
-        for(ArrayList<Token> statement: mainStatementList){
-            ops.addAll(convertToOperation(statement));
+        // Main program first
+        for(ArrayList<Token> statement : mainStatementList){
+            // Remove new lines from if and loop
+            if(!statementFinished || hasNewLinesBeforeBracket(statement)) {
+                statementFinished = false;
+                tempStatement.addAll(statement); // Include current statement to previous one
+                if (statement.get(0).getType().equals(GrammarDefs.OPEN_BRACKET)) {
+                    statementFinished = true;
+                    ops.addAll(convertToOperation(tempStatement));
+                    tempStatement.clear(); // Clear it
+                }
+            } else {
+                ops.addAll(convertToOperation(statement));
+            }
         }
         ops.add(new Operation(Operation.OperationType.END)); // End of program
 
@@ -27,16 +41,45 @@ public class StatementToOperation {
         Iterator it = program.entrySet().iterator();
         while (it.hasNext()) {
             HashMap.Entry labeledStatements = (HashMap.Entry)it.next();
+            // Don't put main in here
             if(!labeledStatements.getKey().toString().equals("program")) {
                 ops.add(new Operation(Operation.OperationType.LABEL, labeledStatements.getKey().toString()));
                 for (ArrayList<Token> labeledStatement : (ArrayList<ArrayList<Token>>) labeledStatements.getValue()) {
-                    ops.addAll(convertToOperation(labeledStatement));
+                    // Remove new lines from if and loop
+                    if (!statementFinished || hasNewLinesBeforeBracket(labeledStatement)) {
+                        statementFinished = false;
+                        tempStatement.addAll(labeledStatement); // Include current statement to previous one
+                        if (labeledStatement.get(0).getType().equals(GrammarDefs.OPEN_BRACKET)) {
+                            statementFinished = true;
+                            ops.addAll(convertToOperation(tempStatement));
+                            tempStatement.clear(); // Clear it
+                        }
+                    } else {
+                        ops.addAll(convertToOperation(labeledStatement));
+                    }
                 }
                 ops.add(new Operation(Operation.OperationType.JUMP_RETURN));
             }
         }
 
         return ops;
+    }
+
+    // helper to ignore all newlines in if's and loops before the bracket
+    private boolean hasNewLinesBeforeBracket(ArrayList<Token> statement){
+        boolean newLineEnd = false;
+
+        // Make sure it is a loop or if
+        Token token = statement.get(0);
+        if(token.getKey().equals(GrammarDefs.IF) || token.getKey().equals(GrammarDefs.LOOP)){
+            Token last = statement.get(statement.size() - 2); // Get second to last token
+            // See if it's a newline
+            if(!last.getType().equals(GrammarDefs.CLOSE_BRACKET)){
+                newLineEnd = true;
+            }
+        }
+
+        return newLineEnd;
     }
 
     // Converts a statement made of tokens to series of operations
