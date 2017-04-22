@@ -7,6 +7,225 @@ public class Validation {
 
 
     private int line_counter;
+    private int global_index;
+    private final int TOKEN_ARRAY_SIZE;
+    private String[] tokens;
+    private String error_cause;
+
+    /*
+    ========================================================================================
+    Constructor
+    ========================================================================================
+    */
+    
+    public Validation(String[] tokens) {
+
+        this.line_counter = 0;
+        this.TOKEN_ARRAY_SIZE = tokens.length;
+        this.tokens = new String[TOKEN_ARRAY_SIZE];
+        System.arraycopy(tokens,0, this.tokens,0, this.TOKEN_ARRAY_SIZE);
+    }
+
+    /*
+    ========================================================================================
+    Checks all source code is valid
+    ========================================================================================
+    */
+
+
+    public boolean validate_code() {
+
+        boolean flag = true;
+        int index = 0;
+
+        while (flag && index < TOKEN_ARRAY_SIZE) {
+
+        }
+
+
+        return flag;
+    }
+
+    /*
+    ========================================================================================
+    Checks if a conditional statement is valid
+    ========================================================================================
+    */
+
+    boolean is_valid_conditional(String[] token) {
+
+        boolean flag = true;
+        int local_index = 0;
+        String prev_token = token[local_index];
+        String current_token = token[++local_index];
+
+        if (is_conditional_value(prev_token) &&  !is_valid_condVal_successor(current_token)) {
+
+            flag = false;
+
+        } else if (is_conditional_token(prev_token) && !is_valid_cond_successor(current_token)) {
+
+            flag = false;
+
+        }
+
+
+        return flag;
+    }
+
+    private boolean is_valid_cond_successor(String token) {
+
+        boolean flag = false;
+
+        return flag;
+    }
+
+     /*
+    =============================================================
+    This method is used to check if a value holding token is
+    has a valid successor
+    =============================================================
+    */
+
+
+     private boolean is_valid_condVal_successor(String token) {
+
+         boolean flag = false;
+
+         switch (token) {
+
+             case GrammarDefs.CLOSED_PAREN:
+                 flag = true;
+                 break;
+
+             case GrammarDefs.AND_TOKEN:
+                 flag = true;
+                 break;
+
+             case GrammarDefs.OR_TOKEN:
+                 flag = true;
+                 break;
+
+             case GrammarDefs.NOT_EQUAL_TOKEN:
+                 flag = true;
+                 break;
+
+             case GrammarDefs.EQUALS_TOKEN:
+                 flag = true;
+                 break;
+
+             case GrammarDefs.GT_TOKEN:
+                 flag = true;
+                 break;
+
+             case GrammarDefs.GTE_TOKEN:
+                 flag = true;
+                 break;
+
+             case GrammarDefs.LT_TOKEN:
+                 flag = true;
+                 break;
+
+             case GrammarDefs.LTE_TOKEN:
+                 flag = true;
+                 break;
+
+             default:
+                 break;
+         }
+
+         return flag;
+     }
+
+    /*
+    =============================================================
+    =============================================================
+    */
+
+    private boolean is_conditional_value(String token) {
+
+        boolean flag = false;
+
+        switch (token) {
+
+            case GrammarDefs.IDENTIFIER:
+                flag = true;
+                break;
+
+            case GrammarDefs.WHOLE_NUMBER:
+                flag = true;
+                break;
+
+            case GrammarDefs.TRUE_TOKEN:
+                flag = true;
+                break;
+
+            case GrammarDefs.FALSE_TOKEN:
+                flag = true;
+                break;
+
+            default:
+                break;
+
+        }
+
+        return flag;
+    }
+
+    /*
+    =============================================================
+    =============================================================
+    */
+
+    private boolean is_conditional_token(String token) {
+
+        boolean flag = false;
+
+        switch (token) {
+
+            case GrammarDefs.AND_TOKEN:
+                flag = true;
+                break;
+
+            case GrammarDefs.OR_TOKEN:
+                flag = true;
+                break;
+
+            case GrammarDefs.NOT_EQUAL_TOKEN:
+                flag = true;
+                break;
+
+            case GrammarDefs.EQUALS_TOKEN:
+                flag = true;
+                break;
+
+            case GrammarDefs.GT_TOKEN:
+                flag = true;
+                break;
+
+            case GrammarDefs.GTE_TOKEN:
+                flag = true;
+                break;
+
+            case GrammarDefs.LT_TOKEN:
+                flag = true;
+                break;
+
+            case GrammarDefs.LTE_TOKEN:
+                flag = true;
+                break;
+
+            default:
+                break;
+
+        }
+
+        return flag;
+    }
+
+
+
+
 
     /*
     =============================================================
@@ -463,16 +682,16 @@ public class Validation {
         String prev_token = token[0];
         int i = 1;
 
-        //check to ensure there are the same number of open and closed parenthesis
+        //checks to ensure there are the same number of open and closed parenthesis
         flag = is_valid_paren_count(token);
 
         //checks expression does not start or end with an operator
         flag = flag && (!is_numerical_token(token[0]) || !is_numerical_token(token[token.length]));
 
         //checks expression for invalid combinations
-       while (flag && i < token.length) {
+        while (flag && i < token.length) {
 
-           if (is_numerical_token(prev_token) && !is_valid_numerical_successor(token[i])){
+           if (is_numerical_token(prev_token) && !is_valid_numerical_successor(token[i])) {
 
                flag = false;
 
@@ -480,11 +699,11 @@ public class Validation {
 
                flag = false;
 
-           } else if (is_open_paren_token(prev_token) && !is_numerical_token(token[i])) {
+           } else if (is_open_paren_token(prev_token) && !is_valid_open_par_successor(token[i])) {
 
                flag = false;
 
-           } else if (is_closed_paren_token(prev_token) && !is_operation(token[i])) {
+           } else if (is_closed_paren_token(prev_token) && !is_valid_closed_par_successor(token[i])) {
 
                flag = false;
 
@@ -507,10 +726,6 @@ public class Validation {
         boolean flag = false;
 
         switch (token) {
-
-            case GrammarDefs.OPEN_PAREN:
-                flag = true;
-                break;
 
             case GrammarDefs.CLOSED_PAREN:
                 flag = true;
@@ -537,6 +752,79 @@ public class Validation {
                 break;
 
             default:
+                break;
+        }
+
+        return flag;
+    }
+
+    /*
+    =============================================================
+    =============================================================
+    */
+
+    private boolean is_valid_open_par_successor(String token) {
+
+        boolean flag = false;
+
+        switch (token) {
+
+            case GrammarDefs.OPEN_PAREN:
+                flag = true;
+                break;
+
+            case GrammarDefs.IDENTIFIER:
+                flag = true;
+                break;
+
+            case GrammarDefs.WHOLE_NUMBER:
+                flag = true;
+                break;
+
+            default:
+                break;
+        }
+
+        return flag;
+    }
+
+     /*
+    =============================================================
+    =============================================================
+    */
+
+    private boolean is_valid_closed_par_successor(String token) {
+
+        boolean flag = false;
+
+        switch (token) {
+
+            case GrammarDefs.CLOSED_PAREN:
+                flag = true;
+                break;
+
+            case GrammarDefs.ADD_TOKEN:
+                flag = true;
+                break;
+
+            case GrammarDefs.SUB_TOKEN:
+                flag = true;
+                break;
+
+            case GrammarDefs.DIV_TOKEN:
+                flag = true;
+                break;
+
+            case GrammarDefs.MULTI_TOKEN:
+                flag = true;
+                break;
+
+            case GrammarDefs.MOD_TOKEN:
+                flag = true;
+                break;
+
+            default:
+                System.out.print("Invalid Token line:" + line_counter +"\n");
                 break;
         }
 
