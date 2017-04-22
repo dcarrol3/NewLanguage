@@ -73,20 +73,49 @@ public class Validation {
         return flag;
     }
 
+    /*
+    ========================================================================================
+    Checks if a conditional token has a valid successor token
+    ========================================================================================
+    */
+
     private boolean is_valid_cond_successor(String token) {
 
         boolean flag = false;
+
+        switch (token) {
+
+            case GrammarDefs.IDENTIFIER:
+                flag = true;
+                break;
+
+            case GrammarDefs.WHOLE_NUMBER:
+                flag = true;
+                break;
+
+            case GrammarDefs.TRUE_TOKEN:
+                flag = true;
+                break;
+
+            case GrammarDefs.FALSE_TOKEN:
+                flag = true;
+                break;
+
+            default:
+                System.out.println("Failed conditional successor test\n Line:" + line_counter + "\n");
+                break;
+
+
+        }
 
         return flag;
     }
 
      /*
-    =============================================================
-    This method is used to check if a value holding token is
-    has a valid successor
-    =============================================================
+    ====================================================================================
+    Check if a value holding token has a valid successor token
+    ====================================================================================
     */
-
 
      private boolean is_valid_condVal_successor(String token) {
 
@@ -139,6 +168,7 @@ public class Validation {
 
     /*
     =============================================================
+    Checks if the value is a defined conditional token
     =============================================================
     */
 
@@ -222,10 +252,6 @@ public class Validation {
 
         return flag;
     }
-
-
-
-
 
     /*
     =============================================================
@@ -686,7 +712,7 @@ public class Validation {
         flag = is_valid_paren_count(token);
 
         //checks expression does not start or end with an operator
-        flag = flag && (!is_numerical_token(token[0]) || !is_numerical_token(token[token.length]));
+        flag = flag && (!is_operation(token[0]) || !is_operation(token[token.length - 1]));
 
         //checks expression for invalid combinations
         while (flag && i < token.length) {
