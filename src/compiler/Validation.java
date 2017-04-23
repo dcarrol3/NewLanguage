@@ -1,6 +1,7 @@
 package compiler;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by jebjohnson on 4/20/17.
@@ -14,6 +15,7 @@ public class Validation {
     private int statement_index;
     private int list_index;
     private ArrayList<String[]> statement_list = new ArrayList<>();
+    private List<String> error_list = new ArrayList<String>();
 
     /*
     ========================================================================================================
@@ -23,7 +25,7 @@ public class Validation {
     
     public Validation(ArrayList tokens) {
 
-        this.line_counter = 0;
+        this.line_counter = -1;
         this.ZERO_INDEX = 0;
         this.list_index = 0;
         this.statement_list.addAll(tokens);
@@ -42,6 +44,7 @@ public class Validation {
 
         for (list_index = 0; list_index < ARRAYLIST_SIZE; list_index++) {
 
+            line_counter++;
             statement_index = 0;
             flag = check_keyword(statement_list.get(list_index)[statement_index]);
 
@@ -63,31 +66,42 @@ public class Validation {
     private boolean check_keyword(String keyword) {
 
         boolean flag = false;
+        String error_type;
 
         switch (keyword) {
 
             case GrammarDefs.LOOP:
                 flag = is_valid_loop_assignment();
+                error_type = GrammarDefs.LOOP + "error Line" + line_counter;
                 break;
 
             case GrammarDefs.IF:
-                is_valid_boolean_expression();
+                flag = is_valid_boolean_expression();
+                error_type = GrammarDefs.IF + "error Line" + line_counter;
                 break;
 
             case GrammarDefs.PRINT:
                 //is_valid_print();
+                error_type = GrammarDefs.PRINT + "error Line" + line_counter;
                 break;
 
             case GrammarDefs.ELSE:
                // is_valid_else();
+                error_type = GrammarDefs.ELSE + "error Line" + line_counter;
                 break;
 
             case GrammarDefs.ASSIGNMENT:
                 //is_valid_assignment();
+                error_type = GrammarDefs.ASSIGNMENT + "error Line" + line_counter;
                 break;
 
                 default:
+                    error_type = "keyword" + "error Line" + line_counter;
                     break;
+        }
+
+        if (!flag) {
+            error_list.add(error_type);
         }
 
         return flag;
@@ -178,11 +192,6 @@ public class Validation {
 
         return flag;
     }
-
-    /*
-    =====================================================================================================
-    =====================================================================================================
-     */
 
     /*
     ===================================================================================================
@@ -1117,6 +1126,7 @@ public class Validation {
             default:
                 break;
         }
+
         return flag;
     }
 }
