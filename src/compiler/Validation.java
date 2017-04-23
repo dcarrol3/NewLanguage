@@ -1,5 +1,7 @@
 package compiler;
 
+import java.util.ArrayList;
+
 /**
  * Created by jebjohnson on 4/20/17.
  */
@@ -7,10 +9,11 @@ public class Validation {
 
 
     private int line_counter;
-    private int global_index;
-    private final int TOKEN_ARRAY_SIZE;
-    private String[] tokens;
-    private String error_cause;
+    private final int ARRAYLIST_SIZE;
+    private final int ZERO_INDEX;
+    private int statement_index;
+    private int list_index;
+    private ArrayList<String[]> statement_list = new ArrayList<>();
 
     /*
     ========================================================================================
@@ -18,12 +21,13 @@ public class Validation {
     ========================================================================================
     */
     
-    public Validation(String[] tokens) {
+    public Validation(ArrayList tokens) {
 
         this.line_counter = 0;
-        this.TOKEN_ARRAY_SIZE = tokens.length;
-        this.tokens = new String[TOKEN_ARRAY_SIZE];
-        System.arraycopy(tokens,0, this.tokens,0, this.TOKEN_ARRAY_SIZE);
+        this.ZERO_INDEX = 0;
+        this.list_index = 0;
+        this.statement_list.addAll(tokens);
+        this.ARRAYLIST_SIZE = tokens.size();
     }
 
     /*
@@ -33,12 +37,20 @@ public class Validation {
     */
 
 
-    public boolean validate_code() {
+    public boolean validate() {
 
         boolean flag = true;
-        int index = 0;
 
-        while (flag && index < TOKEN_ARRAY_SIZE) {
+        for (list_index = 0; list_index < ARRAYLIST_SIZE; list_index++) {
+
+            statement_index = 0;
+            flag = check_keyword(statement_list.get(list_index)[statement_index]);
+
+            if (!flag) {
+
+                System.out.println("Error Line" + line_counter);
+
+            }
 
         }
 
@@ -47,12 +59,108 @@ public class Validation {
     }
 
     /*
+    =======================================================================================
+    =======================================================================================
+    */
+
+    private boolean check_keyword(String keyword) {
+
+        boolean flag = false;
+
+        switch (keyword) {
+
+            case GrammarDefs.LOOP:
+                flag = is_valid_loop_assignment();
+                break;
+
+            case GrammarDefs.IF:
+                //is_valid_boolean_expression();
+                break;
+
+            case GrammarDefs.PRINT:
+                //is_valid_print();
+                break;
+
+            case GrammarDefs.ELSE:
+               // is_valid_else();
+                break;
+
+            case GrammarDefs.ASSIGNMENT:
+                //is_valid_assignment();
+                break;
+
+                default:
+                    break;
+        }
+
+        return flag;
+    }
+
+    /*
+    =======================================================================================
+    =======================================================================================
+    */
+
+    private boolean is_valid_loop_assignment() {
+
+        return is_identifier(statement_list.get(list_index)[statement_index]) &&
+                is_equals_token(statement_list.get(list_index)[++statement_index]) && is_valid_iterator();
+
+    }
+
+    /*
+    =======================================================================================
+    =======================================================================================
+    */
+
+    private boolean is_valid_iterator() {
+
+        String[] temp1, temp2;
+
+        statement_index++;
+        temp1 = get_code_segment(",").clone();
+        statement_index++;
+        temp2 = get_code_segment("{").clone();
+
+        return is_valid_expression(temp1) && is_valid_expression(temp2);
+    }
+
+    /*
+    =======================================================================================
+    =======================================================================================
+    */
+
+    private String[] get_code_segment(String stop_point) {
+
+        int temp_index = statement_index;
+        //int
+
+        while (!statement_list.get(list_index)[temp_index].equals(stop_point)) {
+
+            temp_index++;
+
+        }
+        String[] temp = new String[temp_index - statement_index];
+
+        temp_index = 0;
+
+        while (!statement_list.get(list_index)[statement_index].equals(stop_point)) {
+
+            temp[temp_index] = statement_list.get(list_index)[statement_index];
+
+        }
+
+
+        return temp;
+    }
+
+    /*
     ========================================================================================
     Checks if a conditional statement is valid
     ========================================================================================
     */
 
-    boolean is_valid_conditional(String[] token) {
+    private boolean is_valid_boolean_expression(String[] token) {
 
         boolean flag = true;
         int local_index = 0;
