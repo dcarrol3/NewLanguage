@@ -71,7 +71,7 @@ public class Validation {
                 break;
 
             case GrammarDefs.IF:
-                //is_valid_boolean_expression();
+                is_valid_boolean_expression();
                 break;
 
             case GrammarDefs.PRINT:
@@ -115,9 +115,9 @@ public class Validation {
         String[] temp1, temp2;
 
         statement_index++;
-        temp1 = get_code_segment(",").clone();
+        temp1 = get_code_segment(GrammarDefs.COMMA).clone();
         statement_index++;
-        temp2 = get_code_segment("{").clone();
+        temp2 = get_code_segment(GrammarDefs.OPEN_BRACKET).clone();
 
         return is_valid_expression(temp1) && is_valid_expression(temp2);
     }
@@ -156,7 +156,9 @@ public class Validation {
     =====================================================================================================
     */
 
-    private boolean is_valid_boolean_expression(String[] token) {
+    private boolean is_valid_boolean_expression() {
+
+        String[] token = get_code_segment(GrammarDefs.OPEN_BRACKET).clone();
 
         boolean flag = true;
         int local_index = 0;
@@ -176,6 +178,11 @@ public class Validation {
 
         return flag;
     }
+
+    /*
+    =====================================================================================================
+    =====================================================================================================
+     */
 
     /*
     ===================================================================================================
@@ -208,8 +215,6 @@ public class Validation {
             default:
                 System.out.println("Failed conditional successor test\n Line:" + line_counter + "\n");
                 break;
-
-
         }
 
         return flag;
