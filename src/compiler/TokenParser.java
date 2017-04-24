@@ -7,8 +7,8 @@ import java.util.Stack;
 /*
  * Purpose: Holds information about each operation for use by the intermediate code generator.
  * Author(s): Jason Rice
- * Version: 3
- * Date: 4/17/2017
+ * Version: 4
+ * Date: 4/24/2017
  */
 public class TokenParser {
     private int statementLine;
@@ -50,12 +50,12 @@ public class TokenParser {
     //Controller for the program
     private void init(ArrayList<Token> tokens){
         embed = bracketFinder(tokens);
-        System.out.println("\n<---------------First Pass---------------->");
+        System.out.println("\n<---------------First Pass (Finds brackets)---------------->");
         for(int key : embed.keySet()){
             System.out.println("Brackets at: "+key+", "+embed.get(key));
         }
 
-        System.out.println("\n<--------------Second Pass--------------->");
+        System.out.println("\n<--------------Second Pass (Splits up sections to labels)--------------->");
         makeList(-1,-1, "program");
        for(String tl:program.keySet()){
            System.out.print(tl + " [");
@@ -68,7 +68,9 @@ public class TokenParser {
            System.out.print("\n ]\n\n");
         }
 
-        //compiler method test area.
+        System.out.println("\n<--------------Third Pass (Checks Grammar)--------------->");
+        System.out.println(Program());
+        System.out.println("\n");
 
     }
 
@@ -156,7 +158,7 @@ public class TokenParser {
         boolean isGC = true;
         if(program.size() > 0){
             for(String tl:program.keySet()){
-                ArrayList<ArrayList<Token>> al = program.get(tl);
+                ArrayList<ArrayList<Token>> al = new ArrayList<>(program.get(tl));
                 ArrayList<ArrayList<Token>> ret = StatementLst(al);
                 if(ret.size() != 0){
                     isGC = false;
@@ -190,28 +192,39 @@ public class TokenParser {
     //Statement --> “new_line” | Assignment | If | Loop
     private ArrayList<Token> Statement(ArrayList<Token> tokens){
         ArrayList<Token> ret = new ArrayList<>();
-        if(tokens.size() > 0){
-            Token tok = tokens.get(0);
+        ArrayList<Token> toks = new ArrayList<>(tokens);
+        ArrayList<Token> remove = new ArrayList<>();
+        for(int i = 0; i < tokens.size(); i++){
+            if(tokens.get(i).getType().equals("new_line")){
+                remove.add(tokens.get(i));
+            }
+        }
+        for(Token rm:remove){
+            toks.remove(rm);
+        }
+        if(toks.size() > 0){
+            if(toks.get(toks.size()-1).getKey().equals(";")){
+                toks.remove(toks.size()-1);
+            }
+            Token tok = toks.get(0);
             String tt = tok.getType();
             switch(tt){
                 case "data_type":
-                    ret = Assignment(tokens);
+                    ret = Assignment(toks);
                     break;
                 case "identifier":
-                    ret = Assignment(tokens);
-                    break;
-                case "new_line":
+                    ret = Assignment(toks);
                     break;
                 case "keyword":
                     String val = tok.getKey();
                     if(val.equals("if")){
-                        ret = If(tokens);
+                        ret = If(toks);
                     } else if(val.equals("loop")){
-                        ret = Loop(tokens);
+                        ret = Loop(toks);
                     }
                     break;
                 default:
-                    return tokens;
+                    return toks;
             }
         }
         return ret;
@@ -220,6 +233,9 @@ public class TokenParser {
     //Number --> Digit | Digit Number
     private Token Number(Token token){
         Token tek = new Token();
+        if(!token.getType().equals("number")){
+            return token;
+        }
         if(token.getKey().length() > 1){
             if(Digit(token.getKey().charAt(0))){
                 String next = token.getKey().substring(1,token.getKey().length());
@@ -256,11 +272,9 @@ public class TokenParser {
         return tek;
     }
 
-    //Assignment --> Type Identifier “=” Expression
+    //Assignment --> Identifier “=” Expression
     private ArrayList<Token> Assignment(ArrayList<Token> tokens){
         ArrayList<Token> tok = tokens;
-        if(Type(tok.get(0).getKey())){
-            tok.remove(0);
             if(Identifier(tok.get(0)).isEmpty()){
                 tok.remove(0);
                 if(tokens.get(0).getType().equals("assignment")){
@@ -274,20 +288,100 @@ public class TokenParser {
                     return tok;
                 }
             }
-        } else{
-            return tok;
-        }
         return tokens;
     }
 
-    //If --> “if” Condition “{“ Statement-Lst “}” | If Else    //////////////////////////////////////////NEED TO DO
+    //If --> “if” Condition “{“ Statement-Lst-Label “}” | If Else
     private ArrayList<Token> If(ArrayList<Token> tokens){
-        return tokens;
+        ArrayList<Token> toks = tokens;
+        if(!toks.isEmpty()){
+            if(toks.get(0).getKey().equals("if")){
+                toks.remove(0);
+                int pOpenCount = 0, pCloseCount = 0, bOpenCount = 0, bCloseCount = 0;
+                if(toks.size() >= 5){
+                    for(int i = 0; i < toks.size(); i++){
+                        if(toks.get(i).getType().equals("open_paren")){
+                            pOpenCount++;
+                        } else if(toks.get(i).getType().equals("close_paren")){
+                            pCloseCount++;
+                        } else if(toks.get(i).getType().equals("open_bracket")){
+                            bOpenCount++;
+                        } else if(toks.get(i).getType().equals("close_bracket")){
+                            bCloseCount++;
+                        }
+                    }
+                    if(pOpenCount == pCloseCount && bOpenCount != 0 && bOpenCount == bCloseCount){
+                        ArrayList<Token> taks = new ArrayList<>();
+                        ArrayList<Token> remove = new ArrayList<>();
+                        ArrayList<Token> els = new ArrayList<>();
+                        for(int q = 0; q < toks.size(); q++){
+                            if(toks.get(q).getType().equals("keyword") && toks.get(q).getKey().equals("else")){
+                                for(int w = q; w < toks.size(); w++){
+                                    els.add(toks.get(w));
+                                    remove.add(toks.get(w));
+                                }
+                            } else if(toks.get(q).getType().equals("open_paren") ||
+                                    toks.get(q).getType().equals("close_paren")) {
+                                remove.add(toks.get(q));
+                            } else if(toks.get(q).getType().equals("open_bracket") ||
+                                    toks.get(q).getType().equals("close_bracket")){
+                                remove.add(toks.get(q));
+                            } else if(toks.get(q).getType().equals("label") ){
+                                remove.add(toks.get(q));
+                            } else{
+                                remove.add(toks.get(q));
+                                taks.add(toks.get(q));
+                            }
+                        }
+                        for(Token rm: remove){
+                            toks.remove(rm);
+                        }
+                        if(toks.isEmpty()){
+                            if(!taks.isEmpty()){
+                                toks = Condition(taks);
+                                if(!els.isEmpty()){
+                                    if(toks.isEmpty()){
+                                        toks = Else(els);
+                                    }
+                                }
+                            }
+                        }
+                    } else{
+                        return tokens;
+                    }
+                }
+            }
+        }
+        return toks;
     }
 
-    //Else --> “else” “{“ Statement-Lst “}”    //////////////////////////////////////////NEED TO DO
+    //Else --> “else” “{“ Statement-Lst-Label “}”
     private ArrayList<Token> Else(ArrayList<Token> tokens){
-        return tokens;
+        ArrayList<Token> toks = tokens;
+        if(toks.isEmpty()){
+            return tokens;
+        }
+        if(toks.get(0).getKey().equals("else")){
+            toks.remove(0);
+            int openCount = 0, closeCount = 0;
+            for(int k = 0; k < tokens.size(); k++){
+                if(tokens.get(k).getType().equals("open_bracket")){
+                    openCount++;
+                    toks.remove(tokens.get(k));
+                } else if(tokens.get(k).getType().equals("close_bracket")){
+                    closeCount++;
+                    toks.remove(tokens.get(k));
+                }
+            }
+            if(openCount == closeCount && openCount != 0){
+                if(toks.size() > 0){
+                    if(toks.get(0).getType().equals("label")){
+                        toks.remove(0);
+                    }
+                }
+            }
+        }
+        return toks;
     }
 
     /*
@@ -297,25 +391,39 @@ public class TokenParser {
     private ArrayList<Token> Condition(ArrayList<Token> tokens){
         String conds = " == , >= , <= , > , < ";
         String comb = " and , or ";
+        ArrayList<Token> temp = new ArrayList<>();
         for(int g = 0; g < tokens.size(); g++){
-            if(tokens.get(g).getType().equals("compares") && comb.indexOf(tokens.get(g).getKey()) != 0){
-                if(!Condition((ArrayList<Token>) tokens.subList(0,g-1)).isEmpty()){
+            if(tokens.get(g).getType().equals("compares") && comb.contains(tokens.get(g).getKey())){
+                for(int t = 0; t < g; t++){
+                    temp.add(tokens.get(t));
+                }
+                if(!Condition(temp).isEmpty()){
                     return tokens;
                 } else{
-                    if(!Condition((ArrayList<Token>) tokens.subList(g+1,tokens.size())).isEmpty()){
+                    temp = new ArrayList<>();
+                    for(int t = g+1; t < tokens.size(); t++){
+                        temp.add(tokens.get(t));
+                    }
+                    if(!Condition(temp).isEmpty()){
                         return tokens;
                     }
                 }
-            } else if(tokens.get(g).getType().equals("compares") && conds.indexOf(tokens.get(g).getKey()) != 0){
-                if(!Expression((ArrayList<Token>) tokens.subList(0,g-1)).isEmpty()){
+            } else if(tokens.get(g).getType().equals("compares") && conds.contains(tokens.get(g).getKey())){
+                temp = new ArrayList<>();
+                for(int t = 0; t < g; t++){
+                    temp.add(tokens.get(t));
+                }
+                if(!Expression(temp).isEmpty()){
                     return tokens;
                 } else{
-                    if(!Expression((ArrayList<Token>) tokens.subList(g+1,tokens.size())).isEmpty()){
+                    temp = new ArrayList<>();
+                    for(int t = g+1; t < tokens.size(); t++){
+                        temp.add(tokens.get(t));
+                    }
+                    if(!Expression(temp).isEmpty()){
                         return tokens;
                     }
                 }
-            } else{
-                return tokens;
             }
         }
         return new ArrayList<>();
@@ -324,12 +432,18 @@ public class TokenParser {
     //Iterator --> Expr “,” Expr
     private ArrayList<Token> Iterator(ArrayList<Token> tokens){
         boolean notHandled = true;
+        ArrayList<Token> temp = new ArrayList<>();
         for(int g = 0; g < tokens.size(); g++){
             if(tokens.get(g).getType().equals("comma")){
-                if(!Expression((ArrayList<Token>) tokens.subList(0,g-1)).isEmpty()){
-                    if(!Expression((ArrayList<Token>) tokens.subList(g+1,tokens.size())).isEmpty()){
-                        return tokens;
-                    } else{
+                for(int t = 0; t < g; t++){
+                    temp.add(tokens.get(t));
+                }
+                if(Expression(temp).isEmpty()){
+                    temp = new ArrayList<>();
+                    for(int t = g+1; t < tokens.size(); t++){
+                        temp.add(tokens.get(t));
+                    }
+                    if(Expression(temp).isEmpty()){
                         notHandled = false;
                     }
                 }
@@ -343,18 +457,48 @@ public class TokenParser {
 
     }
 
-    //Loop --> “loop” Loop-Assignment “{“ Statement-Lst “}”     //////////////////////////////////////////NEED TO DO
+    //Loop --> “loop” Loop-Assignment “{“ Statement-Lst-Label “}”
     private ArrayList<Token> Loop(ArrayList<Token> tokens){
-        return tokens;
+        ArrayList<Token> toks = tokens;
+        ArrayList<Token> temp = new ArrayList<>();
+        ArrayList<Token> remove = new ArrayList<>();
+        if(tokens.size() >= 8 && tokens.get(0).getKey().equals("loop")){
+            toks.remove(tokens.get(0));
+            for(int i = 0; i < tokens.size(); i++){
+                if(tokens.get(i).getType().equals("open_bracket")){
+                    remove.add(tokens.get(i));
+                } else if(tokens.get(i).getType().equals("close_bracket")){
+                    remove.add(tokens.get(i));
+                } else if(tokens.get(i).getType().equals("label")){
+                    remove.add(tokens.get(i));
+                } else if(tokens.get(i).getType().equals("open_paren")){
+                    remove.add(tokens.get(i));
+                } else if(tokens.get(i).getType().equals("close_paren")){
+                    remove.add(tokens.get(i));
+                } else{
+                    remove.add(tokens.get(i));
+                    temp.add(tokens.get(i));
+                }
+            }
+            for(Token rm:remove){
+                toks.remove(rm);
+            }
+            if(toks.isEmpty()){
+                return LoopAssignment(temp);
+            }
+        }
+        return toks;
     }
 
     //Loop-Assignment --> Identifier “=” Iterator
     private ArrayList<Token> LoopAssignment(ArrayList<Token> tokens){
+        ArrayList<Token> temp = new ArrayList<>();
         if(tokens.size() > 4 && Identifier(tokens.get(0)).isEmpty()){
             if(tokens.get(1).getType().equals("assignment")){
-                if(Iterator((ArrayList<Token>) tokens.subList(2,tokens.size())).isEmpty()){
-                    return new ArrayList<>();
+                for(int t = 2; t < tokens.size(); t++){
+                    temp.add(tokens.get(t));
                 }
+                    return Iterator(temp);
             }
         }
         return tokens;
@@ -362,12 +506,12 @@ public class TokenParser {
 
     /*
     Expression --> Expression “+” Expression | Expression “-” Expression | Expression “*” Expression |
-        Expression “/” Expression | Expression “%” Expression | “(“ Expression “)” | Number
+        Expression “/” Expression | Expression “%” Expression | “(“ Expression “)” | Number | Identifier
      */
     private ArrayList<Token> Expression(ArrayList<Token> tokens){
-        ArrayList<Token> toks = tokens;
+        ArrayList<Token> toks = new ArrayList<>(tokens);
         int openCount = 0, closeCount = 0;
-        if(toks.size() > 0 && Number(toks.get(0)).isEmpty()) {
+        if(toks.size() > 0 && (Number(toks.get(0)).isEmpty() || Identifier(toks.get(0)).isEmpty())) {
             toks.remove(0);
             if(toks.size() > 1){
                 if(toks.get(0).getType().equals("operator")){
@@ -377,7 +521,7 @@ public class TokenParser {
                     return toks;
                 }
             } else{
-                return tokens;
+                return toks;
             }
         } else if (toks.get(0).getType().equals("open_paren")){
             boolean parenChk = false;
@@ -414,16 +558,6 @@ public class TokenParser {
     //Letter --> ‘a’..’z’ | ‘A’..’Z’
     private boolean Letter(char ch){
         return ((ch >= 65 && ch <= 90) || (ch >= 97 && ch <= 122));
-    }
-
-    //Bool --> "true" | "false"
-    private boolean Bool(String str){
-        return (str.equals("true") || str.equals("false"));
-    }
-
-    //Type --> "number"
-    private boolean Type(String str) {
-        return str.equals("number");
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
