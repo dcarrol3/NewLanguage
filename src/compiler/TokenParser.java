@@ -16,10 +16,12 @@ public class TokenParser {
     private HashMap<String,ArrayList<ArrayList<Token>>> program;
     private HashMap<Integer,Integer> embed;
     private ArrayList<Token> tokensRef;
+    private boolean passed;
 
     //Constructor given a set of tokens
     public TokenParser(ArrayList<Token> tokens){
         labelStat = "label-0";
+        passed = false;
         statementLine = 0;
         program = new HashMap<>();
         embed = new HashMap<>();
@@ -31,20 +33,29 @@ public class TokenParser {
     public TokenParser(){
         labelStat = "label-0";
         statementLine = 0;
+        passed = false;
         program = new HashMap<>();
         embed = new HashMap<>();
     }
 
     //Get the final output of the program.
     public HashMap<String,ArrayList<ArrayList<Token>>> getResults(){
-        return this.program;
+        if(this.passed){
+            return this.program;
+        } else{
+            return new HashMap<>();
+        }
     }
 
     //give the output of the program given a set of tokens.
     public HashMap<String,ArrayList<ArrayList<Token>>> parseTokens(ArrayList<Token> tokens){
         tokensRef = tokens;
         init(tokens);
-        return this.program;
+        if(passed){
+            return this.program;
+        } else{
+            return new HashMap<>();
+        }
     }
 
     //Controller for the program
@@ -69,7 +80,8 @@ public class TokenParser {
         }
 
         System.out.println("\n<--------------Third Pass (Checks Grammar)--------------->");
-        System.out.println(Program());
+        passed = Program();
+        System.out.println(passed);
         System.out.println("\n");
 
     }

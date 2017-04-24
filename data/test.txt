@@ -5,11 +5,6 @@ lif,$l0,label-1,leaveloop0
 add,i,i,1
 jump,looplabel0
 leaveloop0
-add,$t0,4,2
-add,x,0,$t0
-print,;
-add,$t1,x,1
-print,$t1
 end
 label-4
 print,100
@@ -29,7 +24,7 @@ add,j,j,1
 jump,looplabel1
 leaveloop1
 print,i
-eq,$t2,i,5
-if,$t2,label-3,label-4
+eq,$t0,i,5
+if,$t0,label-3,label-4
 jr
 
