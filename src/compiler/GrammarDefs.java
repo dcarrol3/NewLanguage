@@ -12,6 +12,7 @@ public final class GrammarDefs {
     public static final String JSON_TOKEN = "token";
     public static final String JSON_TYPE = "type";
     public static final String JSON_DELIMITER = "delimit";
+    public static final String OPERATOR = "operator";
 
     // Variable names type
     public static final String IDENTIFIER = "identifier";
@@ -34,6 +35,8 @@ public final class GrammarDefs {
     public static final String COMMA = "comma";
     public static final String OPEN_BRACKET = "open_bracket";
     public static final String CLOSE_BRACKET = "close_bracket";
+    public static final String OPEN_PAREN = "open_paren";
+    public static final String CLOSE_PAREN = "close_paren";
 
     // Label
     public static final String LABEL = "label";
@@ -49,6 +52,8 @@ public final class GrammarDefs {
     public static final String ELSE = "else";
 
 
+    public static final String OPEN_PAREN_TOKEN = "(";
+    public static final String CLOSE_PAREN_TOKEN = ")";
 
     // Conditional tokens
     public static final String AND_TOKEN = "and";
