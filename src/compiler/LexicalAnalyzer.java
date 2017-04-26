@@ -33,6 +33,7 @@ public class LexicalAnalyzer {
 
         strVec = splitByDelimiters(file_string, delimiters);
         Token prevToken = new Token();
+        Token prevPrevToken = new Token();
 
         for(String elem : strVec){
             Token token = matchTokenToType(elem);
@@ -51,12 +52,20 @@ public class LexicalAnalyzer {
             // Add to token list if it's not a comment
             if(!comment_flag && !multiLine_comment_flag){
 
+                // NEGATIVE HANDLER
                 // Handle negative numbers
                 if(prevToken.getKey().equals(GrammarDefs.SUB_TOKEN)
-                        && (token.getType().equals(GrammarDefs.WHOLE_NUMBER)
-                        || token.getType().equals(GrammarDefs.IDENTIFIER))){
+                        && (token.getType().equals(GrammarDefs.WHOLE_NUMBER))){
                     token.setKey("-" + token.getKey()); // Make number negative
                     vec.add(token); // Number itself
+                }
+                // Handle negative expressions -(expression)
+                else if(token.getType().equals(GrammarDefs.OPEN_PAREN)
+                        && prevToken.getKey().equals(GrammarDefs.SUB_TOKEN)
+                        && isOperator(prevPrevToken)){
+                    vec.add(new Token(GrammarDefs.WHOLE_NUMBER, "-1"));
+                    vec.add(new Token(GrammarDefs.OPERATOR, GrammarDefs.MULTI_TOKEN));
+                    vec.add(token);
                 }
                 // Add sub tokens followed by a open (
                 else if(token.getType().equals(GrammarDefs.OPEN_PAREN)
@@ -64,9 +73,23 @@ public class LexicalAnalyzer {
                     vec.add(new Token(GrammarDefs.OPERATOR, GrammarDefs.SUB_TOKEN));
                     vec.add(token);
                 }
-                //--
+                // --
                 else if(token.getKey().equals(GrammarDefs.SUB_TOKEN)
                         && prevToken.getKey().equals(GrammarDefs.SUB_TOKEN)){
+                    vec.add(token);
+                }
+                // -x
+                else if(token.getType().equals(GrammarDefs.IDENTIFIER)
+                        && prevToken.getKey().equals(GrammarDefs.SUB_TOKEN)
+                        && isOperator(prevPrevToken)){
+                    vec.add(new Token(GrammarDefs.WHOLE_NUMBER, "-1"));
+                    vec.add(new Token(GrammarDefs.OPERATOR, GrammarDefs.MULTI_TOKEN));
+                    vec.add(token);
+                }
+                // something-x
+                else if(token.getType().equals(GrammarDefs.IDENTIFIER)
+                        && prevToken.getKey().equals(GrammarDefs.SUB_TOKEN)){
+                    vec.add(new Token(GrammarDefs.OPERATOR, GrammarDefs.SUB_TOKEN));
                     vec.add(token);
                 }
                 // Add everything but a sub-token
@@ -80,10 +103,17 @@ public class LexicalAnalyzer {
             if(token.getType().equals(GrammarDefs.MULTI_LINE_COMMENT_E)){
                 multiLine_comment_flag = false;
             }
+            prevPrevToken = prevToken;
             prevToken = token;
         }
 
         return vec;
+    }
+
+    private boolean isOperator(Token token){
+        return !token.getType().equals(GrammarDefs.IDENTIFIER)
+                && !token.getType().equals(GrammarDefs.WHOLE_NUMBER)
+                && !token.getType().equals(GrammarDefs.CLOSE_PAREN);
     }
 
     // Splits entire code by the grammar delimiters
