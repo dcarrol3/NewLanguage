@@ -562,9 +562,13 @@ public class TokenParser {
         return toks;
     }
 
-    //Digit --> ‘0’ | ‘1’ | ‘2’ | ‘3’ | ‘4’ | ‘5’ | ‘6’ | ‘7’ | ‘8’ | ‘9’
+    //Digit --> ‘0’ | ‘1’ | ‘2’ | ‘3’ | ‘4’ | ‘5’ | ‘6’ | ‘7’ | ‘8’ | ‘9’ | '-'
     private boolean Digit(char ch){
-        return ch >= 48 && ch <= 57;
+        if(ch == '-'){
+            return true;
+        } else{
+            return ch >= 48 && ch <= 57;
+        }
     }
 
     //Letter --> ‘a’..’z’ | ‘A’..’Z’
