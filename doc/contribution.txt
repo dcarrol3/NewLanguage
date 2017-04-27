@@ -1,21 +1,44 @@
 Doug Carroll:
     Prior: Lexical Analysis, Grammer, Defining intermediate language
-    Moving Forward: Parser
+    Moving Forward: Intermediate Code
+    Modules: Lexical Analysis and Intermediate Code
 
 
 
 Jeb Johnson:
     Prior: Defining intermediate language
-    Moving Forward: Runtime/Parser
-
+    Moving Forward: Verificiation
+    Modules: Code Verification
 
 
 Isidro Perez:
     Prior: Defining intermediate language
     Moving Forward: Runtime
+    Modules: Runtime
 
 
 
 Jason Rice:
     Prior: Updated lexical analysis, Grammer, Defining intermediate language
     Moving Forward: Parser
+    Modules: Lexical Analysis and Parser
+
+
+---------------------------------
+
+By Module:
+    Lexical Analysis
+        Doug Carroll
+        Jason Rice
+
+    Code Verification
+        Jeb Johnson
+
+    Parser
+        Jason Rice
+
+    Intermediate Code
+        Doug Carroll
+
+    Runtime
+        Isidro Perez

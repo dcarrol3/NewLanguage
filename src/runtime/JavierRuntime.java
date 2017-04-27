@@ -216,7 +216,18 @@ public class JavierRuntime {
     // if one of the arguments is a variable, grab its value
     // else return the argument
     private String contains(String statement) {
-        return symbolTable.getOrDefault(statement, statement);
+        String res = "";
+        if(is_number(statement) || symbolTable.containsKey(statement)) {
+            res = symbolTable.getOrDefault(statement, statement);
+        }
+        else{
+            System.out.println(
+                    "\n--Execution Error--\n" +
+                    "Error, undeclared variable: " + statement
+            );
+            System.exit(0);
+        }
+        return res;
     }
 
     // read the file
@@ -240,5 +251,9 @@ public class JavierRuntime {
 
         // read the file from top to bottom
         readLines(lines);
+    }
+
+    private boolean is_number(String str){
+        return str.matches("^-?\\d+$");
     }
 }
