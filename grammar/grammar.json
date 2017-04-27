@@ -15,13 +15,8 @@
     "delimit": false
   },
   {
-    "token": "number",
-    "type": "data_type",
-    "delimit": false
-  },
-  {
-    "token": "bool",
-    "type": "data_type",
+    "token": "print",
+    "type": "keyword",
     "delimit": false
   },
 

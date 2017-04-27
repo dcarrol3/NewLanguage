@@ -30,7 +30,7 @@ Custom programming language for learning purposes. Written in Java.
 ##### Compiler build
 
 
-##### Run the runtime
+##### Run the javierRuntime
 
 
 

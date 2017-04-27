@@ -16,7 +16,8 @@ import java.util.Stack;
 public class PemdasParser {
 
     // Temp variable for operations
-    public static final String TEMP = "t";
+    public static final String TEMP = "$t";
+    private static int tempCount = 0;
 
 
     // ----Syntax specific to the expression lib----
@@ -44,9 +45,11 @@ public class PemdasParser {
 
     // Simplifies and orders a (potentially complex) mathematical/conditional expression
     public ArrayList<Operation> parseExpression(ArrayList<Token> expr){
-        ArrayList<Operation> ops;
-        Expression expression = buildExpression(expr);
-        ops = postfixToOperations(expression.toRPN());
+        ArrayList<Operation> ops = new ArrayList<>();
+        if(expr.size() > 1) {
+            Expression expression = buildExpression(expr);
+            ops = postfixToOperations(expression.toRPN());
+        }
         return ops;
     }
 
@@ -133,7 +136,6 @@ public class PemdasParser {
         String[] postfixArr = postfix.split(" ");
         ArrayList<Operation> ops = new ArrayList<>();
         Stack<String> stack = new Stack<>();
-        int tempCount = 0;
 
         for(int i = 0; i < postfixArr.length; i++){
             // If number or variable, add it to the stack

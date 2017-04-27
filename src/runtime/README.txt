@@ -1,4 +1,4 @@
-Instructions regarding the runtime
+Instructions regarding the javierRuntime
 
 Current keywords are stored in Constants.java, the following operations are included
 
@@ -17,12 +17,13 @@ OR = "or";
 PRINT = "print";
 IF = "if";
 JUMP = "jump";
+MOD = "mod"'
 
-To start the runtime use the following code
-The runtime object takes the path of the parsed code
+To start the javierRuntime use the following code
+The javierRuntime object takes the path of the parsed code
 
-Runtime runtime = new Runtime("./src/parsed.txt");
-runtime.run();
+JavierRuntime javierRuntime = new JavierRuntime("./src/runtime/parsed.txt");
+javierRuntime.run();
 
 Make sure parsed.txt is comma separated, no spaces
 

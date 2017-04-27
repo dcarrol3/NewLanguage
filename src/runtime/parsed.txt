@@ -1,3 +1,0 @@
-add,t0,6,7
-eq,t1,t0,5
-print,t1
