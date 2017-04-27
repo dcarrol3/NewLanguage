@@ -20,7 +20,7 @@ public class Main {
         LexicalAnalyzer la = new LexicalAnalyzer();
 
         //ArrayList<Token> tokens = la.tokenizeString(FileHandler.fileToString("exprTest.txt"));
-        ArrayList<Token> tokens = la.tokenizeString(FileHandler.fileToString("./data/reverse-number.javier"));
+        ArrayList<Token> tokens = la.tokenizeString(FileHandler.fileToString("./data/triangle-number.javier"));
 
         System.out.println("\n\n /////////////////LEXICAL////////////////////");
         ArrayList<Token> expr = new ArrayList<>();
