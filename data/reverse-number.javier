@@ -1,0 +1,29 @@
+#/
+    reverse x
+    ex: 12345 => 54321
+/#
+
+x = 123456;
+length = 0;
+reverse = 0;
+place = 1;
+
+if x >= place {
+    # get the number of digits in the number
+    loop i = 1, x {
+        if x >= place {
+            length = length + 1;
+            place = place * 10;
+        }
+    }
+    # reverse the number
+    loop i = 1, length {
+        digit = x % 10;
+        reverse = reverse * 10 + digit;
+        x = x / 10;
+    }
+} else {
+    reverse = -1;
+}
+
+print reverse;
