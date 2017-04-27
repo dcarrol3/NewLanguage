@@ -1,4 +1,4 @@
-sub,$t0,6,1
+add,$t0,6,-1
 sub,$t1,-5,$t0
 sub,$t2,5,$t1
 add,x,0,$t2
