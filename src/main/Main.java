@@ -20,7 +20,7 @@ public class Main {
         LexicalAnalyzer la = new LexicalAnalyzer();
 
         //ArrayList<Token> tokens = la.tokenizeString(FileHandler.fileToString("exprTest.txt"));
-        ArrayList<Token> tokens = la.tokenizeString(FileHandler.fileToString("test.txt"));
+        ArrayList<Token> tokens = la.tokenizeString(FileHandler.fileToString("./data/factorial.javier"));
 
         System.out.println("\n\n /////////////////LEXICAL////////////////////");
         ArrayList<Token> expr = new ArrayList<>();
@@ -49,14 +49,14 @@ public class Main {
             IntermediateGenerator icg = new IntermediateGenerator();
 
             // Create runtime file
-            icg.generateCode(ops, "test.txt");
+            icg.generateCode(ops, "factorial.jav");
 
 
             System.out.println("\n\n /////////////////RUNTIME////////////////////");
-            System.out.println(FileHandler.fileToString("./data/test.txt") + "\n");
+            System.out.println(FileHandler.fileToString("./data/factorial.jav") + "\n");
             System.out.println("Output:");
 
-            JavierRuntime runtime = new JavierRuntime("./data/test.txt");
+            JavierRuntime runtime = new JavierRuntime("./data/factorial.jav");
             runtime.run();
         }
     }
