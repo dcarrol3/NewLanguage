@@ -36,28 +36,28 @@ public class Main {
         StatementToOperation sto = new StatementToOperation();
 
 
+        if(!tk.getResults().isEmpty()) {
+            System.out.println("\n\n /////////////////INTERMEDIATE////////////////////");
+            ArrayList<Operation> ops = sto.convertProgram(tk.getResults());
+            for (Operation op : ops) {
+                System.out.println(op.getType() + " "
+                        + op.getVariable() + " "
+                        + op.getValue1() + " "
+                        + op.getValue2());
+            }
 
-        System.out.println("\n\n /////////////////INTERMEDIATE////////////////////");
-        ArrayList<Operation> ops = sto.convertProgram(tk.getResults());
-        for (Operation op: ops) {
-            System.out.println(op.getType() + " "
-                    + op.getVariable() + " "
-                    + op.getValue1() + " "
-                    + op.getValue2());
+            IntermediateGenerator icg = new IntermediateGenerator();
+
+            // Create runtime file
+            icg.generateCode(ops, "test.txt");
+
+
+            System.out.println("\n\n /////////////////RUNTIME////////////////////");
+            System.out.println(FileHandler.fileToString("./data/test.txt") + "\n");
+            System.out.println("Output:");
+
+            JavierRuntime runtime = new JavierRuntime("./data/test.txt");
+            runtime.run();
         }
-
-        IntermediateGenerator icg = new IntermediateGenerator();
-
-        // Create runtime file
-        icg.generateCode(ops, "test.txt");
-
-
-
-        System.out.println("\n\n /////////////////RUNTIME////////////////////");
-        System.out.println(FileHandler.fileToString("./data/test.txt") + "\n");
-        System.out.println("Output:");
-
-        JavierRuntime runtime = new JavierRuntime("./data/test.txt");
-        runtime.run();
     }
 }
