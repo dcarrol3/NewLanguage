@@ -10,4 +10,3 @@ add,x,0,$t6
 print,x
 end
 
-
