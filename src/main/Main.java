@@ -10,60 +10,72 @@ package main;
 import compiler.*;
 import runtime.JavierRuntime;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Main {
 
-    public static void main(String[] args) throws IOException {
 
-        PemdasParser pem = new PemdasParser();
+    public static final int OPTION = 0;
+    public static final int FILENAME = 1;
+    public static final String DATA_PATH = "./data/";
+    public static final String UNCOMPILED_EXT = ".javier";
+    public static final String COMPILED_EXT = ".jav";
+    public static final String COMPILE = "compile";
+    public static final String RUN = "run";
+
+    public static void compile(String filename){
         LexicalAnalyzer la = new LexicalAnalyzer();
-
-        //ArrayList<Token> tokens = la.tokenizeString(FileHandler.fileToString("exprTest.txt"));
-        ArrayList<Token> tokens = la.tokenizeString(FileHandler.fileToString("test.txt"));
-
-        System.out.println("\n\n /////////////////LEXICAL////////////////////");
-        ArrayList<Token> expr = new ArrayList<>();
-        for (Token token: tokens) {
-            System.out.println("<" + token.getType() + ", " + token.getKey() + ">");
-            if(!token.getType().equals(GrammarDefs.NEW_LINE)){
-                expr.add(token);
-            }
-        }
-
-        System.out.println("\n\n /////////////////Validator////////////////////");
-        Validation the_best_validator = new Validation(tokens);
-        the_best_validator.validate();
-
-
-        System.out.println("\n\n /////////////////PARSER////////////////////");
-        TokenParser tk = new TokenParser(tokens);
         StatementToOperation sto = new StatementToOperation();
-
-
-
-        System.out.println("\n\n /////////////////INTERMEDIATE////////////////////");
-        ArrayList<Operation> ops = sto.convertProgram(tk.getResults());
-        for (Operation op: ops) {
-            System.out.println(op.getType() + " "
-                    + op.getVariable() + " "
-                    + op.getValue1() + " "
-                    + op.getValue2());
-        }
-
         IntermediateGenerator icg = new IntermediateGenerator();
 
-        // Create runtime file
-        icg.generateCode(ops, "test.txt");
+        // Lexical analysis and parsing
+        // TODO - add validation here
+        ArrayList<Token> tokens = la.tokenizeString(FileHandler.fileToString(DATA_PATH + filename + UNCOMPILED_EXT));
+        TokenParser tk = new TokenParser(tokens);
 
+        // Convert to intermediate code and PEMDAS it
+        ArrayList<Operation> ops = sto.convertProgram(tk.getResults());
+        icg.generateCode(ops, DATA_PATH + filename + COMPILED_EXT);
+    }
 
-
-        System.out.println("\n\n /////////////////RUNTIME////////////////////");
-        System.out.println(FileHandler.fileToString("./data/test.txt") + "\n");
-        System.out.println("Output:");
-
-        JavierRuntime runtime = new JavierRuntime("./data/test.txt");
+    public static void run(String filename){
+        JavierRuntime runtime = new JavierRuntime(DATA_PATH + filename + COMPILED_EXT);
+        System.out.println("");
         runtime.run();
+    }
+
+    public static void main(String[] args) throws IOException {
+
+        if(args.length < 2){
+            System.out.println("Option and Filename required.\n" +
+                    "Example: Javier.jar compile myFileName");
+        } else {
+            String option = args[OPTION];
+            String filename = args[FILENAME];
+
+            // Run or Compile the program
+            switch(option){
+                case COMPILE:
+                    if(FileHandler.fileExists(DATA_PATH + filename + UNCOMPILED_EXT)) {
+                        compile(filename);
+                        System.out.println("\nCompilation finished.");
+                    } else {
+                        System.out.println("File not found: " + filename + UNCOMPILED_EXT);
+                    }
+                    break;
+
+                case RUN:
+                    if(FileHandler.fileExists(DATA_PATH + filename + COMPILED_EXT)) {
+                        run(filename);
+                        System.out.println("\nExecution finished.");
+                    }
+                    else
+                        System.out.println("Compiled file not found: " + filename + COMPILED_EXT);
+                    break;
+
+                default:
+                    System.out.println("Invalid option. Please use compile or run.");
+            }
+        }
     }
 }

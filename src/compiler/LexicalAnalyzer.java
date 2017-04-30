@@ -9,19 +9,20 @@ package compiler;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 
+import compiler.grammar.Grammar;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 public class LexicalAnalyzer {
-
-    private final String GRAMMAR_FILE = "grammar/grammar.json";
 
     // Creates tokens from the raw code file
     public ArrayList<Token> tokenizeString(String file_string){
@@ -32,6 +33,8 @@ public class LexicalAnalyzer {
         boolean multiLine_comment_flag = false;
 
         strVec = splitByDelimiters(file_string, delimiters);
+        Token prevToken = new Token();
+        Token prevPrevToken = new Token();
 
         for(String elem : strVec){
             Token token = matchTokenToType(elem);
@@ -49,16 +52,77 @@ public class LexicalAnalyzer {
 
             // Add to token list if it's not a comment
             if(!comment_flag && !multiLine_comment_flag){
-                vec.add(token);
+
+                // NEGATIVE HANDLER
+                // Handle negative numbers
+
+                if(prevToken.getKey().equals(GrammarDefs.SUB_TOKEN)
+                        && token.getType().equals(GrammarDefs.WHOLE_NUMBER)
+                        && !isOperator(prevPrevToken)){
+                    vec.add(new Token(GrammarDefs.OPERATOR, GrammarDefs.SUB_TOKEN));
+                    vec.add(token);
+
+                }
+                else if(prevToken.getKey().equals(GrammarDefs.SUB_TOKEN)
+                        && (token.getType().equals(GrammarDefs.WHOLE_NUMBER))){
+                    token.setKey("-" + token.getKey()); // Make number negative
+                    vec.add(token); // Number itself
+                }
+                // Handle negative expressions -(expression)
+                else if(token.getType().equals(GrammarDefs.OPEN_PAREN)
+                        && prevToken.getKey().equals(GrammarDefs.SUB_TOKEN)
+                        && isOperator(prevPrevToken)){
+                    vec.add(new Token(GrammarDefs.WHOLE_NUMBER, "-1"));
+                    vec.add(new Token(GrammarDefs.OPERATOR, GrammarDefs.MULTI_TOKEN));
+                    vec.add(token);
+                }
+                // Add sub tokens followed by a open (
+                else if(token.getType().equals(GrammarDefs.OPEN_PAREN)
+                        && prevToken.getKey().equals(GrammarDefs.SUB_TOKEN)){
+                    vec.add(new Token(GrammarDefs.OPERATOR, GrammarDefs.SUB_TOKEN));
+                    vec.add(token);
+                }
+                // --
+                else if(token.getKey().equals(GrammarDefs.SUB_TOKEN)
+                        && prevToken.getKey().equals(GrammarDefs.SUB_TOKEN)){
+                    vec.add(token);
+                }
+                // -x
+                else if(token.getType().equals(GrammarDefs.IDENTIFIER)
+                        && prevToken.getKey().equals(GrammarDefs.SUB_TOKEN)
+                        && isOperator(prevPrevToken)){
+                    vec.add(new Token(GrammarDefs.WHOLE_NUMBER, "-1"));
+                    vec.add(new Token(GrammarDefs.OPERATOR, GrammarDefs.MULTI_TOKEN));
+                    vec.add(token);
+                }
+                // something-x
+                else if(token.getType().equals(GrammarDefs.IDENTIFIER)
+                        && prevToken.getKey().equals(GrammarDefs.SUB_TOKEN)){
+                    vec.add(new Token(GrammarDefs.OPERATOR, GrammarDefs.SUB_TOKEN));
+                    vec.add(token);
+                }
+                // Add everything but a sub-token
+                else if (!token.getKey().equals(GrammarDefs.SUB_TOKEN)){
+                    vec.add(token);
+                }
+
             }
 
             // Check here so the end of multi-line comment is not added
             if(token.getType().equals(GrammarDefs.MULTI_LINE_COMMENT_E)){
                 multiLine_comment_flag = false;
             }
+            prevPrevToken = prevToken;
+            prevToken = token;
         }
 
         return vec;
+    }
+
+    private boolean isOperator(Token token){
+        return !token.getType().equals(GrammarDefs.IDENTIFIER)
+                && !token.getType().equals(GrammarDefs.WHOLE_NUMBER)
+                && !token.getType().equals(GrammarDefs.CLOSE_PAREN);
     }
 
     // Splits entire code by the grammar delimiters
@@ -134,7 +198,7 @@ public class LexicalAnalyzer {
     // Match each token to a type
     private Token matchTokenToType(String token) {
         Token res_token = new Token();
-        String grammarStr = FileHandler.fileToString(GRAMMAR_FILE);
+        String grammarStr = Grammar.GRAMMAR;
         JSONParser parser = new JSONParser();
 
         try {
@@ -187,9 +251,9 @@ public class LexicalAnalyzer {
         return !token.equals("") && is_char(token.charAt(0));
     }
 
-    // Grab all delimiters from grammar.json
+    // Grab all delimiters from Grammar.java
     private ArrayList<String> getDelimitersFromJson(){
-        String grammarStr = FileHandler.fileToString(GRAMMAR_FILE);
+        String grammarStr = Grammar.GRAMMAR;
         JSONParser parser = new JSONParser();
         ArrayList<String> delimiters = new ArrayList<>();
 

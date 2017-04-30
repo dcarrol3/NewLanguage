@@ -7,6 +7,7 @@
 
 package compiler;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -16,9 +17,11 @@ public class StatementToOperation {
     public ArrayList<Operation> convertProgram(HashMap<String,ArrayList<ArrayList<Token>>> program){
         ArrayList<ArrayList<Token>> mainStatementList = program.get("program");
         ArrayList<Operation> ops = new ArrayList<>();
+        boolean statementFinished = true;
+        ArrayList<Token> tempStatement = new ArrayList<>();
 
-
-        for(ArrayList<Token> statement: mainStatementList){
+        // Main program first
+        for(ArrayList<Token> statement : mainStatementList){
             ops.addAll(convertToOperation(statement));
         }
         ops.add(new Operation(Operation.OperationType.END)); // End of program
@@ -27,6 +30,7 @@ public class StatementToOperation {
         Iterator it = program.entrySet().iterator();
         while (it.hasNext()) {
             HashMap.Entry labeledStatements = (HashMap.Entry)it.next();
+            // Don't put main in here
             if(!labeledStatements.getKey().toString().equals("program")) {
                 ops.add(new Operation(Operation.OperationType.LABEL, labeledStatements.getKey().toString()));
                 for (ArrayList<Token> labeledStatement : (ArrayList<ArrayList<Token>>) labeledStatements.getValue()) {
@@ -38,6 +42,7 @@ public class StatementToOperation {
 
         return ops;
     }
+
 
     // Converts a statement made of tokens to series of operations
     private ArrayList<Operation> convertToOperation(ArrayList<Token> statement){
@@ -135,7 +140,6 @@ public class StatementToOperation {
     private ArrayList<Operation> parseIf(ArrayList<Token> statement){
         ArrayList<Operation> ops = new ArrayList<>();
         PemdasParser pem = new PemdasParser();
-        // Get the conditional inside the if statement
 
         // Get the first open_bracket position
         int bracket = -1;

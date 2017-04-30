@@ -8,14 +8,20 @@
 package compiler;
 
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class FileHandler {
+
+    public static boolean fileExists(String filePath){
+        File file = new File(filePath);
+        return file.exists();
+    }
+
     // Read from file
     public static String fileToString(String filePath){
         Path path = Paths.get(filePath);

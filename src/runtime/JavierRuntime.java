@@ -100,8 +100,18 @@ public class JavierRuntime {
                         }
                     }
                     break;
+                case Constants.LOOP:
+                    if(Boolean.valueOf(symbolTable.get(statements[1]))) {
+                        jumpStack.push(i);
+                        i = Integer.valueOf(symbolTable.get(statements[2]));
+                    } else {
+                        if(statements.length > 3) {
+                            // Dont add the else to the jump stack
+                            i = Integer.valueOf(symbolTable.get(statements[3]));
+                        }
+                    }
+                    break;
                 case Constants.JUMP:
-                    jumpStack.push(i);
                     i = Integer.valueOf(symbolTable.get(statements[1]));
                     break;
                 case Constants.MOD:
@@ -206,7 +216,18 @@ public class JavierRuntime {
     // if one of the arguments is a variable, grab its value
     // else return the argument
     private String contains(String statement) {
-        return symbolTable.getOrDefault(statement, statement);
+        String res = "";
+        if(is_number(statement) || symbolTable.containsKey(statement)) {
+            res = symbolTable.getOrDefault(statement, statement);
+        }
+        else{
+            System.out.println(
+                    "\n--Execution Error--\n" +
+                    "Error, undeclared variable: " + statement
+            );
+            System.exit(0);
+        }
+        return res;
     }
 
     // read the file
@@ -230,5 +251,9 @@ public class JavierRuntime {
 
         // read the file from top to bottom
         readLines(lines);
+    }
+
+    private boolean is_number(String str){
+        return str.matches("^-?\\d+$");
     }
 }

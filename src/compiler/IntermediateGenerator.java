@@ -12,7 +12,6 @@ import runtime.Constants;
 import java.util.ArrayList;
 
 public class IntermediateGenerator {
-    public final String INTER_CODE_DIR = "data/";
     public final String LOOP_VAR = "$l";
     private int loopNum = 0;
 
@@ -91,7 +90,7 @@ public class IntermediateGenerator {
             intermCode.append(assemblyOp);
             intermCode.append("\n"); // Every operation must be on a new line
         }
-        FileHandler.stringToFile(INTER_CODE_DIR + filename, intermCode.toString());
+        FileHandler.stringToFile(filename, intermCode.toString());
     }
 
     private String endOp() {
@@ -111,7 +110,7 @@ public class IntermediateGenerator {
         loop += assignmentOp(variable, value1) + "\n";
         loop += labelOp("looplabel" + loopNum) + "\n";
         loop += lteOp(LOOP_VAR + loopNum, variable, value2) + "\n";
-        loop += ifOp(label, LOOP_VAR + loopNum, "leaveloop" + loopNum) + "\n";
+        loop += Constants.LOOP + "," + (LOOP_VAR + loopNum) + "," + label + "," + ("leaveloop" + loopNum) + "\n";
         loop += addOp(variable, variable, "1") + "\n";
         loop += jumpOp("looplabel" + loopNum) + "\n";
         loop += labelOp("leaveloop" + loopNum);

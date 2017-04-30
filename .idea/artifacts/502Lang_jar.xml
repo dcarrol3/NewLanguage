@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="502Lang:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/502Lang_jar</output-path>
+    <root id="archive" name="502Lang.jar">
+      <element id="module-output" name="502Lang" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/json-simple-1.1.1.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

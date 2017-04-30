@@ -13,6 +13,13 @@ public class Token {
     private String key = "";
     private String type = "";
 
+    public Token(){}
+
+    public Token(String type, String key){
+        this.type = type;
+        this.key = key;
+    }
+
     public void setKey(String key) {
         this.key = key;
     }
