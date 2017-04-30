@@ -243,17 +243,29 @@ public class Validation {
         return flag;
     }
 
+    boolean check_double_open_bracket() {
+
+        int temp_index = statement_index + 1;
+
+        return (statements.get(temp_index).getKey() == statements.get(statement_index).getKey());
+
+
+    }
+
     /*
     =======================================================================================================
     Checks if a loop statement has a valid identifier, equals token and iterator
     =======================================================================================================
     */
 
+
+
     private boolean is_valid_loop_assignment() {
 
         boolean flag1;
         boolean flag2;
         boolean flag3;
+        boolean flag4;
 
         statement_index++;
         flag1 = is_identifier(statements.get(statement_index).getType());
@@ -261,7 +273,9 @@ public class Validation {
         flag2 = is_equals_token(statements.get(statement_index).getKey());
         flag3 = is_valid_iterator();
 
-        return flag1 && flag2 & flag3;
+       flag4 = check_double_open_bracket();
+
+        return flag1 && flag2 && flag3 && flag4;
 
     }
 
@@ -552,7 +566,7 @@ public class Validation {
 
     /*
     =============================================================
-    checks if token is a numeber
+    checks if token is a number
     =============================================================
     */
 

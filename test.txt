@@ -1,12 +1,12 @@
-x = 2
+x = 2 + 7 - 6 + 8
 
-if x == 2 {
+if x == 11 {
 
     print 5
 
 } else {
 
-    print x
+    print 8
 
 }
 
@@ -17,12 +17,12 @@ if x == 45 {
 
 } else {
 
-    print x
+    print 8
 
 }
 
-loop i = 1, 5{
+loop i = 1, 5 {
 
-    print 17
+    print x
 
 }
