@@ -80,7 +80,7 @@ public class TokenParser {
         }
 
         System.out.println("\n<--------------Third Pass (Checks Grammar)--------------->");
-        passed = true;//Program();
+        passed = Program();
         System.out.println(passed);
         System.out.println("\n");
 
@@ -244,6 +244,7 @@ public class TokenParser {
 
     //Number --> Digit | Digit Number
     private Token Number(Token token){
+
         Token tek = new Token();
         if(!token.getType().equals("number")){
             return token;
@@ -536,7 +537,6 @@ public class TokenParser {
                 return toks;
             }
         } else if (toks.get(0).getType().equals("open_paren")){
-            boolean parenChk = false;
             for(Token tok:toks){
                 if(tok.getType().equals("open_paren")){
                     openCount++;
@@ -545,11 +545,17 @@ public class TokenParser {
                 }
             }
             if(openCount == closeCount){
+                ArrayList<Token> rem = new ArrayList<>();
                 for(int a = 0; a<toks.size(); a++){
                     String typ = toks.get(a).getType();
-                    if(typ.equals("open_paren") || typ.equals("close_paren")){
-                        toks.remove(a);
+                    if(typ.equals("open_paren")){
+                        rem.add(toks.get(a));
+                    } else if(typ.equals("close_paren")){
+                        rem.add(toks.get(a));
                     }
+                }
+                for(Token tik:rem){
+                    toks.remove(tik);
                 }
                 toks = Expression(toks);
             } else{

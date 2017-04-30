@@ -54,7 +54,15 @@ public class LexicalAnalyzer {
 
                 // NEGATIVE HANDLER
                 // Handle negative numbers
+
                 if(prevToken.getKey().equals(GrammarDefs.SUB_TOKEN)
+                        && token.getType().equals(GrammarDefs.WHOLE_NUMBER)
+                        && !isOperator(prevPrevToken)){
+                    vec.add(new Token(GrammarDefs.OPERATOR, GrammarDefs.SUB_TOKEN));
+                    vec.add(token);
+
+                }
+                else if(prevToken.getKey().equals(GrammarDefs.SUB_TOKEN)
                         && (token.getType().equals(GrammarDefs.WHOLE_NUMBER))){
                     token.setKey("-" + token.getKey()); // Make number negative
                     vec.add(token); // Number itself
