@@ -410,7 +410,7 @@ public class Validation {
 
      /*
     ==================================================================================================
-    Check if a value holding token has a valid successor token
+    Check if a value holding token is a valid successor token
     ==================================================================================================
     */
 
@@ -453,6 +453,10 @@ public class Validation {
                  break;
 
              case GrammarDefs.LTE_TOKEN:
+                 flag = true;
+                 break;
+
+             case GrammarDefs.MOD_TOKEN:
                  flag = true;
                  break;
 

@@ -1,8 +1,3 @@
-#/
-    factorial of x, change the value of x to get its factorial
-    if x is less than 0 you will get -1
-/#
-
 x = 8;
 factorial = 1;
 tmp = x;
@@ -17,3 +12,9 @@ if x >= 0 {
 }
 
 print factorial;
+
+
+#/
+    factorial of x, change the value of x to get its factorial
+    if x is less than 0 you will get -1
+/#
