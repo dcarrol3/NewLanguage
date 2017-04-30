@@ -5,7 +5,6 @@ import java.util.List;
 
 public class Validation {
 
-
     private int line_counter;
     private int statement_index;
     private List<String> error_list = new ArrayList<String>();
@@ -145,7 +144,6 @@ public class Validation {
         return flag;
     }
 
-
     /*
     =======================================================================================================
     Checks if the print statement is valid
@@ -160,7 +158,6 @@ public class Validation {
         flag = is_numerical_token(statements.get(statement_index).getType());
 
         return flag;
-
     }
 
     /*
@@ -207,8 +204,6 @@ public class Validation {
 
         }
 
-
-
         return flag;
     }
 
@@ -248,8 +243,6 @@ public class Validation {
         int temp_index = statement_index + 1;
 
         return (statements.get(temp_index).getKey() == statements.get(statement_index).getKey());
-
-
     }
 
     /*
@@ -276,7 +269,6 @@ public class Validation {
        flag4 = check_double_open_bracket();
 
         return flag1 && flag2 && flag3 && flag4;
-
     }
 
     /*
@@ -321,9 +313,7 @@ public class Validation {
         for (Object obj : objArray) {
             str[i] = (String) obj;
             i++;
-
         }
-
 
         return str;
     }
@@ -344,8 +334,6 @@ public class Validation {
 
         while (flag && !current_token.getType().equals(GrammarDefs.OPEN_BRACKET)) {
 
-
-
             if (is_conditional_value(prev_token) &&  !is_valid_condVal_successor(current_token)) {
 
                 flag = false;
@@ -361,8 +349,8 @@ public class Validation {
             current_token = statements.get(statement_index);
 
         }
-        tempindex = statement_index;
 
+        tempindex = statement_index;
         prev_token = statements.get(tempindex);
         tempindex++;
         current_token = statements.get(tempindex);
