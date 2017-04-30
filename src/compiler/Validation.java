@@ -112,7 +112,7 @@ public class Validation {
 
             case GrammarDefs.ELSE:
                 System.out.println("test else");
-               //is_valid_else();
+                flag = is_valid_else();
                 if (!flag)
                     error_type = GrammarDefs.ELSE + "error Line" + line_counter;
                 break;
@@ -136,15 +136,34 @@ public class Validation {
         return flag;
     }
 
+    /*
+    =======================================================================================================
+    =======================================================================================================
+    */
+
+    private boolean is_valid_else() {
+
+        boolean flag = false;
+
+        statement_index++;
+
+        if (statements.get(statement_index).getType().equals(GrammarDefs.OPEN_BRACKET) &&
+                !statements.get(statement_index + 1).getType().equals(GrammarDefs.OPEN_BRACKET))
+
+            flag = true;
+
+        return flag;
+    }
+
 
     /*
     =======================================================================================================
     =======================================================================================================
     */
 
-    boolean is_valid_print() {
+    private boolean is_valid_print() {
 
-        boolean flag = false;
+        boolean flag;
         statement_index++;
 
         flag = is_numerical_token(statements.get(statement_index).getType());
@@ -260,9 +279,9 @@ public class Validation {
 
 
 
-        boolean flag1 = false;
-        boolean flag2 = false;
-        boolean flag3 = false;
+        boolean flag1;
+        boolean flag2;
+        boolean flag3;
 
         statement_index++;
         flag1 = is_identifier(statements.get(statement_index).getType());
