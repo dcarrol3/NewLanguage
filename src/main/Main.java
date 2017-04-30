@@ -14,6 +14,7 @@ import java.util.ArrayList;
 
 public class Main {
 
+
     public static final int OPTION = 0;
     public static final int FILENAME = 1;
     public static final String DATA_PATH = "./data/";

@@ -30,12 +30,14 @@ public final class GrammarDefs {
 
     // New Line
     public static final String NEW_LINE = "new_line";
+    public static final String SEMI_COLON = "semi-colon";
 
     // Other
     public static final String COMMA = "comma";
     public static final String OPEN_BRACKET = "open_bracket";
     public static final String CLOSE_BRACKET = "close_bracket";
     public static final String OPEN_PAREN = "open_paren";
+    public static final String CLOSED_PAREN = "close_paren";
     public static final String CLOSE_PAREN = "close_paren";
 
     // Label
@@ -73,12 +75,6 @@ public final class GrammarDefs {
     public static final String MULTI_TOKEN = "*";
     public static final String DIV_TOKEN = "/";
     public static final String MOD_TOKEN = "%";
-
-
-
-
-
-
 
 
 }
