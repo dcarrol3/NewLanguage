@@ -7,9 +7,9 @@ public class Validation {
 
     private int line_counter;
     private int statement_index;
-    private List<String> error_list = new ArrayList<String>();
+    private List<String> error_list = new ArrayList<>();
 
-    private ArrayList<Token> statements = new ArrayList<Token>();
+    private ArrayList<Token> statements = new ArrayList<>();
 
     /*
     ========================================================================================================
@@ -38,8 +38,10 @@ public class Validation {
             check_keyword(statements.get(statement_index));
         }
 
-        for(int i = 0; i < error_list.size(); i++) {
-            System.out.println(error_list.get(i));
+        for (String str: error_list) {
+
+            System.out.println(str);
+
         }
 
         if (error_list.size() > 1)
@@ -238,11 +240,18 @@ public class Validation {
         return flag;
     }
 
-    boolean check_double_open_bracket() {
+    /*
+    =======================================================================================================
+    Used when conditional ends on open bracket and checks for double bracket
+    =======================================================================================================
+    */
 
-        int temp_index = statement_index + 1;
+    private boolean check_double_open_bracket() {
 
-        return (statements.get(temp_index).getKey() == statements.get(statement_index).getKey());
+        String temp1 = statements.get(statement_index).getKey();
+        String temp2 = statements.get(statement_index + 1).getKey();
+
+        return !temp1.equals(temp2);
     }
 
     /*
@@ -250,8 +259,6 @@ public class Validation {
     Checks if a loop statement has a valid identifier, equals token and iterator
     =======================================================================================================
     */
-
-
 
     private boolean is_valid_loop_assignment() {
 
@@ -265,8 +272,7 @@ public class Validation {
         statement_index++;
         flag2 = is_equals_token(statements.get(statement_index).getKey());
         flag3 = is_valid_iterator();
-
-       flag4 = check_double_open_bracket();
+        flag4 = check_double_open_bracket();
 
         return flag1 && flag2 && flag3 && flag4;
     }
@@ -680,6 +686,7 @@ public class Validation {
 
     /*
     =============================================================
+    checks if token is allowed to follow a parentheses
     =============================================================
     */
 
@@ -710,6 +717,7 @@ public class Validation {
 
      /*
     =============================================================
+    Checks if token is allowed to come after a closed parenthses
     =============================================================
     */
 
@@ -753,6 +761,7 @@ public class Validation {
 
     /*
     =============================================================
+    checks if token is allowed to follow an operator
     =============================================================
     */
 
@@ -787,6 +796,7 @@ public class Validation {
 
     /*
     =============================================================
+    checks if token is a numerical token
     =============================================================
     */
 
@@ -804,6 +814,7 @@ public class Validation {
 
      /*
     =============================================================
+    Checks if the count of open parentheses
     =============================================================
     */
 
@@ -836,6 +847,7 @@ public class Validation {
 
      /*
     =============================================================
+    Checks if token is an closed parentheses
     =============================================================
     */
 
@@ -853,6 +865,7 @@ public class Validation {
 
     /*
     =============================================================
+    Checks if token is an open parentheses
     =============================================================
     */
 
@@ -870,6 +883,7 @@ public class Validation {
 
     /*
     =============================================================
+    Checks if the token is an operator
     =============================================================
     */
 
@@ -906,26 +920,3 @@ public class Validation {
         return flag;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
