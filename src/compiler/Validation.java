@@ -74,14 +74,14 @@ public class Validation {
             case GrammarDefs.IDENTIFIER:
                 flag = is_valid_assignment();
                 if (!flag) {
-                    error_type = GrammarDefs.IDENTIFIER + "error Line" + line_counter;
+                    error_type = GrammarDefs.IDENTIFIER + " error Line " + line_counter;
                 }
                 break;
 
             case GrammarDefs.LOOP:
                 flag = is_valid_loop_assignment();
                 if (!flag) {
-                    error_type = GrammarDefs.LOOP + "error Line" + line_counter;
+                    error_type = GrammarDefs.LOOP + " error Line " + line_counter;
                 }
                 break;
 
@@ -232,7 +232,7 @@ public class Validation {
                 break;
 
             default:
-                System.out.println("Did not recognize syntax");
+                System.out.println("");
                 break;
         }
 
@@ -346,9 +346,11 @@ public class Validation {
         current_token = statements.get(tempindex);
 
 
+
         if (current_token.getType().equals(prev_token.getType())) {
 
             flag = false;
+            line_counter++;
         }
 
         return flag;

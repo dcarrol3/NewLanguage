@@ -1,12 +1,28 @@
 x = 2
 
-if x == 1 {
+if x == 2 {
+
     print 5
+
 } else {
-    print 6
+
+    print x
+
 }
 
 
+if x == 45 {
+
+    print 5
+
+} else {
+
+    print x
+
+}
+
 loop i = 1, 5{
+
+    print 17
 
 }
