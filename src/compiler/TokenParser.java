@@ -16,12 +16,10 @@ public class TokenParser {
     private HashMap<String,ArrayList<ArrayList<Token>>> program;
     private HashMap<Integer,Integer> embed;
     private ArrayList<Token> tokensRef;
-    private boolean passed;
 
     //Constructor given a set of tokens
     public TokenParser(ArrayList<Token> tokens){
         labelStat = "label-0";
-        passed = false;
         statementLine = 0;
         program = new HashMap<>();
         embed = new HashMap<>();
@@ -33,36 +31,27 @@ public class TokenParser {
     public TokenParser(){
         labelStat = "label-0";
         statementLine = 0;
-        passed = false;
         program = new HashMap<>();
         embed = new HashMap<>();
     }
 
     //Get the final output of the program.
     public HashMap<String,ArrayList<ArrayList<Token>>> getResults(){
-        if(this.passed){
-            return this.program;
-        } else{
-            return new HashMap<>();
-        }
+        return this.program;
     }
 
     //give the output of the program given a set of tokens.
     public HashMap<String,ArrayList<ArrayList<Token>>> parseTokens(ArrayList<Token> tokens){
         tokensRef = tokens;
         init(tokens);
-        if(passed){
-            return this.program;
-        } else{
-            return new HashMap<>();
-        }
+        return this.program;
     }
 
     //Controller for the program
     private void init(ArrayList<Token> tokens){
         embed = bracketFinder(tokens);
         makeList(-1,-1, "program");
-        passed = Program();
+        Program();
     }
 
     //Runs through the tokens getting the locations of the brackets
@@ -145,22 +134,17 @@ public class TokenParser {
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     //Program --> StatementLst
-    private boolean Program(){
-        boolean isGC = true;
+    private void Program(){
         if(program.size() > 0){
             for(String tl:program.keySet()){
                 ArrayList<ArrayList<Token>> al = new ArrayList<>(program.get(tl));
                 ArrayList<ArrayList<Token>> ret = StatementLst(al);
                 if(ret.size() != 0){
-                    isGC = false;
                     printList(ret);
+                    System.exit(0);
                 }
             }
-
-        } else{
-            isGC = false;
         }
-        return isGC;
     }
 
     //StatementLst --> Statement | Statement StatementLst
@@ -378,7 +362,7 @@ public class TokenParser {
 
     /*
     Condition --> Expr “==” Expr | Expr “>=” Expr | Expr “<=” Expr | Expr “>” Expr
-        | Expr “<” Expr | Condition “and” Condition | Condition “or” Condition
+        | Expr “<” Expr | Expr “!=” Expr | Condition “and” Condition | Condition “or” Condition
      */
     private ArrayList<Token> Condition(ArrayList<Token> tokens){
         String conds = " == , >= , <= , > , < , != ";
@@ -621,5 +605,6 @@ public class TokenParser {
                 System.out.print(two.getKey() + " ");
             }
         }
+
     }
 }
