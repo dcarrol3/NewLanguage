@@ -9,19 +9,20 @@ package compiler;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 
+import compiler.grammar.Grammar;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 public class LexicalAnalyzer {
-
-    private final String GRAMMAR_FILE = "grammar/grammar.json";
 
     // Creates tokens from the raw code file
     public ArrayList<Token> tokenizeString(String file_string){
@@ -197,7 +198,7 @@ public class LexicalAnalyzer {
     // Match each token to a type
     private Token matchTokenToType(String token) {
         Token res_token = new Token();
-        String grammarStr = FileHandler.fileToString(GRAMMAR_FILE);
+        String grammarStr = Grammar.GRAMMAR;
         JSONParser parser = new JSONParser();
 
         try {
@@ -250,9 +251,9 @@ public class LexicalAnalyzer {
         return !token.equals("") && is_char(token.charAt(0));
     }
 
-    // Grab all delimiters from grammar.json
+    // Grab all delimiters from Grammar.java
     private ArrayList<String> getDelimitersFromJson(){
-        String grammarStr = FileHandler.fileToString(GRAMMAR_FILE);
+        String grammarStr = Grammar.GRAMMAR;
         JSONParser parser = new JSONParser();
         ArrayList<String> delimiters = new ArrayList<>();
 
