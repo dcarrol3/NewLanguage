@@ -1,0 +1,29 @@
+#/
+    fizz-buzz problem
+    go from 1 to 100
+    if the number is divisible by 2 print fizz
+    if the number is divisible by 3 print buzz
+    if the number is divisible by both 2 and 3 print fizz buzz
+/#
+
+x = 100;
+
+fizz = -1;
+buzz = -2;
+
+loop i = 1, x {
+    if i % 2 == 0 and i % 3 == 0 {
+        print i;
+        print fizz;
+        print buzz;
+        i = i + 1;
+    }
+    if i % 2 == 0 {
+        print i;
+        print fizz;
+    }
+    if i % 3 == 0 {
+        print i;
+        print buzz;
+    }
+}
