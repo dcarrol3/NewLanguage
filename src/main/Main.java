@@ -39,6 +39,7 @@ public class Main {
 
     public static void run(String filename){
         JavierRuntime runtime = new JavierRuntime(DATA_PATH + filename + COMPILED_EXT);
+        System.out.println("");
         runtime.run();
     }
 
