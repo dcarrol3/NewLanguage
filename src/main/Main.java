@@ -29,8 +29,12 @@ public class Main {
         IntermediateGenerator icg = new IntermediateGenerator();
 
         // Lexical analysis and parsing
-        // TODO - add validation here
         ArrayList<Token> tokens = la.tokenizeString(FileHandler.fileToString(DATA_PATH + filename + UNCOMPILED_EXT));
+        Validation valid = new Validation(tokens);
+        if(!valid.validate()){
+            System.out.print("\nCompilation failed.\n");
+            System.exit(0);
+        }
         TokenParser tk = new TokenParser(tokens);
 
         // Convert to intermediate code and PEMDAS it

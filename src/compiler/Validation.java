@@ -20,7 +20,7 @@ public class Validation {
 
         this.line_counter = 0;
         this.statements = tokens;
-        this.error_list.add("List of Errors");
+        this.error_list.add("Errors found:");
     }
 
     /*
@@ -38,14 +38,14 @@ public class Validation {
             check_keyword(statements.get(statement_index));
         }
 
-        for (String str: error_list) {
-
-            System.out.println(str);
-
-        }
-
-        if (error_list.size() > 1)
+        if (error_list.size() > 1){
             flag = false;
+            for (String str: error_list) {
+
+                System.out.println(str);
+
+            }
+        }
 
         return flag;
     }
