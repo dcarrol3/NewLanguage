@@ -61,29 +61,8 @@ public class TokenParser {
     //Controller for the program
     private void init(ArrayList<Token> tokens){
         embed = bracketFinder(tokens);
-        System.out.println("\n<---------------First Pass (Finds brackets)---------------->");
-        for(int key : embed.keySet()){
-            System.out.println("Brackets at: "+key+", "+embed.get(key));
-        }
-
-        System.out.println("\n<--------------Second Pass (Splits up sections to labels)--------------->");
         makeList(-1,-1, "program");
-       for(String tl:program.keySet()){
-           System.out.print(tl + " [");
-            ArrayList<ArrayList<Token>> tStart = program.get(tl);
-            for(ArrayList<Token> tok: tStart){
-                for(Token tek: tok){
-                    System.out.print(tek.getKey()+" ");
-                }
-            }
-           System.out.print("\n ]\n\n");
-        }
-
-        System.out.println("\n<--------------Third Pass (Checks Grammar)--------------->");
         passed = Program();
-        System.out.println(passed);
-        System.out.println("\n");
-
     }
 
     //Runs through the tokens getting the locations of the brackets
@@ -402,12 +381,52 @@ public class TokenParser {
         | Expr “<” Expr | Condition “and” Condition | Condition “or” Condition
      */
     private ArrayList<Token> Condition(ArrayList<Token> tokens){
-        String conds = " == , >= , <= , > , < ";
+        String conds = " == , >= , <= , > , < , != ";
         String comb = " and , or ";
         ArrayList<Token> temp = new ArrayList<>();
+        boolean hasCompares = false;
+        for(int chk = 0; chk < tokens.size(); chk++){
+            if(tokens.get(chk).getType().equals("compares") && comb.contains(tokens.get(chk).getKey())){
+                hasCompares = true;
+            }
+        }
         for(int g = 0; g < tokens.size(); g++){
             if(tokens.get(g).getType().equals("compares") && comb.contains(tokens.get(g).getKey())){
-                for(int t = 0; t < g; t++){
+                for(int num = 0; num<g; num++){
+                    temp.add(tokens.get(num));
+                }
+                if(!Condition(temp).isEmpty()){
+                    return tokens;
+                } else{
+                    temp = new ArrayList<>();
+                    for(int num = g+1; num<tokens.size(); num++){
+                        temp.add(tokens.get(num));
+                    }
+                    return Condition(temp);
+                }
+            } else if(tokens.get(g).getType().equals("compares")
+                    && conds.contains(tokens.get(g).getKey())
+                    && !hasCompares){
+                temp = new ArrayList<>();
+                for(int num = 0; num<g; num++){
+                    temp.add(tokens.get(num));
+                }
+                if(!Expression(temp).isEmpty()){
+                    return tokens;
+                } else{
+                    temp = new ArrayList<>();
+                    for(int num = g+1; num<tokens.size(); num++){
+                        temp.add(tokens.get(num));
+                    }
+                    return Expression(temp);
+                }
+            }
+        }
+        return tokens;
+    }
+
+    /*
+    for(int t = 0; t < g; t++){
                     temp.add(tokens.get(t));
                 }
                 if(!Condition(temp).isEmpty()){
@@ -421,8 +440,9 @@ public class TokenParser {
                         return tokens;
                     }
                 }
-            } else if(tokens.get(g).getType().equals("compares") && conds.contains(tokens.get(g).getKey())){
-                temp = new ArrayList<>();
+
+    NEXT
+          temp = new ArrayList<>();
                 for(int t = 0; t < g; t++){
                     temp.add(tokens.get(t));
                 }
@@ -437,10 +457,7 @@ public class TokenParser {
                         return tokens;
                     }
                 }
-            }
-        }
-        return new ArrayList<>();
-    }
+     */
 
     //Iterator --> Expr “,” Expr
     private ArrayList<Token> Iterator(ArrayList<Token> tokens){
