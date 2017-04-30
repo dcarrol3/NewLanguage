@@ -29,6 +29,7 @@ public final class GrammarDefs {
 
     // New Line
     public static final String NEW_LINE = "new_line";
+    public static final String SEMI_COLON = "semi-colon";
 
     // Other
     public static final String COMMA = "comma";

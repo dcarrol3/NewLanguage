@@ -32,6 +32,11 @@ public class Main {
             }
         }
 
+        System.out.println("\n\n /////////////////Validator////////////////////");
+        Validation the_best_validator = new Validation(tokens);
+        the_best_validator.validate();
+
+
         System.out.println("\n\n /////////////////PARSER////////////////////");
         TokenParser tk = new TokenParser(tokens);
         StatementToOperation sto = new StatementToOperation();
