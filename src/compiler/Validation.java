@@ -10,8 +10,7 @@ public class Validation {
     private int statement_index;
     private List<String> error_list = new ArrayList<String>();
 
-
-    ArrayList<Token> statements = new ArrayList<Token>();
+    private ArrayList<Token> statements = new ArrayList<Token>();
 
     /*
     ========================================================================================================
@@ -233,6 +232,7 @@ public class Validation {
                 break;
 
             default:
+                System.out.println("Did not recognize syntax");
                 break;
         }
 
