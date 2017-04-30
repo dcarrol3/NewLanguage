@@ -1,19 +1,13 @@
 package compiler;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Iterator;
 
-/**
- * Created by jebjohnson on 4/20/17.
- */
 public class Validation {
 
 
     private int line_counter;
     private int statement_index;
-    private List<String[]> statement_list = new ArrayList<>();
     private List<String> error_list = new ArrayList<String>();
 
 
@@ -44,10 +38,7 @@ public class Validation {
         line_counter++;
 
         for (statement_index = 0; statement_index < statements.size(); statement_index++) {
-            System.out.println(statements.get(statement_index).getKey());
-
             check_keyword(statements.get(statement_index));
-            line_counter++;
         }
 
         for(int i = 0; i < error_list.size(); i++) {
@@ -89,7 +80,6 @@ public class Validation {
                 break;
 
             case GrammarDefs.LOOP:
-                System.out.println("loop");
                 flag = is_valid_loop_assignment();
                 if (!flag) {
                     error_type = GrammarDefs.LOOP + "error Line" + line_counter;
@@ -97,24 +87,21 @@ public class Validation {
                 break;
 
             case GrammarDefs.IF:
-                System.out.println("test IF");
                 flag = is_valid_boolean_expression();
                 if (!flag)
                     error_type = GrammarDefs.IF + " error Line " + line_counter;
                 break;
 
             case GrammarDefs.PRINT:
-                System.out.println(" test print ");
                 flag = is_valid_print();
                 if (!flag)
                     error_type = GrammarDefs.PRINT + " error Line " + line_counter;
                 break;
 
             case GrammarDefs.ELSE:
-                System.out.println("test else");
                 flag = is_valid_else();
                 if (!flag)
-                    error_type = GrammarDefs.ELSE + "error Line" + line_counter;
+                    error_type = GrammarDefs.ELSE + " error Line " + line_counter;
                 break;
 
             case GrammarDefs.ASSIGNMENT:
@@ -123,9 +110,12 @@ public class Validation {
                     error_type = GrammarDefs.ASSIGNMENT + " error Line " + line_counter;
                 }
                 break;
+            case GrammarDefs.NEW_LINE:
+                line_counter++;
+                break;
 
                 default:
-                    error_type = "keyword" + "error Line" + line_counter;
+                    error_type = "keyword" + " error Line " + line_counter;
                     break;
         }
 
@@ -182,42 +172,25 @@ public class Validation {
         boolean flag = true;
         statement_index++;
 
-        System.out.println("Checking " + statements.get(statement_index).getKey() + " is valid asssign");
-
         while (flag && (!statements.get(statement_index).getType().equals(GrammarDefs.NEW_LINE) &&
                 !statements.get(statement_index).getKey().equals(GrammarDefs.SEMI_COLON))) {
 
-            System.out.println("current index: " + statement_index + " current token " + statements.get(statement_index).getType());
-
-
             if (statements.get(statement_index).getKey().equals(GrammarDefs.ASSIGNMENT_VAL)) {
-
-                System.out.println("checking " + statements.get(statement_index).getKey() + " against next token");
 
                 statement_index++;
 
                 flag = is_valid_after_assign_val(statements.get(statement_index));
-                System.out.println(" is valid after assign: " + flag);
-
 
             } else if (is_numerical_token(statements.get(statement_index).getType())) {
 
-                System.out.println("checking " + statements.get(statement_index).getKey() + " against next token");
                 statement_index++;
                 flag = is_valid_numerical_successor(statements.get(statement_index).getType());
-                System.out.println(" is valid after number: " + flag + statements.get(statement_index).getKey());
-
 
             } else if (is_operation(statements.get(statement_index).getKey())) {
 
-                System.out.println("checking " + statements.get(statement_index).getKey() + " against next token");
                 statement_index++;
 
                 flag = is_numerical_token(statements.get(statement_index).getType());
-                System.out.println(" is valid after operator: " + flag);
-
-
-
 
             } else if(statements.get(statement_index).getKey().equals("")) {
 
@@ -246,8 +219,6 @@ public class Validation {
 
         boolean flag = false;
 
-        System.out.print("token being checked: " + token.getKey());
-
         switch (token.getType()) {
 
             case GrammarDefs.OPEN_PAREN:
@@ -268,16 +239,12 @@ public class Validation {
         return flag;
     }
 
-
-
     /*
     =======================================================================================================
     =======================================================================================================
     */
 
     private boolean is_valid_loop_assignment() {
-
-
 
         boolean flag1;
         boolean flag2;
@@ -288,9 +255,6 @@ public class Validation {
         statement_index++;
         flag2 = is_equals_token(statements.get(statement_index).getKey());
         flag3 = is_valid_iterator();
-
-        System.out.println(flag1 +"" + flag2 + flag3);
-
 
         return flag1 && flag2 & flag3;
 
@@ -329,9 +293,6 @@ public class Validation {
             statement_index++;
 
         }
-
-
-
 
         Object[] objArray = temp.toArray();
         String[] str = new String[temp.size()];
@@ -599,384 +560,11 @@ public class Validation {
     =============================================================
     */
 
-    private boolean is_open_bracket(String token) {
-
-        boolean flag = false;
-
-        if (token.equals(GrammarDefs.OPEN_BRACKET)) {
-
-            flag = true;
-
-        }
-
-        return flag;
-    }
-
-    /*
-    =============================================================
-    =============================================================
-    */
-
-    private boolean is_closed_brackets(String token) {
-
-        boolean flag = false;
-
-        if (token.equals(GrammarDefs.CLOSE_BRACKET)) {
-
-            flag = true;
-        }
-        return flag;
-    }
-
-    /*
-    =============================================================
-    =============================================================
-    */
-
-    private boolean is_label(String token) {
-
-        boolean flag = false;
-
-        if (token.equals(GrammarDefs.LABEL)) {
-
-            flag = true;
-        }
-
-        return flag;
-    }
-
-    /*
-    =============================================================
-    =============================================================
-    */
-
-    private boolean is_assignment(String token) {
-
-        boolean flag = false;
-
-        if (token.equals(GrammarDefs.ASSIGNMENT)) {
-
-            flag = true;
-        }
-
-        return flag;
-    }
-
-    /*
-    =============================================================
-    =============================================================
-    */
-
-    private boolean is_assignment_val(String token) {
-
-        boolean flag = false;
-
-        if (token.equals(GrammarDefs.ASSIGNMENT_VAL)) {
-
-            flag = true;
-        }
-
-        return flag;
-    }
-
-    /*
-    =============================================================
-    =============================================================
-    */
-
-    private boolean is_if(String token) {
-
-        boolean flag = false;
-
-        if (token.equals(GrammarDefs.IF)) {
-
-            flag = true;
-        }
-
-        return flag;
-    }
-
-    /*
-    =============================================================
-    =============================================================
-    */
-
-    private boolean is_loop(String token) {
-
-        boolean flag = false;
-
-        if (token.equals(GrammarDefs.LOOP)) {
-
-            flag = true;
-        }
-
-        return flag;
-    }
-
-    /*
-    =============================================================
-    =============================================================
-    */
-
-    private boolean is_print(String token) {
-
-        boolean flag = false;
-
-        if (token.equals(GrammarDefs.PRINT)) {
-
-            flag = true;
-        }
-
-        return flag;
-    }
-
-    /*
-    =============================================================
-    =============================================================
-    */
-
-    private boolean is_and_token(String token) {
-
-        boolean flag = false;
-
-        if (token.equals(GrammarDefs.AND_TOKEN)) {
-
-            flag = true;
-        }
-
-        return flag;
-    }
-
-    /*
-    =============================================================
-    =============================================================
-    */
-
-    private boolean is_or_token(String token) {
-
-        boolean flag = false;
-
-        if (token.equals(GrammarDefs.OR_TOKEN)) {
-
-            flag = true;
-        }
-
-        return flag;
-    }
-
-    /*
-    =============================================================
-    =============================================================
-    */
-
-    private boolean is_not_equal_token(String token) {
-
-        boolean flag = false;
-
-        if (token.equals(GrammarDefs.NOT_EQUAL_TOKEN)) {
-
-            flag = true;
-        }
-
-        return flag;
-    }
-
-    /*
-    =============================================================
-    =============================================================
-    */
-
-    private boolean is_true_token(String token) {
-
-        boolean flag = false;
-
-        if (token.equals(GrammarDefs.TRUE_TOKEN)) {
-
-            flag = true;
-        }
-
-        return flag;
-    }
-
-    /*
-    =============================================================
-    =============================================================
-    */
-
-    private boolean is_false_token(String token) {
-
-        boolean flag = false;
-
-        if (token.equals(GrammarDefs.FALSE_TOKEN)) {
-
-            flag = true;
-        }
-        return flag;
-    }
-
-    /*
-    =============================================================
-    =============================================================
-    */
-
     private boolean is_equals_token(String token) {
 
         boolean flag = false;
 
         if(token.equals(GrammarDefs.ASSIGNMENT_VAL)) {
-
-            flag = true;
-        }
-
-        return flag;
-    }
-
-    /*
-    =============================================================
-    =============================================================
-    */
-
-    private boolean is_gt_token(String token) {
-
-        boolean flag = false;
-
-        if(token.equals(GrammarDefs.GT_TOKEN)) {
-
-            flag = true;
-        }
-
-        return flag;
-    }
-
-    /*
-    =============================================================
-    =============================================================
-    */
-
-    private boolean is_gte_token(String token) {
-
-        boolean flag = false;
-
-        if(token.equals(GrammarDefs.GTE_TOKEN)) {
-
-            flag = true;
-        }
-
-        return flag;
-    }
-
-    /*
-    =============================================================
-    =============================================================
-    */
-
-    private boolean is_lt_token(String token) {
-
-        boolean flag = false;
-
-        if(token.equals(GrammarDefs.LT_TOKEN)) {
-
-            flag = true;
-        }
-
-        return flag;
-    }
-
-    /*
-    =============================================================
-    =============================================================
-    */
-
-    private boolean is_lte_token(String token) {
-
-        boolean flag = false;
-
-        if(token.equals(GrammarDefs.LTE_TOKEN)) {
-
-            flag = true;
-        }
-
-        return flag;
-    }
-
-    /*
-    =============================================================
-    =============================================================
-    */
-
-    private boolean is_add_token(String token) {
-
-        boolean flag = false;
-
-        if(token.equals(GrammarDefs.ADD_TOKEN)) {
-
-            flag = true;
-        }
-
-        return flag;
-    }
-
-    /*
-    =============================================================
-    =============================================================
-    */
-
-    private boolean is_sub_token(String token) {
-
-        boolean flag = false;
-
-        if(token.equals(GrammarDefs.SUB_TOKEN)) {
-
-            flag = true;
-        }
-
-        return flag;
-    }
-
-    /*
-    =============================================================
-    =============================================================
-    */
-
-    private boolean is_multi_token(String token) {
-
-        boolean flag = false;
-
-        if(token.equals(GrammarDefs.MULTI_TOKEN)) {
-
-            flag = true;
-        }
-
-        return flag;
-    }
-
-    /*
-    =============================================================
-    =============================================================
-    */
-
-    private boolean is_div_token(String token) {
-
-        boolean flag = false;
-
-        if(token.equals(GrammarDefs.DIV_TOKEN)) {
-
-            flag = true;
-        }
-
-        return flag;
-    }
-
-    /*
-    =============================================================
-    =============================================================
-    */
-
-    private boolean is_mod_token(String token) {
-
-        boolean flag = false;
-
-        if(token.equals(GrammarDefs.MOD_TOKEN)) {
 
             flag = true;
         }
