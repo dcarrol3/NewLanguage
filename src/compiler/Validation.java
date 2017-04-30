@@ -13,7 +13,7 @@ public class Validation {
 
     private int line_counter;
     private int statement_index;
-    private final String COMPARES = "compares";
+    private List<String[]> statement_list = new ArrayList<>();
     private List<String> error_list = new ArrayList<String>();
 
 
@@ -27,7 +27,7 @@ public class Validation {
     
     public Validation(ArrayList<Token> tokens) {
 
-        this.line_counter = -1;
+        this.line_counter = 0;
         this.statements = tokens;
         this.error_list.add("List of Errors");
     }
@@ -83,6 +83,9 @@ public class Validation {
 
             case GrammarDefs.IDENTIFIER:
                 flag = is_valid_assignment();
+                if (!flag) {
+                    error_type = GrammarDefs.IDENTIFIER + "error Line" + line_counter;
+                }
                 break;
 
             case GrammarDefs.LOOP:
@@ -111,7 +114,7 @@ public class Validation {
                 System.out.println("test else");
                //is_valid_else();
                 if (!flag)
-                    error_type = GrammarDefs.ELSE + " error Line " + line_counter;
+                    error_type = GrammarDefs.ELSE + "error Line" + line_counter;
                 break;
 
             case GrammarDefs.ASSIGNMENT:
@@ -122,7 +125,7 @@ public class Validation {
                 break;
 
                 default:
-                    error_type = "keyword" + " error Line " + line_counter;
+                    error_type = "keyword" + "error Line" + line_counter;
                     break;
         }
 
@@ -139,9 +142,9 @@ public class Validation {
     =======================================================================================================
     */
 
-    private boolean is_valid_print() {
+    boolean is_valid_print() {
 
-        boolean flag;
+        boolean flag = false;
         statement_index++;
 
         flag = is_numerical_token(statements.get(statement_index).getType());
@@ -224,6 +227,8 @@ public class Validation {
 
         boolean flag = false;
 
+        System.out.print("token being checked: " + token.getKey());
+
         switch (token.getType()) {
 
             case GrammarDefs.OPEN_PAREN:
@@ -253,8 +258,22 @@ public class Validation {
 
     private boolean is_valid_loop_assignment() {
 
-        return is_identifier(statements.get(statement_index).getType()) &&
-                is_equals_token(statements.get(statement_index).getKey()) && is_valid_iterator();
+
+
+        boolean flag1 = false;
+        boolean flag2 = false;
+        boolean flag3 = false;
+
+        statement_index++;
+        flag1 = is_identifier(statements.get(statement_index).getType());
+        statement_index++;
+        flag2 = is_equals_token(statements.get(statement_index).getKey());
+        flag3 = is_valid_iterator();
+
+        System.out.println(flag1 +"" + flag2 + flag3);
+
+
+        return flag1 && flag2 & flag3;
 
     }
 
@@ -282,29 +301,29 @@ public class Validation {
 
     private String[] get_code_segment(String stop_point) {
 
-        int temp_index = statement_index;
-        String[] temp = {"hfkdj"};
-        //int
-/*
-        while (!statements.get(statement_index).getKey().equals(stop_point)) {
+        List<String> temp = new ArrayList<String>();
+        int i = 0;
 
-            temp_index++;
+        while (!statements.get(statement_index).getType().equals(stop_point)) {
 
+            temp.add(statements.get(statement_index).getKey());
+            statement_index++;
 
         }
-        String[] temp = new String[temp_index - statement_index];
 
-        temp_index = 0;
 
-        while (!statements.get(statement_index).getKey().equals(stop_point)) {
 
-            temp[temp_index] = statements.get(statement_index).getKey();
-            statement_index++;
-            temp_index++;
 
-        }*/
+        Object[] objArray = temp.toArray();
+        String[] str = new String[temp.size()];
+        for (Object obj : objArray) {
+            str[i] = (String) obj;
+            i++;
 
-        return temp;
+        }
+
+
+        return str;
     }
 
     /*
@@ -317,10 +336,11 @@ public class Validation {
 
         boolean flag = true;
         statement_index++;
+        int tempindex;
         Token prev_token = statements.get(statement_index);
         Token current_token = statements.get(++statement_index);
 
-        while (flag && !statements.get(statement_index).getType().equals(GrammarDefs.OPEN_BRACKET)) {
+        while (flag && !current_token.getType().equals(GrammarDefs.OPEN_BRACKET)) {
 
 
 
@@ -338,6 +358,17 @@ public class Validation {
             statement_index++;
             current_token = statements.get(statement_index);
 
+        }
+        tempindex = statement_index;
+
+        prev_token = statements.get(tempindex);
+        tempindex++;
+        current_token = statements.get(tempindex);
+
+
+        if (current_token.getType().equals(prev_token.getType())) {
+
+            flag = false;
         }
 
         return flag;
@@ -481,7 +512,7 @@ public class Validation {
 
         switch (token.getType()) {
 
-            case COMPARES:
+            case "compares":
                 flag = true;
 
             default:
@@ -773,7 +804,7 @@ public class Validation {
 
         boolean flag = false;
 
-        if(token.equals(GrammarDefs.EQUALS_TOKEN)) {
+        if(token.equals(GrammarDefs.ASSIGNMENT_VAL)) {
 
             flag = true;
         }
