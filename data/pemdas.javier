@@ -1,4 +1,9 @@
-a = + 5 * ((8 - (-2 * -2)) + (15 - 3 + (4 * 2)));
+#/
+    some order of operation fun
+/#
+
+# a = 142
+a = 22 + 5 * ((8 - (-2 * -2)) + (15 - 3 + (4 * 2)));
 print a;
 
 # b = 27
@@ -17,7 +22,7 @@ print d;
 count = 0;
 
 # count = 0
-if a | b {
+if a > b {
    print count;
 }
 
