@@ -3,7 +3,7 @@ x = 100;
 fizz = -1;
 buzz = -2;
 
-loop i = 1, x {
+loop i = 1, x {{
     if i % 2 == 0 and i % 3 == 0 {
         print i;
         print fizz;

@@ -1,11 +1,11 @@
 x = 12345;
 length = 0;
-place = 1;
+place = +;
 
 if x >= 0 {
     # get the number of digits in the number
     loop i = 1, x {
-        if x >= place {
+        if & >= place {
             length = length + 1;
             place = place * 10;
         }

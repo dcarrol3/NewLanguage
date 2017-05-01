@@ -1,9 +1,6 @@
 package compiler;
 
-import compiler.grammar.Grammar;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class Validation {
@@ -173,7 +170,7 @@ public class Validation {
         while (flag && (!statements.get(statement_index).getType().equals(GrammarDefs.NEW_LINE) &&
                 !statements.get(statement_index).getType().equals(GrammarDefs.SEMI_COLON))) {
 
-            if (statements.get(statement_index).getType().equals(GrammarDefs.ASSIGNMENT_VAL)) {
+            if (statements.get(statement_index).getType().equals(GrammarDefs.ASSIGNMENT)) {
 
                 statement_index++;
 
@@ -613,9 +610,6 @@ public class Validation {
         boolean flag = true;
         String prev_token = token[0];
         int i = 1;
-
-
-
 
         //checks expression for invalid combinations
         while (flag && i < token.length) {
