@@ -15,6 +15,7 @@ Custom programming language for learning purposes. Written in Java.
 
 
 #### How to install the language
+A pre-installed version can be found in the submissions folder.
 1. Download the Javier.jar file.
 2. If not already provided, create a directory called data in the same directory as Javier.jar.
 
