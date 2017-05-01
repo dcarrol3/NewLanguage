@@ -64,7 +64,7 @@ add,tmpPlace,0,$t7
 jr
 label-5
 add,tmpPlace,0,place
-add,$t8,i,1
+sub,$t8,i,1
 add,j,0,1
 looplabel4
 ltq,$l4,j,$t8
