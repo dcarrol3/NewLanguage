@@ -35,7 +35,7 @@ A pre-installed version can be found in the submissions folder.
 Before compiling and running, follow the How To Install The Language instructions above.\
 From the terminal at the Javier.jar location, enter the following commands to compile and run a javier program.\
 Filenames do NOT include the file extension.\
-All Javier program files MUST end in .javier\
+All Javier program files MUST have the extension .javier\
 All Javier program files MUST be in the data directory created above.
 
 
