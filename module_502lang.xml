@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_502lang" default="compile.module.502lang">
+  <dirname property="module.502lang.basedir" file="${ant.file.module_502lang}"/>
+  
+  <property name="module.jdk.home.502lang" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.502lang" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.502lang" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.502lang" value="-encoding UTF-8 -source 8 -target 8 ${compiler.args}"/>
+  
+  <property name="502lang.output.dir" value="${module.502lang.basedir}/out/production/502Lang"/>
+  <property name="502lang.testoutput.dir" value="${module.502lang.basedir}/out/test/502Lang"/>
+  
+  <path id="502lang.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="502lang.module.production.classpath">
+    <path refid="${module.jdk.classpath.502lang}"/>
+    <pathelement location="${basedir}/json-simple-1.1.1.jar"/>
+  </path>
+  
+  <path id="502lang.runtime.production.module.classpath">
+    <pathelement location="${502lang.output.dir}"/>
+    <pathelement location="${basedir}/json-simple-1.1.1.jar"/>
+  </path>
+  
+  <path id="502lang.module.classpath">
+    <path refid="${module.jdk.classpath.502lang}"/>
+    <pathelement location="${502lang.output.dir}"/>
+    <pathelement location="${basedir}/json-simple-1.1.1.jar"/>
+  </path>
+  
+  <path id="502lang.runtime.module.classpath">
+    <pathelement location="${502lang.testoutput.dir}"/>
+    <pathelement location="${502lang.output.dir}"/>
+    <pathelement location="${basedir}/json-simple-1.1.1.jar"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.502lang">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.502lang">
+    <patternset refid="excluded.from.module.502lang"/>
+  </patternset>
+  
+  <path id="502lang.module.sourcepath">
+    <dirset dir="${module.502lang.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.502lang" depends="compile.module.502lang.production,compile.module.502lang.tests" description="Compile module 502Lang"/>
+  
+  <target name="compile.module.502lang.production" depends="register.custom.compilers" description="Compile module 502Lang; production classes">
+    <mkdir dir="${502lang.output.dir}"/>
+    <javac2 destdir="${502lang.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.502lang}/javac">
+      <compilerarg line="${compiler.args.502lang}"/>
+      <bootclasspath refid="502lang.module.bootclasspath"/>
+      <classpath refid="502lang.module.production.classpath"/>
+      <src refid="502lang.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.502lang"/>
+    </javac2>
+    
+    <copy todir="${502lang.output.dir}">
+      <fileset dir="${module.502lang.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.502lang.tests" depends="register.custom.compilers,compile.module.502lang.production" description="compile module 502Lang; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.502lang" description="cleanup module">
+    <delete dir="${502lang.output.dir}"/>
+    <delete dir="${502lang.testoutput.dir}"/>
+  </target>
+</project>
