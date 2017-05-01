@@ -21,7 +21,7 @@ A pre-installed version can be found in the submissions folder.
 
 
 
-#### How to build and run
+#### How to build and run from source
 1. In a terminal, navigate to the project directory.
 2. Create a new directory called JavierBuild
 3. Enter the following command:\
