@@ -1,21 +1,3 @@
-#/
-    print the triangle of x
-    ex: x = 1234
-    output:
-    1
-    12
-    123
-    1234
-    123
-    12
-    1
-
-    x must be greater than 0
-    ex: x = -12
-    output:
-    -1
-/#
-
 x = 12345;
 length = 0;
 place = 1;
@@ -32,7 +14,7 @@ if x >= 0 {
         # ascending triangle
         loop i = 1, length {
             tmpPlace = place;
-            loop j = 1, i - 1 {
+            loop j = 1, i + 1 {
                 tmpPlace = tmpPlace / 10;
             }
             triangleNum = x / tmpPlace;

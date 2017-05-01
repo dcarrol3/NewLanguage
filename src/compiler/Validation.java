@@ -1,6 +1,9 @@
 package compiler;
 
+import compiler.grammar.Grammar;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Validation {
@@ -15,7 +18,7 @@ public class Validation {
     ========================================================================================================
     ========================================================================================================
     */
-    
+
     public Validation(ArrayList<Token> tokens) {
 
         this.line_counter = 0;
@@ -104,19 +107,13 @@ public class Validation {
                     error_type = GrammarDefs.ELSE + " error Line " + line_counter;
                 break;
 
-            case GrammarDefs.ASSIGNMENT:
-                flag = is_valid_assignment();
-                if (!flag) {
-                    error_type = GrammarDefs.ASSIGNMENT + " error Line " + line_counter;
-                }
-                break;
             case GrammarDefs.NEW_LINE:
                 line_counter++;
                 break;
 
-                default:
-                    error_type = "keyword" + " error Line " + line_counter;
-                    break;
+            default:
+                error_type = "keyword" + " error Line " + line_counter;
+                break;
         }
 
         if (!flag) {
@@ -174,9 +171,9 @@ public class Validation {
         statement_index++;
 
         while (flag && (!statements.get(statement_index).getType().equals(GrammarDefs.NEW_LINE) &&
-                !statements.get(statement_index).getKey().equals(GrammarDefs.SEMI_COLON))) {
+                !statements.get(statement_index).getType().equals(GrammarDefs.SEMI_COLON))) {
 
-            if (statements.get(statement_index).getKey().equals(GrammarDefs.ASSIGNMENT_VAL)) {
+            if (statements.get(statement_index).getType().equals(GrammarDefs.ASSIGNMENT_VAL)) {
 
                 statement_index++;
 
@@ -187,13 +184,19 @@ public class Validation {
                 statement_index++;
                 flag = is_valid_numerical_successor(statements.get(statement_index).getType());
 
+
             } else if (is_operation(statements.get(statement_index).getKey())) {
 
                 statement_index++;
 
-                flag = is_numerical_token(statements.get(statement_index).getType());
+                flag = is_valid_operator_successor(statements.get(statement_index).getType());
+
 
             } else if(statements.get(statement_index).getKey().equals("")) {
+
+                statement_index++;
+
+            } else if (statements.get(statement_index).getType().equals(GrammarDefs.COMMA)) {
 
                 statement_index++;
 
@@ -202,7 +205,6 @@ public class Validation {
                 break;
             }
 
-            statement_index++;
 
         }
 
@@ -309,7 +311,7 @@ public class Validation {
 
         while (!statements.get(statement_index).getType().equals(stop_point)) {
 
-            temp.add(statements.get(statement_index).getKey());
+            temp.add(statements.get(statement_index).getType());
             statement_index++;
 
         }
@@ -347,6 +349,7 @@ public class Validation {
             } else if (is_conditional_token(prev_token) && !is_valid_cond_successor(current_token)) {
 
                 flag = false;
+
 
             }
 
@@ -410,62 +413,62 @@ public class Validation {
 
      /*
     ==================================================================================================
-    Check if a value holding token is a valid successor token
+    Check if a value holding token has a valid successor token
     ==================================================================================================
     */
 
-     private boolean is_valid_condVal_successor(Token token) {
+    private boolean is_valid_condVal_successor(Token token) {
 
-         boolean flag = false;
+        boolean flag = false;
 
-         switch (token.getKey()) {
+        switch (token.getKey()) {
 
-             case GrammarDefs.CLOSED_PAREN:
-                 flag = true;
-                 break;
+            case GrammarDefs.CLOSED_PAREN:
+                flag = true;
+                break;
 
-             case GrammarDefs.AND_TOKEN:
-                 flag = true;
-                 break;
+            case GrammarDefs.AND_TOKEN:
+                flag = true;
+                break;
 
-             case GrammarDefs.OR_TOKEN:
-                 flag = true;
-                 break;
+            case GrammarDefs.OR_TOKEN:
+                flag = true;
+                break;
 
-             case GrammarDefs.NOT_EQUAL_TOKEN:
-                 flag = true;
-                 break;
+            case GrammarDefs.NOT_EQUAL_TOKEN:
+                flag = true;
+                break;
 
-             case GrammarDefs.EQUALS_TOKEN:
-                 flag = true;
-                 break;
+            case GrammarDefs.EQUALS_TOKEN:
+                flag = true;
+                break;
 
-             case GrammarDefs.GT_TOKEN:
-                 flag = true;
-                 break;
+            case GrammarDefs.GT_TOKEN:
+                flag = true;
+                break;
 
-             case GrammarDefs.GTE_TOKEN:
-                 flag = true;
-                 break;
+            case GrammarDefs.GTE_TOKEN:
+                flag = true;
+                break;
 
-             case GrammarDefs.LT_TOKEN:
-                 flag = true;
-                 break;
+            case GrammarDefs.LT_TOKEN:
+                flag = true;
+                break;
 
-             case GrammarDefs.LTE_TOKEN:
-                 flag = true;
-                 break;
+            case GrammarDefs.LTE_TOKEN:
+                flag = true;
+                break;
 
-             case GrammarDefs.MOD_TOKEN:
-                 flag = true;
-                 break;
+            case GrammarDefs.MOD_TOKEN:
+                flag = true;
+                break;
 
-             default:
-                 break;
-         }
+            default:
+                break;
+        }
 
-         return flag;
-     }
+        return flag;
+    }
 
     /*
     ===================================================================================================
@@ -572,7 +575,7 @@ public class Validation {
 
         boolean flag = false;
 
-        if (token.equals(GrammarDefs.WHOLE_NUMBER)) {
+        if (token.equals(GrammarDefs.WHOLE_NUMBER) || token.equals(GrammarDefs.IDENTIFIER)) {
 
             flag = true;
         }
@@ -607,40 +610,37 @@ public class Validation {
 
     private boolean is_valid_expression(String[] token) {
 
-        boolean flag;
+        boolean flag = true;
         String prev_token = token[0];
         int i = 1;
 
-        //checks to ensure there are the same number of open and closed parenthesis
-        flag = is_valid_paren_count(token);
 
-        //checks expression does not start or end with an operator
-        flag = flag && (!is_operation(token[0]) || !is_operation(token[token.length - 1]));
+
 
         //checks expression for invalid combinations
         while (flag && i < token.length) {
 
-           if (is_numerical_token(prev_token) && !is_valid_numerical_successor(token[i])) {
+            if (is_numerical_token(prev_token) && !is_valid_numerical_successor(token[i])) {
 
-               flag = false;
+                flag = false;
 
-           } else if (is_operation(prev_token) && !is_valid_operator_successor(token[i])) {
+            } else if (is_operation(prev_token) && !is_valid_operator_successor(token[i])) {
 
-               flag = false;
+                flag = false;
 
-           } else if (is_open_paren_token(prev_token) && !is_valid_open_par_successor(token[i])) {
+            } else if (is_open_paren_token(prev_token) && !is_valid_open_par_successor(token[i])) {
 
-               flag = false;
+                flag = false;
 
-           } else if (is_closed_paren_token(prev_token) && !is_valid_closed_par_successor(token[i])) {
+            } else if (is_closed_paren_token(prev_token) && !is_valid_closed_par_successor(token[i])) {
 
-               flag = false;
+                flag = false;
 
-           }
-           
-           prev_token = token[i];
-           i++;
-       }
+            }
+
+            prev_token = token[i];
+            i++;
+        }
 
         return flag;
     }
@@ -656,6 +656,22 @@ public class Validation {
         boolean flag = false;
 
         switch (token) {
+
+            case GrammarDefs.ASSIGNMENT_VAL:
+                flag = true;
+                break;
+
+            case GrammarDefs.ASSIGNMENT:
+                flag = true;
+                break;
+
+            case  GrammarDefs.OPERATOR:
+                flag = true;
+                break;
+
+            case GrammarDefs.OPEN_PAREN:
+                flag = true;
+                break;
 
             case GrammarDefs.CLOSED_PAREN:
                 flag = true;
@@ -678,6 +694,9 @@ public class Validation {
                 break;
 
             case GrammarDefs.MOD_TOKEN:
+                flag = true;
+                break;
+            case GrammarDefs.SEMI_COLON:
                 flag = true;
                 break;
 
@@ -709,6 +728,10 @@ public class Validation {
                 break;
 
             case GrammarDefs.WHOLE_NUMBER:
+                flag = true;
+                break;
+
+            case GrammarDefs.MOD_TOKEN:
                 flag = true;
                 break;
 
@@ -897,6 +920,10 @@ public class Validation {
 
         switch (token) {
 
+            case GrammarDefs.OPERATOR:
+                flag = true;
+                break;
+
             case GrammarDefs.ADD_TOKEN:
                 flag = true;
                 break;
@@ -916,7 +943,7 @@ public class Validation {
             case GrammarDefs.MOD_TOKEN:
                 flag = true;
                 break;
-                
+
             default:
                 break;
         }
