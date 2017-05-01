@@ -1,3 +1,9 @@
+/*
+ * Purpose: Validates Javier syntax.
+ * Author(s): Jeb Johnson
+ * Version: 7
+ * Date: 4/30/2017
+ */
 package compiler;
 
 import java.util.ArrayList;
